@@ -16,7 +16,9 @@ return new class extends Migration
             $table->unsignedBigInteger('job_application_id');
             $table->unsignedBigInteger('client_id');       
             $table->unsignedBigInteger('freelancer_id');   
-            $table->enum('status', ['in_progress','completed','cancelled','submitted'])->default('in_progress');
+            $table->text('result_text')->nullable();
+            $table->string('result_file')->nullable();
+            $table->enum('status', ['in_progress','completed','cancelled','submitted',])->default('in_progress');
             $table->timestamps();
     
             $table->foreign('job_application_id')->references('id')->on('job_applications')->onDelete('cascade');

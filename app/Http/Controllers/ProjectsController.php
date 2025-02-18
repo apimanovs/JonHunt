@@ -47,13 +47,13 @@ class ProjectsController extends Controller
             'completion_date' => 'required|date|after_or_equal:today|before_or_equal:' . Carbon::now()->addYear()->toDateString(),
             'budget' => 'required|numeric|min:0',
         ]);
-
+    
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-
+    
         $validatedData = $validator->validated();
-
+    
         $project = new Project();
         $project->title = $validatedData['title'];
         $project->description = $validatedData['description'];
@@ -61,12 +61,16 @@ class ProjectsController extends Controller
         $project->completion_date = $validatedData['completion_date'];
         $project->budget = $validatedData['budget'];
         $project->creator = Auth::user()->name;
-        
         $project->creator_id = Auth::id();
-
-
+        
+        $project->Status = 'pending';
+        
         $project->save();
+    
+        return redirect()->route('dashboard')
+                         ->with('success', 'Проект создан и отправлен на модерацию.');
     }
+    
 
 public function show(Project $project)
 {

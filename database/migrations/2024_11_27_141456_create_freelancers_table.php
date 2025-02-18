@@ -17,9 +17,6 @@ return new class extends Migration
             $table->string('country')->nullable();
             $table->text('bio')->nullable(); 
             $table->string('specialization')->nullable();
-            $table->text('experience')->nullable();
-            $table->decimal('hourly_rate', 8, 2)->nullable();
-            $table->string('portfolio')->nullable();
             $table->timestamps();
         });
     }

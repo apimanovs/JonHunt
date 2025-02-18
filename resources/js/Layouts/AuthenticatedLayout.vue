@@ -77,7 +77,7 @@ function search() {
     <div class="min-h-screen bg-gray-100 selection:bg-red-500 selection:text-white overflow-hidden">
       <nav class="bg-white border-b border-gray-100">
         <!-- Primary Navigation Menu -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="w-full mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex justify-between h-16">
             <div class="flex">
               <!-- Logo -->
@@ -245,6 +245,9 @@ function search() {
                                     </template>
 
                                     <template #content>
+                                      <template v-if="$page.props.auth.user.role === 'user'">
+                                        <DropdownLink :href="route('freelancer.registration')"> Become a Freelancer </DropdownLink>
+                                      </template>
                                             <DropdownLink :href="route('profile.edit')"> Profile </DropdownLink>
                                             <DropdownLink :href="route('logout')" method="post" as="button">
                                                 Log Out
@@ -365,19 +368,11 @@ function search() {
 
     <hr>
     <footer class="footer bg-base-200 p-10 flex flex-col md:flex-row md:justify-around selection:bg-red-500 selection:text-white">
-        <nav class="mb-6 md:mb-0">
-          <h6 class="footer-title font-bold">Services</h6>
-          <a class="link link-hover">Branding</a>
-          <a class="link link-hover">Design</a>
-          <a class="link link-hover">Marketing</a>
-          <a class="link link-hover">Advertisement</a>
-        </nav>
+
         <nav class="mb-6 md:mb-0">
           <h6 class="footer-title font-bold">Company</h6>
           <a class="link link-hover">About us</a>
           <a class="link link-hover">Contact</a>
-          <a class="link link-hover">Jobs</a>
-          <a class="link link-hover">Press kit</a>
         </nav>
         <nav>
           <h6 class="footer-title font-bold">Legal</h6>

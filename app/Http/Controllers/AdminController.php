@@ -53,6 +53,52 @@ class AdminController extends Controller
             ->with('success', 'Пользователь успешно удалён!');
     }
 
+    public function requestsIndex(): \Inertia\Response
+    {
+        $pendingProjects = Project::where('Status', 'pending')->orderBy('created_at', 'desc')->get();
+        // $pendingJobAds = JobAdvertisement::where('status', 'pending')->orderBy('created_at', 'desc')->get();
+    
+        return Inertia::render('Admin/AdminRequests', [
+            'pendingProjects' => $pendingProjects,
+            // 'pendingJobAds' => $pendingJobAds,
+            'csrf'            => csrf_token(),
+        ]);
+    }
+    
+    public function approveProject(Project $project)
+    {
+        $project->Status = 'approved';
+        $project->save();
+    
+        return redirect()->back()->with('success', 'Проект успешно одобрен!');
+    }
+    
+    public function rejectProject(Project $project)
+    {
+        $project->Status = 'rejected';
+        $project->save();
+    
+        return redirect()->back()->with('success', 'Проект отклонён!');
+    }
+    
+    public function approveJobAd(JobAdvertisement $jobAd)
+    {
+        $jobAd->Status = 'approved';
+        $jobAd->save();
+    
+        return redirect()->back()->with('success', 'Объявление о работе успешно одобрено!');
+    }
+    
+    public function rejectJobAd(JobAdvertisement $jobAd)
+    {
+        $jobAd->Status = 'rejected';
+        $jobAd->save();
+    
+        return redirect()->back()->with('success', 'Объявление о работе отклонено!');
+    }
+    
+    
+
     /**
      * Список всех проектов.
      */

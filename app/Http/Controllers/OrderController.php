@@ -19,7 +19,6 @@ class OrderController extends Controller
         ]);
     }
 
-// app/Http/Controllers/OrderController.php
 
 public function updateStatus(Request $request, Order $order)
 {

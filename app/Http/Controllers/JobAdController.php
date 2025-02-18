@@ -33,8 +33,6 @@ class JobAdController extends Controller
             'title'        => 'required|string|max:35|min:35',
             'description'  => 'required|string|max:1500|min:100',
             'price'        => 'required|numeric|min:0',
-    
-            // Множественная валидация: каждый элемент массива examples должен быть файлом
             'examples.*'   => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
     
@@ -42,16 +40,18 @@ class JobAdController extends Controller
             return back()->withErrors($validator)->withInput();
         }
     
-        // 1. Сохраняем объявление
         $jobAd = new JobAdvertisement();
         $jobAd->title       = $request->title;
         $jobAd->description = $request->description;
         $jobAd->price       = $request->price;
         $jobAd->creator     = Auth::user()->name;
         $jobAd->creator_id  = Auth::id();
+    
+        // Устанавливаем статус "pending"
+        $jobAd->status = 'pending';
+        
         $jobAd->save(); 
     
-        
         if ($request->hasFile('examples')) {
             $files = $request->file('examples');
     
@@ -60,7 +60,6 @@ class JobAdController extends Controller
                     'folder' => 'job-portfolio/' . Auth::id(),
                 ]);
     
-                // Сохраняем связанный портфолио-запись
                 JobAdvertisementPortfolio::create([
                     'job_ad_id'         => $jobAd->id,
                     'example_url'       => $result->getSecurePath(),
@@ -69,8 +68,10 @@ class JobAdController extends Controller
             }
         }
     
-        return redirect()->route('jobAds.index')->with('success', 'Job Ad created successfully.');
+        return redirect()->route('jobAds.index')
+                         ->with('success', 'Объявление о работе создано и отправлено на модерацию.');
     }
+    
 
     public function destroy(JobAdvertisement $jobAd)
     {
@@ -101,7 +102,6 @@ class JobAdController extends Controller
             }
         }
     
-        // Загрузка нового примера
         $file = $request->file('examples');
         $result = Cloudinary::uploadFile($file->getRealPath(), [
             'folder' => 'job-portfolio/' . Auth::id(),
@@ -124,7 +124,6 @@ class JobAdController extends Controller
             'title' => 'required|string|max:35|min:10',
             'description' => 'required|string|max:1500|min:100',
             'price' => 'required|numeric|min:0',
-            'examples' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
         
         if ($validator->fails()) {
@@ -139,37 +138,6 @@ class JobAdController extends Controller
         $jobAd->price = $validatedData['price'];
         $jobAd->creator = Auth::user()->name;
         $jobAd->creator_id = Auth::id();
-
-        if ($request->hasFile('examples')) {
-            $oldExamples = JobAdvertisementPortfolio::where('job_ad_id', $jobAd->id)->get();
-
-            foreach ($oldExamples as $example) {
-                try {
-                    Cloudinary::destroy($example->example_public_id);
-                    $example->delete();
-                } catch (\Exception $e) {
-                    return back()->with('error', 'Failed to delete old example files: ' . $e->getMessage());
-                }
-            }
-
-            $files = $request->file('examples');
-
-            foreach ($files as $file) {
-                try {
-                    $result = Cloudinary::uploadFile($file->getRealPath(), [
-                        'folder' => 'job-portfolio/' . Auth::id(),
-                    ]);
-
-                    JobAdvertisementPortfolio::create([
-                        'job_ad_id'         => $jobAd->id,
-                        'example_url'       => $result->getSecurePath(),
-                        'example_public_id' => $result->getPublicId(),
-                    ]);
-                } catch (\Exception $e) {
-                    return back()->with('error', 'Failed to upload new example files: ' . $e->getMessage());
-                }
-            }
-        }
 
         $jobAd->save();
 

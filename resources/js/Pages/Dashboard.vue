@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue';
-import { usePage } from '@inertiajs/vue3';
+import { usePage, Head } from '@inertiajs/vue3';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import GuestLayout from "@/Layouts/GuestLayout.vue";
 import TextInput from '@/Components/TextInput.vue';
@@ -27,7 +27,7 @@ const budgetRanges = [
 ];
 
 const sortedProjects = computed(() => {
-    return pageProps.projects.slice().sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    return pageProps.projects.filter(project => project.Status === 'approved').slice().sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 });
 
 const filteredProjects = computed(() => {
@@ -72,7 +72,7 @@ const setTab = (tab) => {
 </script>
 
 <template>
-    <Head title="Dashboard" />
+    <Head title="JobHunt - Projects List" />
   
     <component :is="Layout">
         <template #header v-if="user">
