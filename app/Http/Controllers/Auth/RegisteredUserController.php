@@ -53,10 +53,11 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        UserBalance::create([
-            'user_id' => $user->id,
-            'amount' => 0,
-        ]);
+        UserBalance::firstOrCreate(
+            ['user_id' => $user->id],
+            ['amount' => 0]
+        );
+        
 
         event(new Registered($user));
 

@@ -27,7 +27,7 @@ class ReviewsController extends Controller
             ->withErrors(['error' => 'Your review contains inappropriate language.']);
     }
     
-    $reviewedUserId = $project->creator;
+    $reviewedUserId = $project->creator_id;
 
     $review = new Review();
     $review->project_id = $project->id;

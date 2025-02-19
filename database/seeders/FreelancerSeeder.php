@@ -14,13 +14,11 @@ class FreelancerSeeder extends Seeder
 
         foreach ($users as $user) {
             Freelancer::create([
-                'user_id' => $user->id,
-                'country' => fake()->country(),
-                'bio' => fake()->paragraph(),
-                'specialization' => fake()->jobTitle(),
-                'experience' => fake()->text(200),
-                'hourly_rate' => fake()->randomFloat(2, 10, 100),
-                'portfolio' => fake()->url(),
+                'user_id'         => $user->id,
+                'country'         => fake()->country(),
+                'bio'             => fake()->paragraph(),
+                'experience_from' => fake()->numberBetween(1, 3), 
+                'experience_to'   => fake()->numberBetween(4, 10),           
             ]);
 
             $user->update(['role' => 'freelancer']);
