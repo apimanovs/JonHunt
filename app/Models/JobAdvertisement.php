@@ -18,11 +18,10 @@ class JobAdvertisement extends Model
         'creator_id',
     ];
 
-    // Relationship to the User who created the job ad
-
+    // Полиморфное отношение отзывов для job ad
     public function reviews()
     {
-        return $this->hasMany(Review::class);
+        return $this->morphMany(Review::class, 'reviewable');
     }
 
     public function avatar()
@@ -35,14 +34,8 @@ class JobAdvertisement extends Model
         return $this->belongsTo(User::class, 'creator_id');
     }
 
-    public function creatorUser()
-    {
-        return $this->belongsTo(User::class, 'creator_id'); 
-    }
-
     public function portfolios()
     {
         return $this->hasMany(JobAdvertisementPortfolio::class, 'job_ad_id');
     }
-
 }

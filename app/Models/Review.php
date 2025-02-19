@@ -12,21 +12,21 @@ class Review extends Model
     protected $primaryKey = 'ReviewID';
 
     public $incrementing = true;
-
     protected $keyType = 'int';
 
     protected $fillable = [
-        'ReviewID',
-        'project_id',
+        'reviewable_id',
+        'reviewable_type',
         'UserID',
         'ReviewedUserID',
         'Rating',
         'ReviewText',
     ];
 
-    public function project()
+    // Полиморфное отношение – отзыв принадлежит сущности (проекту или объявлению о работе)
+    public function reviewable()
     {
-        return $this->belongsTo(Project::class, 'project_id');
+        return $this->morphTo();
     }
 
     public function user()

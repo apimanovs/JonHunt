@@ -162,10 +162,15 @@ class JobAdController extends Controller
 
     public function display(JobAdvertisement $jobAds) 
     {
-        $jobAds->load('creator.avatar');
+    
+        $jobAds->load([
+            'creator.avatar',
+            'reviews.user'
+        ]);
         
         return Inertia::render('JobAdsPage', [
             'jobAds' => $jobAds,
+            'reviews' => $jobAds->reviews,
         ]);
 
     }

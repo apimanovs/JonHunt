@@ -87,7 +87,13 @@ Route::middleware(['share.notifications'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'display'])->name('dashboard');
 });
 
+Route::post('/jobAdvertisements/{jobAd}/addReview', [App\Http\Controllers\ReviewsController::class, 'addJobAdReview'])
+    ->name('jobAds.addReview');
 
+    Route::post('/projects/{project}/addReview', [App\Http\Controllers\ReviewsController::class, 'addReview'])
+    ->name('reviews.addReview');
+
+    
 Route::middleware('auth')->group(function () {
     Route::get('/portfolio', [JobAdvertisementPortfolioController::class, 'index'])->name('portfolio.index');
     Route::post('/portfolio', [JobAdvertisementPortfolioController::class, 'store'])->name('portfolio.store');

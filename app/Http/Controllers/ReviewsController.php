@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\Review;
+use App\Models\JobAdvertisement;
 use Illuminate\Support\Facades\Auth;
 use App\Services\ProfanityFilterService;
 
@@ -29,16 +30,47 @@ class ReviewsController extends Controller
     
     $reviewedUserId = $project->creator_id;
 
-    $review = new Review();
-    $review->project_id = $project->id;
-    $review->UserID = Auth::id();
-    $review->ReviewedUserID = $reviewedUserId;  
-    $review->Rating = $validated['Rating'];
-    $review->ReviewText = $validated['ReviewText'];
-    $review->save();
+    $project->reviews()->create([
+        'UserID' => Auth::id(),
+        'ReviewedUserID' => $reviewedUserId,  
+        'Rating' => $validated['Rating'],
+        'ReviewText' => $validated['ReviewText'],
+    ]);
 
-    return redirect()->route('projects.show', $project->id)->with('success', 'Review added successfully.');
+    return redirect()->route('projects.show', $project->id)
+                     ->with('success', 'Review added successfully.');
 }
+
+public function addJobAdReview(Request $request, JobAdvertisement $jobAd, ProfanityFilterService $profanityFilter)
+{
+    $validated = $request->validate([
+        'Rating' => 'required|integer|between:1,5',
+        'ReviewText' => 'nullable|string|max:1000',
+    ]);
+
+    if (Auth::id() == $jobAd->creator_id) {
+        return redirect()->route('jobAds.display', $jobAd->id)
+            ->withErrors(['error' => 'You cannot review your own job ad.']);
+    }
+    
+    if ($profanityFilter->containsBadWords($validated['ReviewText'])) {
+        return redirect()->route('jobAds.display', $jobAd->id)
+            ->withErrors(['error' => 'Your review contains inappropriate language.']);
+    }
+    
+    $reviewedUserId = $jobAd->creator_id;
+
+    $jobAd->reviews()->create([
+        'UserID' => Auth::id(),
+        'ReviewedUserID' => $reviewedUserId,
+        'Rating' => $validated['Rating'],
+        'ReviewText' => $validated['ReviewText'],
+    ]);
+
+    return redirect()->route('jobAds.display', $jobAd->id)
+                     ->with('success', 'Review added successfully.');
+}
+
 
 public function deleteReview(Request $request, Review $review)
     {
