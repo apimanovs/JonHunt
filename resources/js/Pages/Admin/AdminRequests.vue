@@ -49,17 +49,17 @@
           </thead>
           <tbody>
             <tr v-for="jobAd in pendingJobAds" :key="jobAd.id">
-              <td class="border px-4 py-2">{{ jobAd.title }}</td>
+              <td class="border px-4 py-2">{{ jobAd.Title }}</td>
               <td class="border px-4 py-2">{{ jobAd.creator }}</td>
               <td class="border px-4 py-2">
                 <!-- Кнопка для одобрения -->
                 <form :action="route('admin.jobAds.approve', jobAd.id)" method="POST" class="inline-block mr-2">
-                  <input type="hidden">
+                  <input type="hidden" name="_token" :value="csrf">
                   <button type="submit" class="btn bg-green-500 text-white">Одобрить</button>
                 </form>
                 <!-- Кнопка для отклонения -->
                 <form :action="route('admin.jobAds.reject', jobAd.id)" method="POST" class="inline-block">
-                  <input type="hidden">
+                  <input type="hidden" name="_token" :value="csrf">
                   <button type="submit" class="btn bg-red-500 text-white">Отклонить</button>
                 </form>
               </td>
@@ -76,9 +76,9 @@
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
   
   const pageProps = usePage().props
-  // Оборачиваем в computed, чтобы данные были реактивными и не вызывали ошибку, если их еще нет
+
   const pendingProjects = computed(() => pageProps.pendingProjects  || [])
-  //   const pendingJobAds = computed(() => pageProps.value.pendingJobAds || [])
+ const pendingJobAds = computed(() => pageProps.pendingJobAds || [])
   const csrf = computed(() => pageProps.csrf || '')
   console.log(csrf)
   </script>

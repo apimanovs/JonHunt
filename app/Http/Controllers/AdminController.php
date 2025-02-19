@@ -56,11 +56,11 @@ class AdminController extends Controller
     public function requestsIndex(): \Inertia\Response
     {
         $pendingProjects = Project::where('Status', 'pending')->orderBy('created_at', 'desc')->get();
-        // $pendingJobAds = JobAdvertisement::where('status', 'pending')->orderBy('created_at', 'desc')->get();
+        $pendingJobAds = JobAdvertisement::where('status', 'pending')->orderBy('created_at', 'desc')->get();
     
         return Inertia::render('Admin/AdminRequests', [
             'pendingProjects' => $pendingProjects,
-            // 'pendingJobAds' => $pendingJobAds,
+            'pendingJobAds' => $pendingJobAds,
             'csrf'            => csrf_token(),
         ]);
     }
@@ -98,7 +98,6 @@ class AdminController extends Controller
     }
     
     
-
     /**
      * Список всех проектов.
      */

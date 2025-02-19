@@ -54,10 +54,15 @@ const filteredProjects = computed(() => {
 
 const filteredJobAds = computed(() => {
     return pageProps.jobAds.filter(ad => {
+        if (ad.Status !== 'approved') {
+            return false;
+        }
+
         if (selectedBudgetRange.value) {
             const [min, max] = selectedBudgetRange.value.split('-').map(Number);
             const price = ad.Price || 0;
-            if ((min && price < min) || (max && price > max)) {
+
+            if ((min !== undefined && price < min) || (max !== undefined && price > max)) {
                 return false;
             }
         }
