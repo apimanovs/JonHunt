@@ -73,25 +73,45 @@ public function addJobAdReview(Request $request, JobAdvertisement $jobAd, Profan
 
 
 public function deleteReview(Request $request, Review $review)
-    {
-        $this->authorize('delete', $review);
+{
+    $this->authorize('delete', $review);
 
-        $review->delete();
+    $reviewableId   = $review->reviewable_id;
+    $reviewableType = $review->reviewable_type;
 
-        return redirect()->route('projects.show', $review->project_id)->with('success', 'Review deleted successfully.');
+    $review->delete();
+
+    if ($reviewableType === 'App\\Models\\Project') {
+        return redirect()->route('projects.show', $reviewableId)
+            ->with('success', 'Review deleted successfully.');
+    } elseif ($reviewableType === 'App\\Models\\JobAdvertisement') {
+        return redirect()->route('jobAds.display', $reviewableId)
+            ->with('success', 'Review deleted successfully.');
     }
+
+    // Если тип неизвестен — редирект назад
+    return redirect()->back()->with('success', 'Review deleted successfully.');
+}
 
     public function editReview(Request $request, Review $review)
     {
         $this->authorize('update', $review);
-
+    
         $validated = $request->validate([
             'Rating' => 'required|integer|between:1,5',
             'ReviewText' => 'nullable|string|max:1000',
         ]);
-
+    
         $review->update($validated);
-
-        return redirect()->route('projects.show', $review->project_id)->with('success', 'Review updated successfully.');
+    
+        if ($review->reviewable_type === 'App\\Models\\Project') {
+            return redirect()->route('projects.show', $review->reviewable_id)
+                ->with('success', 'Review updated successfully.');
+        } elseif ($review->reviewable_type === 'App\\Models\\JobAdvertisement') {
+            return redirect()->route('jobAds.display', $review->reviewable_id)
+                ->with('success', 'Review updated successfully.');
+        }
+    
+        return redirect()->back()->with('success', 'Review updated successfully.');
     }
 }

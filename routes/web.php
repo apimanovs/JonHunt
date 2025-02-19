@@ -93,7 +93,11 @@ Route::post('/jobAdvertisements/{jobAd}/addReview', [App\Http\Controllers\Review
     Route::post('/projects/{project}/addReview', [App\Http\Controllers\ReviewsController::class, 'addReview'])
     ->name('reviews.addReview');
 
-    
+    Route::post('/reviews/{review}/edit', [App\Http\Controllers\ReviewsController::class, 'editReview'])->name('reviews.edit');
+Route::delete('/reviews/{review}', [App\Http\Controllers\ReviewsController::class, 'deleteReview'])->name('reviews.delete');
+
+
+
 Route::middleware('auth')->group(function () {
     Route::get('/portfolio', [JobAdvertisementPortfolioController::class, 'index'])->name('portfolio.index');
     Route::post('/portfolio', [JobAdvertisementPortfolioController::class, 'store'])->name('portfolio.store');

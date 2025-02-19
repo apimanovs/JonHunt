@@ -168,9 +168,14 @@ class JobAdController extends Controller
             'reviews.user'
         ]);
         
+        $averageRating = $jobAds->reviews->count() 
+        ? round($jobAds->reviews->avg('Rating'), 1)
+        : 0;
+
         return Inertia::render('JobAdsPage', [
             'jobAds' => $jobAds,
             'reviews' => $jobAds->reviews,
+            'averageRating' => $averageRating,
         ]);
 
     }

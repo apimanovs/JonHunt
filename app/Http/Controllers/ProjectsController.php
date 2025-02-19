@@ -78,10 +78,15 @@ public function show(Project $project)
         'creator.avatar',
         'reviews.user'
     ]);
+    
+    $averageRating = $project->reviews->count() 
+    ? round($project->reviews->avg('Rating'), 1)
+    : 0;
 
     return Inertia::render('ProjectsPage', [
         'project' => $project,
         'reviews' => $project->reviews,
+        'averageRating' => $averageRating,
     ]);
 }
 
