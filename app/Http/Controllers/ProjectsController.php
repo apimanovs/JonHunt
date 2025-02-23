@@ -72,23 +72,27 @@ class ProjectsController extends Controller
     }
     
 
-public function show(Project $project)
-{
-    $project->load([
-        'creator.avatar',
-        'reviews.user'
-    ]);
+    public function show(Project $project)
+    {
+        $project->load([
+            'creator.avatar',
+            'reviews.user',
+            // Подгрузим сразу и заявки
+            'applications.freelancer',
+        ]);
+        
+        $averageRating = $project->reviews->count()
+            ? round($project->reviews->avg('Rating'), 1)
+            : 0;
     
-    $averageRating = $project->reviews->count() 
-    ? round($project->reviews->avg('Rating'), 1)
-    : 0;
-
-    return Inertia::render('ProjectsPage', [
-        'project' => $project,
-        'reviews' => $project->reviews,
-        'averageRating' => $averageRating,
-    ]);
-}
+        return Inertia::render('ProjectsPage', [
+            'project' => $project,
+            'reviews' => $project->reviews,
+            'averageRating' => $averageRating,
+            // Передадим все заявки отдельным полем:
+            'applications' => $project->applications,
+        ]);
+    }
 
 }
 

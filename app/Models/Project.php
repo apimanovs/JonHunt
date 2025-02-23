@@ -32,5 +32,11 @@ class Project extends Model
     {
         return $this->belongsTo(User::class, 'creator_id');
     }
+
+    public function applications()
+    {
+        return $this->hasMany(ProjectApplication::class);
+    }
+
 }
 

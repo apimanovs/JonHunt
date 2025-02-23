@@ -49,6 +49,37 @@
           <p><strong>Posted:</strong> {{ timeSincePosted }}</p>
           <p class="mt-2 text-lg text-gray-800 font-medium overflow-hidden text-ellipsis">{{ project.description }}</p>
         </div>
+
+        <div v-if="canApply">
+          <h3 class="text-xl font-semibold my-4">Apply to this Project</h3>
+          <form @submit.prevent="submitApplication" class="space-y-4">
+            <div>
+              <label class="block font-semibold">Cover Letter</label>
+              <textarea
+                v-model="coverLetter"
+                class="border w-full p-2 rounded"
+                rows="4"
+                placeholder="Explain why you are the best fit..."
+                required
+              ></textarea>
+            </div>
+            <div>
+              <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+        
+        <!-- Если у юзера уже есть заявка -->
+        <div v-else-if="currentUserApplication" class="mt-6 p-4 bg-gray-50 rounded border">
+          <h3 class="text-xl font-semibold mb-2">Your Application</h3>
+          <p><strong>Status:</strong> {{ currentUserApplication.status }}</p>
+          <p class="mt-1">
+            <strong>Cover Letter:</strong> {{ currentUserApplication.cover_letter }}
+          </p>
+        </div>
+
         <br>
         <h3 class="text-xl font-semibold text-gray-900 my-2.5">Average Rating</h3>
         <p v-if="reviews.length > 0" class="text-lg text-gray-800 font-medium">{{ averageRating }}</p>
@@ -168,11 +199,12 @@
   </template>
   
   <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import AuthenticatedLayout from './../Layouts/AuthenticatedLayout.vue';
 import { useForm, Head, usePage } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputError from '@/Components/InputError.vue';
+import { Inertia } from '@inertiajs/inertia';
 
 const { props: pageProps } = usePage();
 const { auth } = pageProps;
@@ -182,9 +214,43 @@ const props = defineProps({
   project: Object,
   reviews: Array,
   averageRating: String,
+  applications: Array,
 });
 
 console.log(props.project);
+const coverLetter = ref('')
+
+const canApply = computed(() => {
+  if (!auth?.user || !props.project) return false
+  if (auth.user.role !== 'freelancer') return false
+  if (props.project.creator_id === auth.user.id) return false
+  if (currentUserApplication.value) return false
+
+  return true
+})
+
+
+const currentUserApplication = computed(() => {
+  if (!auth?.user || !Array.isArray(props.applications)) {
+    return null
+  }
+  return props.applications.find(app => app.freelancer_id === auth.user.id)
+})
+
+const submitApplication = async () => {
+  try {
+    const formData = new FormData()
+    formData.append('cover_letter', coverLetter.value)
+
+    await axios.post(route('projects.apply', props.project.id), formData)
+    alert('Application submitted!')
+    Inertia.visit(route('projects.show', props.project.id))
+  } catch (error) {
+    console.error(error)
+    alert('Failed to submit application.')
+  }
+}
+
 
 const timeSincePosted = computed(() => {
   const postedDate = new Date(props.project.created_at);

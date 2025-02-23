@@ -127,6 +127,20 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/orders/{order}/complete', [OrderController::class, 'completeOrder'])->name('orders.complete');
 });
 
+use App\Http\Controllers\ProjectApplicationController;
+
+Route::post('/projects/{project}/apply', [ProjectApplicationController::class, 'store'])
+    ->name('projects.apply')
+    ->middleware('auth');
+
+Route::get('/projects/{project}/applications', [ProjectApplicationController::class, 'index'])
+    ->name('projects.applications.index')
+    ->middleware('auth');
+
+Route::get('/projects/{project}/application', [ProjectApplicationController::class, 'show'])
+    ->name('projects.application.show')
+    ->middleware('auth');
+
 
 use App\Http\Controllers\AdminController;
 

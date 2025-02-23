@@ -101,5 +101,8 @@ class User extends Authenticatable
         });
     }
 
-
+    public function applications()
+    {
+        return $this->hasMany(ProjectApplication::class, 'freelancer_id');
+    }
 }
