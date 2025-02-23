@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use Inertia\Inertia;
 use App\Models\ProjectApplication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -42,21 +43,45 @@ class ProjectApplicationController extends Controller
                         ->with('success', 'Your application has been submitted!');
     }
 
-    
-    public function index(Project $project)
+    public function approve(ProjectApplication $application)
     {
-        if ($project->creator_id !== Auth::id()) {
+        if ($application->project->creator_id !== Auth::id()) {
             abort(403, 'You are not the owner of this project.');
         }
+        $application->status = 'approved';
+        $application->save();
 
-        // Подгружаем заявки
-        $applications = $project->applications()
-            ->with('freelancer')
+        return back()->with('success', 'Application approved!');
+    }
+
+
+    public function reject(ProjectApplication $application)
+    {
+        if ($application->project->creator_id !== Auth::id()) {
+            abort(403, 'You are not the owner of this project.');
+        }
+        $application->status = 'reject';
+        $application->save();
+
+        return back()->with('success', 'Application rejected!');
+    }
+
+    public function indexAll()
+    {
+        $user = Auth::user();
+    
+        $projects = Project::where('creator_id', $user->id)
+            ->with('applications.freelancer') 
             ->get();
-
-        return inertia('ProjectApplications/Index', [
-            'project' => $project,
-            'applications' => $applications,
+    
+        $projectIds = $projects->pluck('id');
+        $allApplications = ProjectApplication::whereIn('project_id', $projectIds)
+            ->with('freelancer', 'project')
+            ->get();
+    
+        return Inertia::render('ProjectApplications/ApplicationInProfile', [
+            'allApplications' => $allApplications,
+            'projects' => $projects,
         ]);
     }
 }

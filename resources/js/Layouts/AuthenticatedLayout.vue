@@ -103,6 +103,10 @@ function search() {
                   <NavLink :href="route('orders.index')" :active="route().current('orders.index')">
                     My Orders
                   </NavLink>
+
+                  <NavLink :href="route('projects.applications.all')" :active="route().current('projects.applications.all')">
+                    All My Applications
+                  </NavLink>
                   
                   <template v-if="$page.props.auth.user.role.includes('freelancer')">
                     <NavLink :href="route('jobAds.index')" :active="route().current('jobAds.index')">

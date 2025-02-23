@@ -31,6 +31,28 @@ Route::get('/projects/create', function () {
     return Inertia::render('CreateProject');
 })->name('/projects/create');
 
+
+use App\Http\Controllers\ProjectApplicationController;
+
+Route::post('/projects/{project}/apply', [ProjectApplicationController::class, 'store'])
+    ->name('projects.apply')
+    ->middleware('auth');
+
+    Route::get('/projects/applications', [ProjectsController::class, 'showProjectApplications'])
+    ->name('projects.applications.all')
+    ->middleware('auth');
+
+// Route::get('/projects/{project}/application', [ProjectApplicationController::class, 'show'])
+//     ->name('projects.application.show')
+//     ->middleware('auth');
+
+Route::post('/projects/applications/{application}/approve', [ProjectApplicationController::class, 'approve'])
+    ->name('projects.applications.approve');
+
+Route::post('/projects/applications/{application}/reject', [ProjectApplicationController::class, 'reject'])
+    ->name('projects.applications.reject');
+ 
+
 Route::get('/projects/{project}', [ProjectsController::class, 'show'])->name('projects.show');
 
 Route::get('/gigs/{jobAds}', [JobAdController::class, 'display'])->name('jobAds.display');
@@ -46,7 +68,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/jobAdvertisements/delete/{jobAd}', [JobAdController::class, 'destroy'])->name('jobAds.delete');
     Route::post('/jobAdvertisements/{jobAd}/updateImage', [JobAdController::class, 'updateImage'])->name('jobAds.updateImage');
     
-
     Route::post('/projects', [ProjectsController::class, 'store'])->name('projects.store');
     Route::post('/projects/{project}/addReview', [App\Http\Controllers\ReviewsController::class, 'addReview'])->name('reviews.addReview');
     Route::post('/reviews/{review}/edit', [App\Http\Controllers\ReviewsController::class, 'editReview'])->name('reviews.edit');
@@ -126,20 +147,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/orders/{order}/submit-work', [OrderController::class, 'submitWork'])->name('orders.submit-work');
     Route::post('/orders/{order}/complete', [OrderController::class, 'completeOrder'])->name('orders.complete');
 });
-
-use App\Http\Controllers\ProjectApplicationController;
-
-Route::post('/projects/{project}/apply', [ProjectApplicationController::class, 'store'])
-    ->name('projects.apply')
-    ->middleware('auth');
-
-Route::get('/projects/{project}/applications', [ProjectApplicationController::class, 'index'])
-    ->name('projects.applications.index')
-    ->middleware('auth');
-
-Route::get('/projects/{project}/application', [ProjectApplicationController::class, 'show'])
-    ->name('projects.application.show')
-    ->middleware('auth');
 
 
 use App\Http\Controllers\AdminController;

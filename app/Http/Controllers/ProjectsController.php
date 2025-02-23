@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Project;
+use App\Http\Controllers\ProjectApplicationController;
+use App\Models\ProjectApplication;
 use App\Models\Avatar;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Validator;
@@ -77,7 +79,6 @@ class ProjectsController extends Controller
         $project->load([
             'creator.avatar',
             'reviews.user',
-            // Подгрузим сразу и заявки
             'applications.freelancer',
         ]);
         
@@ -89,10 +90,34 @@ class ProjectsController extends Controller
             'project' => $project,
             'reviews' => $project->reviews,
             'averageRating' => $averageRating,
-            // Передадим все заявки отдельным полем:
             'applications' => $project->applications,
         ]);
     }
+
+    public function showProjectApplications()
+    {
+        $user = Auth::user();
+    
+        // Находим все проекты текущего пользователя
+        $projects = Project::where('creator_id', $user->id)
+            ->with('applications.freelancer')
+            ->get();
+    
+        // Извлекаем IDs
+        $projectIds = $projects->pluck('id');
+    
+        // Все заявки по этим project_id
+        $allApplications = ProjectApplication::whereIn('project_id', $projectIds)
+            ->with('freelancer', 'project')
+            ->get();
+    
+        return Inertia::render('ProjectApplications/ApplicationInProfile', [
+            'projects'        => $projects,
+            'allApplications' => $allApplications,
+        ]);
+    }
+    
+    
 
 }
 
