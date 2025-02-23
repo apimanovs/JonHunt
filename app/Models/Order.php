@@ -13,6 +13,7 @@ class Order extends Model
         'status',
         'result_text',
         'result_file',
+        'cancel_reason',
     ];
 
     public function jobApplication()

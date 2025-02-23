@@ -12,7 +12,7 @@
         <p><strong>Freelancer:</strong> {{ order.freelancer.name }}</p>
       </div>
 
-      <!-- Если пользователь - клиент -->
+      <!-- ЕСЛИ ПОЛЬЗОВАТЕЛЬ - КЛИЕНТ -->
       <div v-if="auth.user?.id === order.client_id">
         <h3 class="font-bold mb-2 text-lg">Status</h3>
         <div class="mb-4">
@@ -20,19 +20,21 @@
             <p class="text-gray-700">Freelancer is currently working on your project.</p>
           </template>
           <template v-else-if="order.status === 'submitted'">
-            <p class="text-gray-700">
-              Freelancer has submitted the work. Please review it below.
-            </p>
+            <p class="text-gray-700">Freelancer has submitted the work. Please review it below.</p>
           </template>
           <template v-else-if="order.status === 'completed'">
             <p class="text-green-600 font-semibold">This order is already completed.</p>
           </template>
           <template v-else-if="order.status === 'cancelled'">
             <p class="text-red-600 font-semibold">This order was cancelled.</p>
+            <!-- Причина отмены, если есть -->
+            <p v-if="order.cancel_reason" class="text-gray-700 mt-1">
+              <strong>Reason:</strong> {{ order.cancel_reason }}
+            </p>
           </template>
         </div>
 
-        <!-- Если фрилансер отправил работу, показываем результат -->
+        <!-- Показываем работу, если статус "submitted" -->
         <div v-if="order.status === 'submitted'">
           <h3 class="font-bold mb-2 text-lg">Submitted Work</h3>
           <p><strong>Description:</strong> {{ order.result_text }}</p>
@@ -47,7 +49,7 @@
             </a>
           </div>
 
-          <!-- Кнопка завершения заказа (клиент подтверждает) -->
+          <!-- Кнопка завершения заказа (Mark as Complete) -->
           <form @submit.prevent="completeOrder" class="mt-4">
             <button
               type="submit"
@@ -59,7 +61,7 @@
         </div>
       </div>
 
-      <!-- Если пользователь - фрилансер -->
+      <!-- ЕСЛИ ПОЛЬЗОВАТЕЛЬ - ФРИЛАНСЕР -->
       <div v-else-if="auth.user?.id === order.freelancer_id">
         <h3 class="font-bold mb-2 text-lg">Status</h3>
         <div class="mb-4">
@@ -76,10 +78,14 @@
           </template>
           <template v-else-if="order.status === 'cancelled'">
             <p class="text-red-600 font-semibold">This order was cancelled.</p>
+            <!-- Отображаем причину, если есть -->
+            <p v-if="order.cancel_reason" class="text-gray-700 mt-1">
+              <strong>Reason:</strong> {{ order.cancel_reason }}
+            </p>
           </template>
         </div>
 
-        <!-- Фрилансер может отправить работу, если статус in_progress -->
+        <!-- Если статус "in_progress" -> форма отправки работы -->
         <div v-if="order.status === 'in_progress'">
           <h2 class="text-lg font-bold mb-2">Submit Your Work</h2>
           <form @submit.prevent="submitWork" class="space-y-4">
@@ -93,13 +99,14 @@
 
             <button
               type="submit"
-              class="btn bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+              class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
             >
               Submit Work
             </button>
           </form>
         </div>
 
+        <!-- Если статус "submitted" -> показываем то, что было отправлено -->
         <div v-else-if="order.status === 'submitted'">
           <h3 class="font-bold mb-2 text-lg">Your Submitted Work</h3>
           <p class="mb-2"><strong>Description:</strong> {{ order.result_text }}</p>
@@ -114,8 +121,36 @@
             </a>
           </div>
         </div>
+
+        <!-- Кнопка Cancel Order, если заказ еще не отменен и не завершен -->
+        <div v-if="order.status !== 'completed' && order.status !== 'cancelled'">
+          <button
+            @click="showCancelForm = !showCancelForm"
+            class="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+          >
+            Cancel Order
+          </button>
+
+          <div v-if="showCancelForm" class="mt-2">
+            <form @submit.prevent="cancelOrder" class="space-y-2">
+              <textarea
+                v-model="cancelReason"
+                placeholder="Reason for cancellation"
+                class="w-full border border-gray-300 rounded p-2"
+                rows="3"
+              ></textarea>
+              <button
+                type="submit"
+                class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+              >
+                Confirm Cancellation
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
 
+      <!-- Если пользователь не клиент и не фрилансер -->
       <div v-else>
         <p class="text-gray-700">You do not have permission to view this order.</p>
       </div>
@@ -133,13 +168,20 @@ const { props } = usePage()
 const order = props.order
 const auth = props.auth || { user: null }
 
+// Поля для фрилансера: отправка работы
 const resultText = ref('')
 const resultFile = ref(null)
 
+// Поля для отмены заказа
+const showCancelForm = ref(false)
+const cancelReason = ref('')
+
+// Загрузка файла
 const handleFileUpload = (e) => {
   resultFile.value = e.target.files[0]
 }
 
+// Отправка работы (фрилансер)
 const submitWork = async () => {
   const formData = new FormData()
   formData.append('result_text', resultText.value)
@@ -147,28 +189,45 @@ const submitWork = async () => {
     formData.append('result_file', resultFile.value)
   }
 
-  await axios
-    .post(route('orders.submit-work', order.id), formData)
-    .then(() => {
-      alert('Work submitted successfully!')
-      location.reload()
-    })
-    .catch((error) => {
-      console.error(error)
-      alert('Failed to submit work.')
-    })
+  try {
+    await axios.post(route('orders.submit-work', order.id), formData)
+    alert('Work submitted successfully!')
+    location.reload()
+  } catch (error) {
+    console.error(error)
+    alert('Failed to submit work.')
+  }
 }
 
+// Завершить заказ (клиент)
 const completeOrder = async () => {
-  await axios
-    .post(route('orders.complete', order.id))
-    .then(() => {
-      alert('Order completed!')
-      location.reload()
+  try {
+    await axios.post(route('orders.complete', order.id))
+    alert('Order completed!')
+    location.reload()
+  } catch (error) {
+    console.error(error)
+    alert('Failed to complete order.')
+  }
+}
+
+// Отменить заказ (фрилансер)
+const cancelOrder = async () => {
+  if (!cancelReason.value.trim()) {
+    alert('Please provide a reason for cancellation.')
+    return
+  }
+
+  try {
+    await axios.post(route('orders.updateStatus', order.id), {
+      status: 'cancelled',
+      cancel_reason: cancelReason.value,
     })
-    .catch((error) => {
-      console.error(error)
-      alert('Failed to complete order.')
-    })
+    alert('Order has been cancelled.')
+    location.reload()
+  } catch (error) {
+    console.error(error)
+    alert('Failed to cancel order.')
+  }
 }
 </script>

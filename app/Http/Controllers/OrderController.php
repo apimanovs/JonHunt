@@ -26,21 +26,20 @@ public function updateStatus(Request $request, Order $order)
 
     $validated = $request->validate([
         'status' => 'required|in:in_progress,completed,cancelled',
+        'cancel_reason' => 'required_if:status,cancelled|string|nullable|max:1000',
     ]);
 
-    // Если заказ уже был отменён или завершён, второй раз менять статус необязательно.
     if (in_array($order->status, ['cancelled', 'completed'])) {
         return back()->withErrors(['message' => 'Order is already completed or cancelled.']);
     }
 
-    // Если пользователь хочет отменить заказ
     if ($validated['status'] === 'cancelled') {
-        // Делаем возврат денег клиенту
+        $order->cancel_reason = $validated['cancel_reason'];
+
         $clientBalance = $order->client->balance;
         if (!$clientBalance) {
             return back()->withErrors(['message' => 'Client balance not found.']);
         }
-
         $price = $order->jobApplication->jobAd->Price;
         $clientBalance->amount += $price;
         $clientBalance->save();
@@ -48,7 +47,7 @@ public function updateStatus(Request $request, Order $order)
         $order->status = 'cancelled';
         $order->save();
 
-        return back()->with('success', 'Order cancelled and funds have been refunded.');
+        return back()->with('success', 'Order cancelled. Funds have been refunded.');
     }
 
     if ($validated['status'] === 'completed') {
