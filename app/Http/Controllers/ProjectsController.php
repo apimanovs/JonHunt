@@ -98,26 +98,24 @@ class ProjectsController extends Controller
     {
         $user = Auth::user();
     
-        // Находим все проекты текущего пользователя
         $projects = Project::where('creator_id', $user->id)
             ->with('applications.freelancer')
             ->get();
     
-        // Извлекаем IDs
         $projectIds = $projects->pluck('id');
-    
-        // Все заявки по этим project_id
         $allApplications = ProjectApplication::whereIn('project_id', $projectIds)
             ->with('freelancer', 'project')
+            ->get();
+    
+        $myApplications = ProjectApplication::where('freelancer_id', $user->id)
+            ->with('project')
             ->get();
     
         return Inertia::render('ProjectApplications/ApplicationInProfile', [
             'projects'        => $projects,
             'allApplications' => $allApplications,
+            'myApplications'  => $myApplications,
         ]);
     }
-    
-    
-
 }
 

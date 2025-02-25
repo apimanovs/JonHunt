@@ -244,7 +244,7 @@ const submitApplication = async () => {
 
     await axios.post(route('projects.apply', props.project.id), formData)
     alert('Application submitted!')
-    Inertia.visit(route('projects.show', props.project.id))
+    location.reload();
   } catch (error) {
     console.error(error)
     alert('Failed to submit application.')
