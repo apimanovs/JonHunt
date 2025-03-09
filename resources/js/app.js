@@ -6,6 +6,7 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import Echo from 'laravel-echo';
+import 'intro.js/introjs.css';
 
 import Pusher from 'pusher-js';
 window.Pusher = Pusher;

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { usePage, Link, router } from '@inertiajs/vue3';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
@@ -7,6 +7,95 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import axios from 'axios';
+import introJs from 'intro.js';
+import 'intro.js/introjs.css';
+
+const startOnBoarding = async () => {
+  await nextTick();
+
+  const intro = introJs();
+
+  intro.setOptions({
+    steps: [
+      {
+        title: "🚀 Welcome to JobHunt!",
+        intro: `
+          <h2 style="text-align: center; font-size: 1.5rem; font-weight: bold; margin-bottom: 10px;">
+            Hey there! 👋
+          </h2>
+          <p style="text-align: center; font-size: 1rem;">
+            Welcome to <strong>JobHunt</strong> – your ultimate platform for finding projects and connecting with freelancers.
+          </p>
+          <p style="text-align: center; font-size: 1rem;">
+            Let me show you around! Click <strong>"Next →"</strong> to begin your journey. 🚀
+          </p>
+        `
+      },
+      {
+        intro: `
+          <div style="text-align: center;">
+            <iframe src="https://giphy.com/embed/MDJ9IbxxvDUQM" width="480" height="269" style="border-radius: 10px; max-width: 100%;" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+            <p style="font-size: 1rem; margin-top: 10px;">
+              Let’s explore the features of JobHunt together! 😊
+            </p>
+          </div>
+        `
+      },
+      {
+        element: '#menu-panel',
+        intro: '📌 This is your main menu. Here, you can access different sections of JobHunt.',
+      },
+      {
+        element: '#my-projects',
+        intro: '📂 Here you can find all your projects, track progress, and manage tasks.',
+      },
+      {
+        element: '#my-orders',
+        intro: '🛒 Keep track of your purchases here.',
+      },
+      {
+        element: '#my-applications',
+        intro: '✍️ View all your submitted applications.',
+      },
+      {
+        element: '#my-search',
+        intro: '🔍 Use our powerful search feature to find projects and freelancers.',
+      },
+      {
+        element: '#my-balance',
+        intro: '💰 Check and manage your account balance.',
+      },
+      {
+        element: '#my-profile',
+        intro: '👤 Customize your profile and showcase your skills to potential clients.',
+      },
+    ],
+    showProgress: true,
+    showBullets: false,
+    exitOnOverlayClick: true,
+    nextLabel: 'Next →',
+    prevLabel: '← Back',
+    doneLabel: '🚀 Begin with JobHunt!',
+  });
+
+  intro.start();
+};
+
+onMounted(() => {
+  const isFirstLogin = props.auth?.user?.isNewUser;
+  const hasSeenOnboarding = localStorage.getItem('onboardingCompleted');
+
+  console.log(isFirstLogin);
+
+  if (props.auth?.user?.isNewUser && sessionStorage.getItem('onboardingCompleted') !== 'true') {
+    console.log('🚀 Running onboarding tour...'); 
+    setTimeout(() => {
+      startOnBoarding();
+      localStorage.setItem('onboardingCompleted', 'true');
+    }, 1000); 
+  }
+});
+
 
 const { props } = usePage();
 console.log(props);
@@ -90,21 +179,17 @@ function search() {
               </div>
 
               <!-- Navigation Links -->
-              <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                  JobHunt
-                </NavLink>
-
+              <div id="menu-panel" class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex"> 
                 <template v-if="$page.props.auth.user">
-                  <NavLink :href="route('projects.inProfile')" :active="route().current('projects.inProfile')">
+                  <NavLink id="my-projects" :href="route('projects.inProfile')" :active="route().current('projects.inProfile')">
                     My Projects
                   </NavLink>
 
-                  <NavLink :href="route('orders.index')" :active="route().current('orders.index')">
+                  <NavLink id="my-orders" :href="route('orders.index')" :active="route().current('orders.index')">
                     My Orders
                   </NavLink>
 
-                  <NavLink :href="route('projects.applications.all')" :active="route().current('projects.applications.all')">
+                  <NavLink id="my-applications" :href="route('projects.applications.all')" :active="route().current('projects.applications.all')">
                     All My Applications
                   </NavLink>
                   
@@ -119,7 +204,7 @@ function search() {
             </div>
 
             <!-- Поиск -->
-            <form @submit.prevent="search" class="hidden sm:flex items-center">
+            <form id="my-search" @submit.prevent="search" class="hidden sm:flex items-center">
               <input
                 v-model="searchQuery"
                 type="search"
@@ -200,13 +285,13 @@ function search() {
                               </svg>
                             
                               <template v-if="$page.props.auth.user">
-                                <NavLink :href="route('balance.index')">
+                                <NavLink id="my-balance" :href="route('balance.index')">
                                     <p class="text-gray-500 mx-4"> ${{ $page.props.auth.user.balance }}</p>
                                 </NavLink>
                               </template>
 
                             <!-- Settings Dropdown -->
-                            <div class="ms-3 relative" v-if="$page.props.auth && $page.props.auth.user">
+                            <div id="my-profile" class="ms-3 relative" v-if="$page.props.auth && $page.props.auth.user">
                                 <Dropdown align="right" width="48">
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
@@ -372,7 +457,9 @@ function search() {
 
     <hr>
     <footer class="footer bg-base-200 p-10 flex flex-col md:flex-row md:justify-around selection:bg-red-500 selection:text-white">
-
+      <button @click="startOnBoarding" class="px-4 py-2 hover:border text-black rounded-lg">
+        Guide
+    </button>
         <nav class="mb-6 md:mb-0">
           <h6 class="footer-title font-bold">Company</h6>
           <a class="link link-hover">About us</a>

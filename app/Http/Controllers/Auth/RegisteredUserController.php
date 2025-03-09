@@ -63,6 +63,8 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
+        session()->flash('isNewUser', true);
+
         return redirect(RouteServiceProvider::HOME);
     }
 }

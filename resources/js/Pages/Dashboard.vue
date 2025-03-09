@@ -3,6 +3,10 @@ import { computed, ref } from 'vue';
 import { usePage, Head } from '@inertiajs/vue3';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import GuestLayout from "@/Layouts/GuestLayout.vue";
+import introJs from 'intro.js';
+import 'intro.js/introjs.css';
+
+
 
 const { props: pageProps } = usePage();
 

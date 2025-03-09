@@ -25,6 +25,7 @@
         "flowbite": "^2.5.2",
         "git": "^0.1.5",
         "grep": "^0.1.0",
+        "intro.js": "^7.2.0",
         "laravel-echo": "^1.17.1",
         "pusher-js": "^8.4.0-rc2",
         "unzip": "^0.1.11",
