@@ -79,23 +79,34 @@ const startOnBoarding = async () => {
   });
 
   intro.start();
+
+  intro.oncomplete(() => {
+  removeIsNewUserFlag();
+  });
+  intro.onexit(() => {
+    removeIsNewUserFlag();
+  });
 };
 
 onMounted(() => {
-  const isFirstLogin = props.auth?.user?.isNewUser;
-  const hasSeenOnboarding = localStorage.getItem('onboardingCompleted');
-
-  console.log(isFirstLogin);
-
-  if (props.auth?.user?.isNewUser && sessionStorage.getItem('onboardingCompleted') !== 'true') {
-    console.log('🚀 Running onboarding tour...'); 
-    setTimeout(() => {
-      startOnBoarding();
-      localStorage.setItem('onboardingCompleted', 'true');
-    }, 1000); 
+  const isNewUser = props.auth?.user?.isNewUser;
+  if (isNewUser) {
+    startOnBoarding();
   }
+
+  isNewUser === false;
 });
 
+
+function removeIsNewUserFlag() {
+  axios.post(route('forget.newuser'))
+    .then(() => {
+      console.log('deleted');
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
 
 const { props } = usePage();
 console.log(props);
