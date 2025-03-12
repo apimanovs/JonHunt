@@ -75,7 +75,7 @@ const startOnBoarding = async () => {
     exitOnOverlayClick: true,
     nextLabel: 'Next →',
     prevLabel: '← Back',
-    doneLabel: '🚀 Begin with JobHunt!',
+    doneLabel: '✅',
   });
 
   intro.start();

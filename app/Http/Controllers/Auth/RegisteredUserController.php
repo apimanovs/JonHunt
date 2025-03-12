@@ -33,8 +33,8 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => 'required|string|max:255|unique:'.User::class,
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'name' => 'required|string|max:255|unique:' . User::class,
+            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'username' => [
                 'required',
                 'string',
@@ -45,26 +45,24 @@ class RegisteredUserController extends Controller
             ],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
-
+    
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'username' => $request->username,
             'password' => Hash::make($request->password),
         ]);
-
+    
         UserBalance::firstOrCreate(
             ['user_id' => $user->id],
             ['amount' => 0]
         );
+    
+        event(new Registered($user)); 
         
-
-        event(new Registered($user));
-
         Auth::login($user);
 
-        session()->flash('isNewUser', true);
-
-        return redirect(RouteServiceProvider::HOME);
+        return redirect()->route('verification.notice');
     }
+    
 }

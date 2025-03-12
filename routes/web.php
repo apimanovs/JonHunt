@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
+
 use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -25,11 +28,31 @@ Route::get('/', function () {
     ]);
 });
 
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'display'])->name('dashboard');
+});
+
+
 Route::get('/user/{username}', [ProfileController::class, 'show'])->name('profile.show');
 
 Route::get('/projects/create', function () {
     return Inertia::render('CreateProject');
 })->name('/projects/create');
+
+
+Route::get('/email/verify', function () {
+    return Inertia::render('Auth/VerifyEmail'); 
+})->middleware('auth')->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill(); 
+    return redirect('/dashboard');
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('message', 'Link has been sent.');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
 
 use App\Http\Controllers\ProjectApplicationController;
