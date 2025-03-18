@@ -243,17 +243,13 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Multiselect from "vue-multiselect";
 import "vue-multiselect/dist/vue-multiselect.min.css";
 
-// Данные о пользователе (role) приходят через Inertia
 const page = usePage();     
 const user = page.props.auth.user;
 
-// Проверяем, является ли пользователь фрилансером
 const isFreelancer = computed(() => user && user.role === 'freelancer');
 
-// Шаги
 const step = ref(1);
 
-// Форма
 const form = useForm({
   country: '',
   bio: '',
@@ -263,7 +259,6 @@ const form = useForm({
   skills: [],
 });
 
-// Список стран
 import { countries } from '@/countries.js';
 
 const searchQuery = ref('');
@@ -288,7 +283,6 @@ function handleBlur() {
   }, 100);
 }
 
-// Список доступных навыков
 const availableSkills = [
   "Web Development",
   "Graphic Design",
@@ -299,7 +293,6 @@ const availableSkills = [
   "UI/UX Design",
 ];
 
-// Шаг 1 -> Шаг 2
 function nextStep() {
   form.country = searchQuery.value;
   if (step.value < 2) {
@@ -307,14 +300,12 @@ function nextStep() {
   }
 }
 
-// Шаг 2 -> Предыдущий шаг
 function previousStep() {
   if (step.value > 1) {
     step.value--;
   }
 }
 
-// Шаг 2 -> Submit
 function submit() {
   form.country = searchQuery.value;
   form.post('/api/become-freelancer', {
