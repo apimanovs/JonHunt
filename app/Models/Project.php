@@ -17,6 +17,9 @@ class Project extends Model
         'completion_date',
         'budget',
         'budget_type',
+        'requirements',
+        'expected_outcome',
+        'tasks',
     ];
 
     public function reviews()

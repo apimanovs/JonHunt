@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('projects', function (Blueprint $table) {
-            $table->string('budget_type')->default('fixed')->after('budget');
+            $table->text('requirements')->nullable()->after('description');
+            $table->text('expected_outcome')->nullable()->after('requirements');
+            $table->text('tasks')->nullable()->after('expected_outcome');
         });
     }
 
@@ -22,7 +24,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('projects', function (Blueprint $table) {
-            $table->dropColumn(['budget_type']);
+            $table->dropColumn(['requirements', 'expected_outcome', 'tasks']);
         });
     }
 };

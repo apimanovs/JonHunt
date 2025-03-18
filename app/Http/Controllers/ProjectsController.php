@@ -49,6 +49,9 @@ class ProjectsController extends Controller
             'completion_date'  => 'nullable|date|after_or_equal:today|before_or_equal:' . Carbon::now()->addYear()->toDateString(),
             'budget_type'      => 'required|string|in:fixed,hourly',
             'budget' => 'required|numeric|min:0',
+            'requirements' => 'required|string|max:1500',
+            'expected_outcome' => 'required|string|max:1500',
+            'tasks' => 'required|string|max:1500',
         ]);
     
         if ($validator->fails()) {
@@ -64,6 +67,9 @@ class ProjectsController extends Controller
         $project->completion_date = $validatedData['completion_date'] ?? null;
         $project->budget = $validatedData['budget'];
         $project->budget_type = $validatedData['budget_type'] ?? 'fixed';
+        $project->requirements = $validatedData['requirements'] ?? null;
+        $project->expected_outcome = $validatedData['expected_outcome'] ?? null;
+        $project->tasks = $validatedData['tasks'] ?? null;
         $project->creator = Auth::user()->name;
         $project->creator_id = Auth::id();
         
