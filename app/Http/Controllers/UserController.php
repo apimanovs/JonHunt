@@ -60,7 +60,7 @@ class UserController extends Controller
             'title' => 'required|string|max:200|min:60',
             'description' => 'required|string|max:1500|min:100',
             'niche' => 'required|string|in:Technology,Health,Education,Finance,Entertainment',
-            'completion_date' => 'required|date|after_or_equal:today|before_or_equal:' . Carbon::now()->addYear()->toDateString(),
+            'completion_date' => 'nullable|date|after_or_equal:today|before_or_equal:' . Carbon::now()->addYear()->toDateString(),
             'budget' => 'required|numeric|min:0',
         ]);
     

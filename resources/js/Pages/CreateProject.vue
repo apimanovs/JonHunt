@@ -6,6 +6,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
 
 defineProps({
@@ -24,12 +25,18 @@ const form = useForm({
     title: "",
     description: "",
     niche: "",
+    no_deadline: false,
     completion_date: "",
-    budget: "",
+    budget: 0,
+    budget_type: "fixed"
 });
 
+const formattedBudget = computed(() => {
+  return `$${Number(form.budget).toFixed(0)}`;
 
-const niches = ['Technology', 'Health', 'Education', 'Finance', 'Entertainment'];
+});
+
+const niches = ['Technology', 'Health', 'Education', 'Finance', 'Entertainment', 'Other'];
 </script>
 
 
@@ -49,25 +56,28 @@ const niches = ['Technology', 'Health', 'Education', 'Finance', 'Entertainment']
             <h2 class="text-2xl font-semibold text-gray-900">Advertisement Title</h2>
             <p class="mt-2 text-sm text-gray-600">Write a title for your project</p>
             <form @submit.prevent="form.post(route('projects.store'))" class="mt-6 space-y-6">
+
               <div>
+                <p class="mt-2 text-sm text-gray-600">Write a title for your project (minimum 30 characters)</p>
                 <InputLabel for="title" value="Title" />
                 <TextInput
-                  id="title"
-                  type="text"
-                  class="mt-1 block w-full"
-                  v-model="form.title"
-                  required
-                  autofocus
-                  autocomplete="title"
+                    id="title"
+                    type="text"
+                    class="mt-1 block w-full"
+                    v-model="form.title"
+                    required
+                    autofocus
+                    autocomplete="title"
                 />
-                <span class="label-text-alt">At least 60 symbols</span>
+                <span class="label-text-alt">At least 30 symbols</span>
                 <InputError class="mt-2" :message="form.errors.title" />
-                
               </div>
+
               <div>
                 <h2 class="text-2xl font-semibold text-gray-900">Advertisement Description</h2>
-                <p class="mt-2 text-sm text-gray-600">Write a description for your project</p>
-               <br> 
+                <p class="mt-2 text-sm text-gray-600">
+                  Write a detailed description for your project (minimum 100 characters). Include an overview, requirements, and expected outcomes.
+                </p>               <br> 
                <InputLabel for="title" value="Description" />
                <textarea
                   id="description"
@@ -81,6 +91,7 @@ const niches = ['Technology', 'Health', 'Education', 'Finance', 'Entertainment']
                   <span class="label-text-alt">At least 100 symbols</span>
                 </label>
               </div>
+
               <br>
               <div>
                 <h2 class="text-2xl font-semibold text-gray-900">Niche</h2>
@@ -98,13 +109,21 @@ const niches = ['Technology', 'Health', 'Education', 'Finance', 'Entertainment']
                 </select>
                 <InputError class="mt-2" :message="form.errors.niche" />
               </div>
-<br>
+                <br>
               <div>
                 <h2 class="text-2xl font-semibold text-gray-900">Select a completion date</h2>
-                <p class="mt-2 text-sm text-gray-600">Select a date when the project has to be done</p>
+                <p class="mt-2 text-sm text-gray-600">
+                  Select a date when the project has to be done, or choose 'No strict deadline'
+                </p>
+                <br />
+                <div class="flex items-center mt-2">
+                  <input type="checkbox" checked="checked" id="no_deadline" v-model="form.no_deadline" class="checkbox mr-2">
+                  <label for="no_deadline" class="text-sm text-gray-700">No strict deadline</label>
+                </div>
                 <br />
                 <InputLabel for="completion_date" value="Completion Date" />
-                <TextInput
+                <TextInput  
+                v-if="!form.no_deadline"
                   id="completion_date"
                   type="date"
                   class="mt-1 block w-full"
@@ -116,22 +135,41 @@ const niches = ['Technology', 'Health', 'Education', 'Finance', 'Entertainment']
                 <InputError class="mt-2" :message="form.errors.completion_date" />
               </div>
               <br>
-              <div>
+
+              <div class="mt-6">
                 <h2 class="text-2xl font-semibold text-gray-900">Budget</h2>
                 <p class="mt-2 text-sm text-gray-600">Specify the budget for your project</p>
-                <br />
-                <InputLabel for="budget" value="Budget" />
-                <TextInput
-                  id="budget"
-                  type="number"
-                  step="1.00"
-                  class="mt-1 block w-full"
-                  v-model="form.budget"
-                  required
-                  autofocus
-                  autocomplete="budget"
-                />
-                <InputError class="mt-2" :message="form.errors.budget" />
+                <div class="mt-2">
+                  <InputLabel for="budget_type" value="Budget Type" />
+                  <select
+                    id="budget_type"
+                    class="select select-bordered mt-1 block w-full"
+                    v-model="form.budget_type"
+                    required
+                  >
+                    <option value="fixed">Fixed Price</option>
+                    <option value="hourly">Hourly Rate</option>
+                  </select>
+                  <InputError class="mt-2" :message="form.errors.budget_type" />
+                </div>
+                <div class="mt-6">
+                  <h2 class="text-2xl font-semibold text-gray-900">Budget</h2>
+                  <p class="mt-2 text-sm text-gray-600">
+                    Specify the budget for your project using the slider below.
+                  </p>
+                  <div class="flex items-center space-x-4">
+                    <input
+                      type="range"
+                      min="0"
+                      max="1000"
+                      step="1"
+                      v-model="form.budget"
+                      class="range"
+                    />
+                    <span class="font-semibold">{{ formattedBudget }}</span>
+                  </div>
+                  <InputError class="mt-2" :message="form.errors.budget" />
+                </div>
               </div>
 
               <div class="mt-4" v-if="form.errors.max_projects">

@@ -16,6 +16,7 @@ class Project extends Model
         'niche',
         'completion_date',
         'budget',
+        'budget_type',
     ];
 
     public function reviews()

@@ -45,8 +45,9 @@ class ProjectsController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:200|min:60',
             'description' => 'required|string|max:1500|min:100',
-            'niche' => 'required|string|in:Technology,Health,Education,Finance,Entertainment',
-            'completion_date' => 'required|date|after_or_equal:today|before_or_equal:' . Carbon::now()->addYear()->toDateString(),
+            'niche' => 'required|string|in:Technology,Health,Education,Finance,Entertainment,Other',
+            'completion_date'  => 'nullable|date|after_or_equal:today|before_or_equal:' . Carbon::now()->addYear()->toDateString(),
+            'budget_type'      => 'required|string|in:fixed,hourly',
             'budget' => 'required|numeric|min:0',
         ]);
     
@@ -60,8 +61,9 @@ class ProjectsController extends Controller
         $project->title = $validatedData['title'];
         $project->description = $validatedData['description'];
         $project->niche = $validatedData['niche'];
-        $project->completion_date = $validatedData['completion_date'];
+        $project->completion_date = $validatedData['completion_date'] ?? null;
         $project->budget = $validatedData['budget'];
+        $project->budget_type = $validatedData['budget_type'] ?? 'fixed';
         $project->creator = Auth::user()->name;
         $project->creator_id = Auth::id();
         
@@ -70,7 +72,7 @@ class ProjectsController extends Controller
         $project->save();
     
         return redirect()->route('dashboard')
-                         ->with('success', 'Проект создан и отправлен на модерацию.');
+                         ->with('success','Project is created and sent to the moderation');
     }
     
 

@@ -14,6 +14,24 @@ const Layout = computed(() => {
     return pageProps.auth ? AuthenticatedLayout : GuestLayout;
 });
 
+const getTimeRemaining = (deadline) => {
+  if (!deadline) return '';
+  const now = new Date();
+  const end = new Date(deadline);
+
+  const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const endDate = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+  const diffDays = Math.round((endDate - nowDate) / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) {
+    return "Today is deadline!";
+  }
+  if (diffDays < 0) {
+    return "Deadline passed";
+  }
+  return `${diffDays} days left`;
+};
+
 const user = computed(() => pageProps.auth || null);
 
 const activeTab = ref('projects');
@@ -199,9 +217,15 @@ const goToPageJobAds = (page) => {
                         <p class="text-gray-600 text-sm sm:text-base mb-1 sm:mb-2 mt-2">
                           <strong>Budget:</strong> ${{ project.budget }}
                         </p>
-                        <p class="text-gray-600 text-sm sm:text-base mb-1 sm:mb-2">
-                          <strong>Completion Date:</strong> {{ project.completion_date }}
+                        <p v-if="project.completion_date === null" class="text-gray-600 text-sm sm:text-base mb-1 sm:mb-2">
+                          <strong>Completion Date:</strong> No deadline
                         </p>
+                        <p v-else class="text-gray-600 text-sm sm:text-base mb-1 sm:mb-2">
+                          <strong>Completion Date:</strong> {{ project.completion_date }}
+                          <span class="ml-2 text-gray-500">
+                            ({{ getTimeRemaining(project.completion_date) }})
+                          </span>
+                        </p>      
                         <p class="text-gray-600 text-sm sm:text-base">
                           <strong>Niche:</strong> {{ project.niche }}
                         </p>
