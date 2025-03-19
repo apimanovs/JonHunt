@@ -183,11 +183,28 @@ function search() {
 </script>
 
 <template>
-  <div v-if="showToast" class="toast toast-end">
-    <div class="alert alert-success">
-      <p class="font-semibold text-white">{{ props.flash.success }} ✅</p>
+  <transition 
+    name="slide-fade" 
+    enter-active-class="transition transform duration-300"
+    leave-active-class="transition transform duration-300"
+    enter-from-class="opacity-0 translate-x-8"
+    enter-to-class="opacity-100 translate-x-0"
+    leave-from-class="opacity-100 translate-x-0"
+    leave-to-class="opacity-0 translate-x-8"
+  >
+    <div 
+      v-if="showToast" 
+      class="fixed bottom-6 right-4 z-50 max-w-sm shadow-lg
+             bg-red-600 text-white rounded-xl px-6 py-4
+             flex items-center space-x-3 hover:scale-105 transition-transform
+             cursor-pointer"
+    >
+      <div class="text-3xl">✅</div>
+      <div class="text-sm sm:text-base font-semibold">
+        {{ props.flash.success }}!
+      </div>
     </div>
-  </div>
+  </transition>
 
   <div>
     <div class="min-h-screen bg-gray-100 selection:bg-red-500 selection:text-white overflow-hidden">
