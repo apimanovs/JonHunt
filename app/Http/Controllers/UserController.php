@@ -87,7 +87,7 @@ class UserController extends Controller
     
         $project->save();
     
-
+        return redirect()->route('dashboard')->with('success', 'Project updated successfully!');
     }
     
   
@@ -95,7 +95,7 @@ class UserController extends Controller
     {    
         $project->delete();
     
-        return redirect()->route('projects.inProfile')->with('success', 'Project deleted successfully.');
+        return redirect()->route('dashboard')->with('success', 'Project deleted successfully!');
     }
     
 

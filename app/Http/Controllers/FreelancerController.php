@@ -18,15 +18,12 @@ class FreelancerController extends Controller
     {
         $user = Auth::user();
     
-        // Сразу проверяем: если уже фрилансер, выбрасываем ошибку
         if ($user->role === 'freelancer' || $user->freelancer) {
             return response()->json([
                 'message' => 'You are already registered as a freelancer.'
             ], 422);
         }
     
-        // Если мы дошли сюда — пользователь ещё не фрилансер.
-        // Дальше идёт валидация и создание записи
         $validatedData = $request->validate([
             'country' => 'required|string|max:255',
             'bio' => 'nullable|string|max:1000',
@@ -65,7 +62,7 @@ class FreelancerController extends Controller
         // Обновляем роль
         $user->update(['role' => 'freelancer']);
     
-        return response()->json(['message' => 'You are now a freelancer!']);
+        return redirect()->route('dashboard')->with('success', 'Your freelance profile went for moderation.');
     }
     
 

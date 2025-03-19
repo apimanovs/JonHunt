@@ -2,9 +2,9 @@
     <AuthenticatedLayout>
       <Head title="My Orders" />
   
-      <div class="max-w-7xl mx-auto p-6 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+      <div class="max-w-7xl mx-auto p-6 bg-white dark:bg-gray-800 shadow sm:rounded-lg mt-10">
   
-        <h1 class="text-2xl font-bold mb-6">My Orders</h1>
+        <h1 class="text-2xl font-bold mb-6 mt">My Orders</h1>
   
         <!-- Блок: заказы, где пользователь — клиент -->
         <div class="mb-8">

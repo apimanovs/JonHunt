@@ -1,6 +1,6 @@
 <template>
   <AuthenticatedLayout>
-    <Head title="My Projects & Applications" />
+    <Head title="My Applications" />
     <div class="max-w-5xl mx-auto p-6 bg-white">
       <h2 class="text-2xl font-bold mb-4">Applications</h2>
       <!-- Вкладки -->
@@ -97,20 +97,16 @@ import { usePage, Head } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 
 const { props } = usePage()
-// Массив проектов с заявками (для владельца проектов)
 const projects = props.projects || []
-// Массив заявок, отправленных текущим пользователем (для фрилансера)
 const myApplications = props.myApplications || []
 
-// Активная вкладка: 'owner' или 'freelancer'
 const activeTab = ref('owner')
 
-// Функции для одобрения/отклонения заявок
 const approveApplication = async (applicationId) => {
   try {
     await axios.post(route('projects.applications.approve', applicationId))
     alert('Application approved!')
-    location.reload() // или Inertia.reload()
+    location.reload()
   } catch (error) {
     console.error(error)
     alert('Failed to approve.')
@@ -121,7 +117,7 @@ const rejectApplication = async (applicationId) => {
   try {
     await axios.post(route('projects.applications.reject', applicationId))
     alert('Application rejected!')
-    location.reload() // или Inertia.reload()
+    location.reload() 
   } catch (error) {
     console.error(error)
     alert('Failed to reject.')

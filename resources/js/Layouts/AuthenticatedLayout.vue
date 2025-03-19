@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import { usePage, Link, router } from '@inertiajs/vue3';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
@@ -123,6 +123,18 @@ const searchQuery = ref('');
 
 const isNotificationOpen = ref(false);
 
+const showToast = ref(false);
+
+onMounted(() => {
+  if (props.flash?.success) {
+    showToast.value = true;
+
+    setTimeout(() => {
+      showToast.value = false;
+    }, 5000);
+  }
+});
+
 
 function toggleNotifications() {
   isNotificationOpen.value = !isNotificationOpen.value;
@@ -157,9 +169,7 @@ const markAllAsRead = async () => {
   }
 };
 
-/**
- * Поиск
- */
+
 function search() {
   router.visit(route('search.index'), {
     method: 'get',
@@ -173,6 +183,12 @@ function search() {
 </script>
 
 <template>
+  <div v-if="showToast" class="toast toast-end">
+    <div class="alert alert-success">
+      <p class="font-semibold text-white">{{ props.flash.success }} ✅</p>
+    </div>
+  </div>
+
   <div>
     <div class="min-h-screen bg-gray-100 selection:bg-red-500 selection:text-white overflow-hidden">
       <nav class="bg-white border-b border-gray-100">

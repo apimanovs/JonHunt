@@ -28,11 +28,6 @@ Route::get('/', function () {
     ]);
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'display'])->name('dashboard');
-});
-
-
 Route::post('/forget-newuser-flag', function () {
     session()->forget('isNewUser');
     return response()->json(['success' => true]);
@@ -53,10 +48,6 @@ Route::post('/projects/{project}/apply', [ProjectApplicationController::class, '
     Route::get('/projects/applications', [ProjectsController::class, 'showProjectApplications'])
     ->name('projects.applications.all')
     ->middleware('auth');
-
-// Route::get('/projects/{project}/application', [ProjectApplicationController::class, 'show'])
-//     ->name('projects.application.show')
-//     ->middleware('auth');
 
 Route::post('/projects/applications/{application}/approve', [ProjectApplicationController::class, 'approve'])
     ->name('projects.applications.approve');
@@ -116,10 +107,6 @@ Route::post('/notifications/mark-all-as-read', function () {
     return response()->json(['success' => true]);
 })->middleware('auth');
 
-Route::middleware(['share.notifications'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'display'])->name('dashboard');
-});
-
 Route::post('/jobAdvertisements/{jobAd}/addReview', [App\Http\Controllers\ReviewsController::class, 'addJobAdReview'])
     ->name('jobAds.addReview');
 
@@ -140,7 +127,9 @@ Route::middleware('auth')->group(function () {
 });
 
 
-Route::get('/dashboard', [DashboardController::class, 'display'])->name('dashboard');
+Route::middleware(['share.notifications'])
+     ->get('/dashboard', [DashboardController::class, 'display'])
+     ->name('dashboard');
 
 use App\Http\Controllers\BalanceController;
 
