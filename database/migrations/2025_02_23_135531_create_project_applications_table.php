@@ -12,8 +12,7 @@ return new class extends Migration {
             $table->foreignId('project_id')->constrained()->onDelete('cascade');
             $table->foreignId('freelancer_id')->constrained('users')->onDelete('cascade');
             $table->text('cover_letter')->nullable();
-            $table->string('cv')->nullable(); // путь к файлу
-            $table->string('status')->default('pending'); // например: pending, accepted, rejected
+            $table->string('status')->default('pending');
             $table->timestamps();
         });
     }

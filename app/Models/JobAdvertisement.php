@@ -18,7 +18,6 @@ class JobAdvertisement extends Model
         'creator_id',
     ];
 
-    // Полиморфное отношение отзывов для job ad
     public function reviews()
     {
         return $this->morphMany(Review::class, 'reviewable');

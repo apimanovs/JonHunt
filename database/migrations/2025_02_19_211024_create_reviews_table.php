@@ -10,11 +10,9 @@ class CreateReviewsTable extends Migration
     {
         Schema::create('reviews', function (Blueprint $table) {
             $table->id('ReviewID');
-            // Полиморфные поля:
             $table->unsignedBigInteger('reviewable_id');
             $table->string('reviewable_type');
             
-            // Идентификаторы пользователей:
             $table->foreignId('UserID')->constrained('users');
             $table->foreignId('ReviewedUserID')->constrained('users');
             
@@ -22,7 +20,6 @@ class CreateReviewsTable extends Migration
             $table->text('ReviewText')->nullable();
             $table->timestamps();
             
-            // (Опционально) можно добавить индекс для быстрого поиска по reviewable:
             $table->index(['reviewable_id', 'reviewable_type']);
         });
     }

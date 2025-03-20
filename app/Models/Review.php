@@ -23,7 +23,6 @@ class Review extends Model
         'ReviewText',
     ];
 
-    // Полиморфное отношение – отзыв принадлежит сущности (проекту или объявлению о работе)
     public function reviewable()
     {
         return $this->morphTo();
