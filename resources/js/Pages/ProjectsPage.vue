@@ -1,57 +1,102 @@
 <template>
-    <Head title="Projects Information" />
-    <AuthenticatedLayout>
-      <div class="my-10 max-w-4xl mx-auto bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6 sm:p-8 ">
-        <h2 class="text-2xl font-semibold text-gray-900 overflow-hidden text-ellipsis">{{ project.title }}</h2>
-        <div class="creator-info flex items-center mt-2">
-          <a
-            v-if="project.creator && project.creator.avatar"
-            :href="`/user/${project.creator.username}`"
-            class="flex items-center"
-          >
-            <img
-              :src="project.creator.avatar.photo_url"
-              alt="Avatar"
-              class="w-10 h-10 rounded-full mr-3"
-            />
-          </a>
-          <a
-            v-else
-            :href="`/user/${project.creator.username}`"
-            class="flex items-center"
-          >
-            <div
-              class="w-10 h-10 rounded-full bg-gray-400 text-white font-bold flex items-center justify-center mr-3"
-            >
-              {{ project.creator.name.charAt(0).toUpperCase() }}
-            </div>
-          </a>
-          <a
-            :href="`/user/${project.creator.username}`"
-            class="text-gray-700 font-medium hover:text-blue-500 transition flex items-center"
-          >
-            {{ project.creator.name }}
-            <span
-              v-if="project.creator.role === 'freelancer'"
-              class="badge badge-accent ml-2"
-            >
-              Freelancer
-            </span>
-          </a>
-        </div>
-        
-        <br>
-        <div class="mt-2">
-          <h3 class="text-xl font-semibold text-gray-900 overflow-hidden text-ellipsis whitespace-nowrap ">Details</h3>
-          <p><strong>Niche:</strong> {{ project.niche }}</p>
-          <p><strong>Completion Date:</strong> {{ project.completion_date }}</p>
-          <p><strong>Budget:</strong> ${{ project.budget }}</p>
-          <p><strong>Posted:</strong> {{ timeSincePosted }}</p>
-          <p class="mt-2 text-lg text-gray-800 font-medium overflow-hidden text-ellipsis">{{ project.description }}</p>
-        </div>
+  <Head title="Projects Information" />
+  <AuthenticatedLayout>
+    <div class="my-10 max-w-5xl mx-auto bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6 sm:p-8">
+      <!-- Title -->
+      <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2 break-words">
+        {{ project.title }}
+      </h2>
 
-        <div v-if="canApply">
-          <h3 class="text-xl font-semibold my-4">Apply to this Project</h3>
+      <!-- Creator Info -->
+      <div class="creator-info flex flex-wrap items-center mt-4 mb-6">
+        <a
+          v-if="project.creator && project.creator.avatar"
+          :href="`/user/${project.creator.username}`"
+          class="flex items-center"
+        >
+          <img
+            :src="project.creator.avatar.photo_url"
+            alt="Avatar"
+            class="w-10 h-10 rounded-full mr-3 border"
+          />
+        </a>
+        <a
+          v-else
+          :href="`/user/${project.creator.username}`"
+          class="flex items-center"
+        >
+          <div class="w-10 h-10 rounded-full bg-gray-400 text-white font-bold flex items-center justify-center mr-3">
+            {{ project.creator.name.charAt(0).toUpperCase() }}
+          </div>
+        </a>
+        <a
+          :href="`/user/${project.creator.username}`"
+          class="text-gray-800 dark:text-gray-200 font-medium hover:text-blue-500 transition break-words"
+        >
+          {{ project.creator.name }}
+          <span
+            v-if="project.creator.role === 'freelancer'"
+            class="ml-2 px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full"
+          >
+            Freelancer
+          </span>
+        </a>
+      </div>
+
+      <!-- Project Details -->
+      <div class="space-y-4 text-gray-800 dark:text-gray-100">
+        <h3 class="text-3xl font-semibold border-b pb-1 mb-2">Project Details</h3>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="stat bg-gray-50 dark:bg-gray-700 rounded shadow p-4">
+            <div class="stat-title text-sm text-gray-500">Total budget</div>
+            <div class="stat-value text-primary text-3xl break-words">${{ project.budget }}</div>
+          </div>
+
+          <div class="stat bg-gray-50 dark:bg-gray-700 rounded shadow p-4">
+            <div class="stat-title text-sm text-gray-500">Deadline</div>
+            <div class="stat-value text-secondary text-3xl break-words">{{ deadline }}</div>
+          </div>
+
+          <div class="stat bg-gray-50 dark:bg-gray-700 rounded shadow p-4">
+            <div class="stat-title text-sm text-gray-500">Niche</div>
+            <div class="stat-value text-2xl break-words">{{ project.niche }}</div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="grid gap-6 mt-6">
+        <div class="border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-900 p-5 rounded shadow">
+          <h4 class="text-blue-700 dark:text-blue-200 text-xl font-semibold flex items-center gap-2">
+            Expected Outcome
+          </h4>
+          <p class="text-gray-800 text-lg dark:text-gray-100 mt-1">{{ project.expected_outcome }}</p>
+        </div>
+      
+        <div class="border-l-4 border-green-500 bg-green-50 dark:bg-green-900 p-5 rounded shadow">
+          <h4 class="text-green-700 dark:text-green-200 text-xl font-semibold flex items-center gap-2">
+            Requirements
+          </h4>
+          <p class="text-gray-800 text-lg dark:text-gray-100 mt-1">{{ project.requirements }}</p>
+        </div>
+      
+        <div class="border-l-4 border-yellow-500 bg-yellow-50 dark:bg-yellow-900 p-5 rounded shadow">
+          <h4 class="text-yellow-700 dark:text-yellow-200 text-xl font-semibold flex items-center gap-2">
+            Tasks
+          </h4>
+          <p class="text-gray-800 text-lg dark:text-gray-100 mt-1 whitespace-pre-line">{{ project.tasks }}</p>
+        </div>
+      </div>
+      
+      
+
+
+
+      <!-- Current User Application -->
+      <div class="lg:w-full w-full">
+        <div v-if="canApply" class="mt-8 lg:mt-0 bg-blue-50 dark:bg-gray-900 p-6 rounded shadow">
+          <h3 class="text-xl font-semibold mb-4 text-blue-700 dark:text-blue-300">Apply to this Project</h3>
           <form @submit.prevent="submitApplication" class="space-y-4">
             <div>
               <label class="block font-semibold">Cover Letter</label>
@@ -63,140 +108,92 @@
                 required
               ></textarea>
             </div>
-            <div>
-              <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                Submit
-              </button>
-            </div>
+            <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+              Submit Application
+            </button>
           </form>
         </div>
-        
-        <!-- Если у юзера уже есть заявка -->
-        <div v-else-if="currentUserApplication" class="mt-6 p-4 bg-gray-50 rounded border">
+
+        <div
+          v-else-if="currentUserApplication"
+          class="mt-8 lg:mt-0 bg-gray-50 dark:bg-gray-700 p-6 rounded border dark:border-gray-600"
+        >
           <h3 class="text-xl font-semibold mb-2">Your Application</h3>
           <p><strong>Status:</strong> {{ currentUserApplication.status }}</p>
-          <p class="mt-1">
-            <strong>Cover Letter:</strong> {{ currentUserApplication.cover_letter }}
-          </p>
-        </div>
-
-        <br>
-        <h3 class="text-xl font-semibold text-gray-900 my-2.5">Average Rating</h3>
-        <p v-if="reviews.length > 0" class="text-lg text-gray-800 font-medium">{{ averageRating }}</p>
-        <div class="mt-6">
-          <h3 class="text-xl font-semibold text-gray-900">Reviews</h3>
-          <div v-if="reviews.length === 0" class="mt-2 text-sm text-gray-600">
-            No reviews yet.
-          </div>
-          <ul class="mt-4 space-y-4">
-            <li v-for="review in reviews" :key="review.id" class="border-b border-gray-200 pb-4">
-              <div v-if="editForm.id === review.ReviewID">
-                <div>
-                  <label for="editRating" class="block text-sm font-medium">Rating</label>
-                  <select id="editRating" v-model="editForm.Rating" class="mt-1 block w-full">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                  </select>
-                </div>
-                <div>
-                  <label for="editReviewText" class="block text-sm font-medium">Review</label>
-                  <textarea id="editReviewText" v-model="editForm.ReviewText" class="mt-1 block w-full"></textarea>
-                  <InputError class="mt-2" :message="form.errors.ReviewText" />
-                </div>
-                <div class="mt-2">
-                  <PrimaryButton @click="updateReview" class="bg-blue-600 text-white">
-                    Update Review
-                  </PrimaryButton>
-                  <button @click="cancelEdit" class="text-red-600 hover:text-red-800 ml-2">Cancel</button>
-                </div>
-              </div>
-  
-              <div v-else>
-                <p class="text-gray-900">{{ review.ReviewText }}</p>
-                <p class="text-sm text-gray-600">
-                  {{ review.user.name }} (Rating: {{ review.Rating }})
-
-                  <span v-if="auth.user && review.user.id === auth.user.id">
-                    <div class="dropdown relative inline-block text-left">
-                        <button tabindex="0" role="button" class="flex items-center p-1 rounded-full hover:bg-gray-200 transition duration-150 ease-in-out">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                class="h-3 w-6 stroke-current text-gray-600"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
-                                ></path>
-                            </svg>
-                        </button>
-                        
-                        <ul tabindex="0" class="dropdown-content absolute mt-2 w-40 menu bg-base-100 rounded-md shadow-lg p-1 z-10">
-                            <li>
-                                <button
-                                    @click="editReview(review)"
-                                    class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 hover:text-blue-600 transition duration-150 ease-in-out text-left"
-                                >
-                                    Edit
-                                </button>
-                            </li>
-                            <li>
-                                <button
-                                    @click="deleteReview(review)"
-                                    class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 hover:text-red-600 transition duration-150 ease-in-out text-left"
-                                >
-                                    Delete
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-                </span>
-                
-                </p>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div class="mt-6">
-          <h3 class="text-xl font-semibold text-gray-900">Add a Review</h3>
-          <form @submit.prevent="submitReview" class="space-y-4">
-            <div>
-              <label for="rating" class="block text-sm font-medium">Rating</label>
-              <select id="rating" v-model="form.Rating" class="select select-bordered mt-1 block w-full">
-                <option disabled selected>Choose rating for this project</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-              </select>
-            </div>
-            <div>
-              <label for="ReviewText" class="block text-sm font-medium">Review</label>
-              <textarea id="ReviewText" v-model="form.ReviewText" class="textarea textarea-bordered mt-1 block w-full"></textarea>
-            </div>
-
-            <div v-if=" $page.props.errors.error" class="text-red-600 mb-4">
-              {{  $page.props.errors.error }}
-            </div>
-            <div v-if="$page.props.errors.Rating" class="text-red-600 mb-4">
-              {{ $page.props.errors.Rating  }}
-            </div>
-            <PrimaryButton type="submit" class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-md">
-              Post a review
-            </PrimaryButton>
-            <InputError class="mt-2" :message="form.errors.ReviewText" />
-          </form>
+          <p class="mt-1"><strong>Cover Letter:</strong> {{ currentUserApplication.cover_letter }}</p>
         </div>
       </div>
-    </AuthenticatedLayout>
-  </template>
+      <!-- Reviews List -->
+      <div class="mt-6">
+        <h3 class="text-xl font-semibold">Reviews</h3>
+        <ul class="mt-4 space-y-4">
+          <li
+            v-for="review in reviews"
+            :key="review.id"
+            class="p-4 bg-white dark:bg-gray-800 shadow rounded border border-gray-200 dark:border-gray-700"
+          >
+            <div v-if="editForm.id === review.ReviewID">
+              <div class="mb-2">
+                <label class="block font-medium">Rating</label>
+                <select v-model="editForm.Rating" class="w-full p-1 border rounded">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </div>
+              <div class="mb-2">
+                <label class="block font-medium">Review</label>
+                <textarea v-model="editForm.ReviewText" class="w-full p-2 border rounded"></textarea>
+                <InputError :message="form.errors.ReviewText" class="mt-1" />
+              </div>
+              <div class="flex gap-2">
+                <PrimaryButton @click="updateReview" class="bg-blue-600 text-white">Update</PrimaryButton>
+                <button @click="cancelEdit" class="text-red-500 hover:underline">Cancel</button>
+              </div>
+            </div>
+            <div v-else>
+              <p class="text-gray-900 dark:text-white">{{ review.ReviewText }}</p>
+              <p class="text-sm text-gray-600 dark:text-gray-400">
+                {{ review.user.name }} (Rating: {{ review.Rating }})
+                <span v-if="auth.user && review.user.id === auth.user.id">
+                  <button @click="editReview(review)" class="ml-2 text-blue-500 hover:underline">Edit</button>
+                  <button @click="deleteReview(review)" class="ml-2 text-red-500 hover:underline">Delete</button>
+                </span>
+              </p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Add Review Form -->
+      <div class="mt-10">
+        <h3 class="text-xl font-semibold">Add a Review</h3>
+        <form @submit.prevent="submitReview" class="space-y-4">
+          <div>
+            <label class="block font-medium">Rating</label>
+            <select v-model="form.Rating" class="w-full p-2 border rounded">
+              <option disabled selected>Choose rating</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-medium">Review</label>
+            <textarea v-model="form.ReviewText" class="w-full p-2 border rounded"></textarea>
+            <InputError class="mt-1" :message="form.errors.ReviewText" />
+          </div>
+          <PrimaryButton type="submit" class="bg-red-600 text-white">Post Review</PrimaryButton>
+        </form>
+      </div>
+    </div>
+  </AuthenticatedLayout>
+</template>
+
   
   <script setup>
 import { computed, ref } from 'vue';
@@ -229,7 +226,6 @@ const canApply = computed(() => {
   return true
 })
 
-
 const currentUserApplication = computed(() => {
   if (!auth?.user || !Array.isArray(props.applications)) {
     return null
@@ -250,7 +246,6 @@ const submitApplication = async () => {
     alert('Failed to submit application.')
   }
 }
-
 
 const timeSincePosted = computed(() => {
   const postedDate = new Date(props.project.created_at);
@@ -323,6 +318,21 @@ const updateReview = () => {
     },
   });
 };
+
+
+const deadline = computed(() => {
+  if (!props.project.completion_date) {
+    return "No deadline";
+  }
+
+  const date = new Date(props.project.completion_date);
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+});
+
 
 </script>
   
