@@ -1,8 +1,9 @@
 <template>
   <AuthenticatedLayout>
     <Head title="My Applications" />
-    <div class="max-w-5xl mx-auto p-6 bg-white">
+    <div class="max-w-5xl mx-auto p-6 bg-white dark:bg-gray-800">
       <h2 class="text-2xl font-bold mb-4">Applications</h2>
+
       <!-- Вкладки -->
       <div class="tabs flex gap-4 mb-6">
         <button
@@ -30,34 +31,71 @@
           <div
             v-for="proj in projects"
             :key="proj.id"
-            class="border p-4 bg-gray-50 rounded"
+            class="border p-4 bg-gray-50 dark:bg-gray-700 rounded"
           >
-            <h3 class="text-xl font-semibold">Project: {{ proj.title }}</h3>
-            <p><strong>Budget:</strong> {{ proj.budget }}</p>
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Project: {{ proj.title }}</h3>
+            <p class="text-gray-700 dark:text-gray-300"><strong>Budget:</strong> {{ proj.budget }}</p>
+
             <div v-if="proj.applications.length === 0" class="mt-2">
               <p class="text-gray-500">No applications yet.</p>
             </div>
-            <div v-else class="mt-2 space-y-2">
+
+            <div v-else class="mt-4 space-y-4">
               <div
                 v-for="app in proj.applications"
                 :key="app.id"
-                class="border border-gray-200 p-2 rounded bg-white"
+                class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 p-4 rounded shadow-sm"
               >
-                <p><strong>Freelancer:</strong> {{ app.freelancer?.name }}</p>
-                <p><strong>Cover letter:</strong> {{ app.cover_letter }}</p>
-                <p><strong>Status:</strong> {{ app.status }}</p>
-                <div class="mt-4">
+                <!-- User Info -->
+                <div class="flex items-center mb-3">
+                  <a :href="`/user/${app.freelancer?.username}`">
+                    <img
+                      v-if="app.freelancer?.avatar"
+                      :src="app.freelancer.avatar.photo_url"
+                      alt="Avatar"
+                      class="w-12 h-12 rounded-full mr-3 border"
+                    />
+                    <div
+                      v-else
+                      class="w-12 h-12 rounded-full bg-gray-400 text-white font-bold flex items-center justify-center mr-3"
+                    >
+                      {{ app.freelancer?.name.charAt(0).toUpperCase() }}
+                    </div>
+                  </a>
+                  <a :href="`/user/${app.freelancer?.username}`" class="text-lg font-medium text-blue-700 dark:text-blue-300 hover:underline">
+                    {{ app.freelancer?.name }}
+                  </a>
+                </div>
+
+                <!-- Cover Letter + Status -->
+                <div class="text-gray-700 dark:text-gray-200">
+                  <p class="mb-2 text-xl"><strong>Cover letter</strong></p>
+                  <p class="bg-gray-100 dark:bg-gray-700 p-3 rounded whitespace-pre-line">{{ app.cover_letter }}</p>
+                  <p class="mt-3">
+                    <strong>Status: </strong>
+                    <span
+                      :class="{
+                        'text-yellow-600': app.status === 'pending',
+                        'text-green-600': app.status === 'approved',
+                        'text-red-600': app.status === 'reject'
+                      }"
+                    >
+                      {{ app.status }}
+                    </span>
+                  </p>
+                </div>
+
+                <!-- Actions -->
+                <div class="mt-4 flex gap-2" v-if="app.status === 'pending'">
                   <button
-                    v-if="app.status === 'pending'"
                     @click="approveApplication(app.id)"
-                    class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+                    class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
                   >
                     Approve
                   </button>
                   <button
-                    v-if="app.status === 'pending'"
                     @click="rejectApplication(app.id)"
-                    class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 ml-2"
+                    class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
                   >
                     Reject
                   </button>
@@ -77,13 +115,14 @@
           <div
             v-for="app in myApplications"
             :key="app.id"
-            class="border p-4 bg-gray-50 rounded"
+            class="border p-4 bg-gray-50 dark:bg-gray-700 rounded"
           >
-            <h3 class="text-xl font-semibold">
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
               Project: {{ app.project.title }}
             </h3>
-            <p><strong>Cover letter:</strong> {{ app.cover_letter }}</p>
-            <p><strong>Status:</strong> {{ app.status }}</p>
+            <p class="text-gray-700 text-xl dark:text-gray-300"><strong>Cover letter:</strong></p>
+            <p class="bg-white dark:bg-gray-800 p-3 rounded whitespace-pre-line mt-1 text-gray-800 dark:text-gray-100">{{ app.cover_letter }}</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300"><strong>Status:</strong> {{ app.status }}</p>
           </div>
         </div>
       </div>
