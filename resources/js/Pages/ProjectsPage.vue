@@ -65,9 +65,15 @@
         </div>
       </div>
 
+      <div class="p-5 rounded shadow">
+        <h4 class="text-black dark:text-blue-200 text-xl font-semibold flex items-center gap-2">
+          Description
+        </h4>
+        <p class="text-gray-800 text-lg dark:text-gray-100 mt-1">{{ project.description }}</p>
+      </div>
 
       <div class="grid gap-6 mt-6">
-        <div class="border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-900 p-5 rounded shadow">
+        <div class="border-l-4 border-red-500 bg-blue-50 dark:bg-red-900 p-5 rounded shadow">
           <h4 class="text-blue-700 dark:text-blue-200 text-xl font-semibold flex items-center gap-2">
             Expected Outcome
           </h4>
@@ -123,6 +129,9 @@
           <p class="mt-1"><strong>Cover Letter:</strong> {{ currentUserApplication.cover_letter }}</p>
         </div>
       </div>
+
+      <h3 class="text-xl font-semibold text-gray-900 my-2.5">Average Rating</h3>
+      <p v-if="reviews.length > 0" class="text-lg text-gray-800 font-medium">{{ averageRating }}</p>
       <!-- Reviews List -->
       <div class="mt-6">
         <h3 class="text-xl font-semibold">Reviews</h3>

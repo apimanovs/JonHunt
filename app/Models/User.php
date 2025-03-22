@@ -99,7 +99,24 @@ class User extends Authenticatable implements MustVerifyEmail
                 'amount' => 0,
             ]);
         });
+
+        static::deleting(function ($user) {
+            $user->reviewsWritten()->delete();
+    
+            $user->reviewsReceived()->delete();
+        });
     }
+
+    public function reviewsWritten()
+    {
+        return $this->hasMany(Review::class, 'UserID');
+    }
+
+    public function reviewsReceived()
+    {
+        return $this->hasMany(Review::class, 'ReviewedUserID');
+    }
+
 
     public function applications()
     {

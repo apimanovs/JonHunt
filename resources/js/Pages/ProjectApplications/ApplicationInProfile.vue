@@ -62,7 +62,7 @@
                       {{ app.freelancer?.name.charAt(0).toUpperCase() }}
                     </div>
                   </a>
-                  <a :href="`/user/${app.freelancer?.username}`" class="text-lg font-medium text-blue-700 dark:text-blue-300 hover:underline">
+                  <a :href="`/user/${app.freelancer?.username}`" class="text-lg font-medium text-gray-500 dark:text-blue-300 hover:text-gray-600">
                     {{ app.freelancer?.name }}
                   </a>
                 </div>

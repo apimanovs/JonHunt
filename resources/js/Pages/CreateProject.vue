@@ -102,22 +102,18 @@ const previousStep = () => {
           <InputLabel for="description" value="Description" />
           <p class="text-sm text-gray-600 mb-5">Give an overview of the project. Include its purpose, key details, and any other necessary information.</p>
           <textarea id="description" v-model="form.description" required class="textarea textarea-bordered w-full mb-10"></textarea>
-          <InputError class="mt-2" :message="form.errors.description" />
           
           <InputLabel for="tasks" value="Project Tasks" />
           <p class="text-sm text-gray-600 mb-5">List the main tasks that need to be completed.</p>
           <textarea id="tasks" v-model="form.tasks" class="textarea textarea-bordered w-full mb-10"></textarea>
-          <InputError class="mt-2" :message="form.errors.tasks" />
           
           <InputLabel for="expected_outcome" value="Expected Outcome" />
           <p class="text-sm text-gray-600 mb-5">Describe what the final result should be.</p>
           <textarea id="expected_outcome" v-model="form.expected_outcome" class="textarea textarea-bordered w-full mb-10"></textarea>
-          <InputError class="mt-2" :message="form.errors.expected_outcome" />
           
           <InputLabel for="requirements" value="Freelancer Requirements" />
           <p class="text-sm text-gray-600 mb-5">List skills or qualifications that freelancers should have.</p>
           <textarea id="requirements" v-model="form.requirements" class="textarea textarea-bordered w-full mb-10"></textarea>
-          <InputError class="mt-2" :message="form.errors.requirements" />
           
           <div class="flex justify-between mt-6">
             <PrimaryButton @click="previousStep">Previous Step</PrimaryButton>
@@ -150,7 +146,6 @@ const previousStep = () => {
               Choose a deadline for the project. The date must be within the next 12 months.
             </p>
             <TextInput id="completion_date" type="date" class="mt-1 block w-full" v-model="form.completion_date" required />
-            <InputError class="mt-2" :message="form.errors.completion_date" />
           </div>
         
           <!-- Бюджет проекта -->
@@ -175,7 +170,6 @@ const previousStep = () => {
             <option value="fixed">Fixed Price</option>
             <option value="hourly">Hourly Rate</option>
           </select>
-          <InputError class="mt-2" :message="form.errors.budget_type" />
         
           <!-- Поле для ввода бюджета -->
           <div class="mt-6">
@@ -189,14 +183,13 @@ const previousStep = () => {
               <input
                 type="range"
                 min="0"
-                max="10000"
-                step="10"
+                max="1000"
+                step="1"
                 v-model="form.budget"
                 class="range range-error"
               />
               <span class="font-semibold">{{ formattedBudget }}</span>
             </div>
-            <InputError class="mt-2" :message="form.errors.budget" />
           </div>
         
           <div class="flex justify-between mt-6">
@@ -229,6 +222,13 @@ const previousStep = () => {
             <PrimaryButton @click="previousStep">Previous Step</PrimaryButton>
             <PrimaryButton type="submit">Submit Project</PrimaryButton>
           </div>
+          <InputError class="mt-2" :message="form.errors.budget" />
+          <InputError class="mt-2" :message="form.errors.budget_type" />
+          <InputError class="mt-2" :message="form.errors.completion_date" />
+          <InputError class="mt-2" :message="form.errors.requirements" />
+          <InputError class="mt-2" :message="form.errors.expected_outcome" />
+          <InputError class="mt-2" :message="form.errors.tasks" />
+          <InputError class="mt-2" :message="form.errors.description" />
         </div>        
       </form>
     </div>
