@@ -2,33 +2,37 @@
 
 namespace App\Events;
 
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
+use App\Models\Message;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Broadcasting\InteractsWithSockets;
 
-class MessageSent
+class MessageSent implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, InteractsWithSockets;
 
-    /**
-     * Create a new event instance.
-     */
-    public function __construct()
+    public $message;
+
+    public function __construct(Message $message)
     {
-        $this->message = $message;
+        $this->message = $message->load('sender.avatar', 'receiver.avatar');
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
-     */
-    public function broadcastOn(): array
+    public function broadcastOn()
     {
-        return new PrivateChannel('chat.' . $this->message->chat_id);
+        return new PrivateChannel('order.' . $this->message->order_id);
     }
+
+    public function broadcastAs()
+    {
+        return 'message.sent';
+    }
+
+    public function broadcastWith()
+    {
+        return ['message' => $this->message];
+    }
+    
 }

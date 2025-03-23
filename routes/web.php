@@ -149,6 +149,17 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/orders/{order}/complete', [OrderController::class, 'completeOrder'])->name('orders.complete');
 });
 
+use App\Http\Controllers\MessageController;
+
+Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
+
+Route::middleware('auth')->get('/orders/{order}/messages', function (\App\Models\Order $order) {
+    return \App\Models\Message::with('sender')->where('order_id', $order->id)->get();
+})->name('orders.messages');
+
+
+Route::get('/messages/index', [MessageController::class, 'index'])->name('messages.index');
+
 
 use App\Http\Controllers\AdminController;
 
