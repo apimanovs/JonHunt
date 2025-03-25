@@ -184,16 +184,16 @@ Route::middleware(['auth', 'admin'])
         Route::post('/projects/{project}/approve', [AdminController::class, 'approveProject'])->name('projects.approve');
         Route::post('/projects/{project}/reject', [AdminController::class, 'rejectProject'])->name('projects.reject');
 
-        // Объявления о работе
         Route::get('/job-ads', [AdminController::class, 'jobAdsIndex'])->name('jobAds.index');
         Route::delete('/job-ads/{jobAd}', [AdminController::class, 'jobAdsDestroy'])->name('jobAds.destroy');
-        // Маршруты для модерации объявлений
+        
         Route::post('/job-ads/{jobAd}/approve', [AdminController::class, 'approveJobAd'])->name('jobAds.approve');
         Route::post('/job-ads/{jobAd}/reject', [AdminController::class, 'rejectJobAd'])->name('jobAds.reject');
 
-        // Страница для модерации запросов
-        Route::get('/requests', [AdminController::class, 'requestsIndex'])->name('requests.index');
-
+        Route::get('/projects/moderation', [AdminController::class, 'moderateProjects'])->name('projects.moderation');
+        Route::get('/job-ads/moderation', [AdminController::class, 'moderateJobAds'])->name('jobAds.moderation');
+        
+        
     });
 
 require __DIR__.'/auth.php';

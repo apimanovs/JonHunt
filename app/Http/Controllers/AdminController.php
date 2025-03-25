@@ -53,15 +53,19 @@ class AdminController extends Controller
             ->with('success', 'Пользователь успешно удалён!');
     }
 
-    public function requestsIndex(): \Inertia\Response
-    {
-        $pendingProjects = Project::where('Status', 'pending')->orderBy('created_at', 'desc')->get();
-        $pendingJobAds = JobAdvertisement::where('status', 'pending')->orderBy('created_at', 'desc')->get();
-    
-        return Inertia::render('Admin/AdminRequests', [
+    public function moderateProjects() {
+        $pendingProjects = Project::where('status', 'pending')->get();
+        return Inertia::render('Admin/ProjectsRequests', [
             'pendingProjects' => $pendingProjects,
+            'csrf' => csrf_token(),
+        ]);
+    }
+    
+    public function moderateJobAds() {
+        $pendingJobAds = JobAdvertisement::where('status', 'pending')->get();
+        return Inertia::render('Admin/JobAdsRequests', [
             'pendingJobAds' => $pendingJobAds,
-            'csrf'            => csrf_token(),
+            'csrf' => csrf_token(),
         ]);
     }
     
@@ -103,7 +107,7 @@ class AdminController extends Controller
      */
     public function projectsIndex(): \Inertia\Response
     {
-        $projects = Project::orderBy('created_at', 'desc')->paginate(20);
+        $projects = Project::orderBy('id', 'asc')->paginate(20);
 
         return Inertia::render('Admin/ProjectsIndex', [
             'projects' => $projects
@@ -125,7 +129,7 @@ class AdminController extends Controller
      */
     public function jobAdsIndex(): \Inertia\Response
     {
-        $jobAds = JobAdvertisement::orderBy('created_at', 'desc')->paginate(20);
+        $jobAds = JobAdvertisement::orderBy('id', 'asc')->paginate(20);
 
         return Inertia::render('Admin/JobAdsIndex', [
             'jobAds' => $jobAds

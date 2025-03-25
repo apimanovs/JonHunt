@@ -236,6 +236,10 @@ function search() {
                   <NavLink id="my-applications" :href="route('projects.applications.all')" :active="route().current('projects.applications.all')">
                     All My Applications
                   </NavLink>
+
+                  <NavLink v-if="$page.props.auth.user.role === 'admin'" id="admin-panel" :href="route('admin.dashboard')" :active="route().current('admin.dashboard')">
+                   Admin Panel
+                  </NavLink>
                   
                   <template v-if="$page.props.auth.user.role.includes('freelancer')">
                     <NavLink :href="route('jobAds.index')" :active="route().current('jobAds.index')">
