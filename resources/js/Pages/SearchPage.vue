@@ -105,7 +105,7 @@ console.log(page.props);
           <div class="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
             <div class="p-4">
               <a
-                :href="`/jobAds/${job.id}`"
+                :href="`/gigs/${job.id}`"
                 class="text-lg font-semibold text-gray-800 hover:underline block truncate"
               >
                 {{ job.Title }}
