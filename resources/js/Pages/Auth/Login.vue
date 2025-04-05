@@ -31,8 +31,15 @@ const submit = () => {
 
 <template>
     <GuestLayout>
-        <Head title="JobHunt Log in" />
+        <Head title="Log in" />
 
+        <h1 class="text-5xl font-bold">Log in to JobHunt</h1>
+        <p class="py-6">
+        Your journey to meaningful work starts here. Join a community where skills meet opportunity, and ambition turns into success.
+        Let’s build your future — one project at a time.
+        </p>
+
+        
         <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
             {{ status }}
         </div>
