@@ -80,7 +80,7 @@ class AdminController extends Controller
     public function rejectProject(Project $project)
     {
         $project->Status = 'rejected';
-        $project->save();
+        $project->delete();
     
         return redirect()->back()->with('success', 'Проект отклонён!');
     }
@@ -96,7 +96,7 @@ class AdminController extends Controller
     public function rejectJobAd(JobAdvertisement $jobAd)
     {
         $jobAd->Status = 'rejected';
-        $jobAd->save();
+        $jobAd->delete();
     
         return redirect()->back()->with('success', 'Объявление о работе отклонено!');
     }
