@@ -97,6 +97,18 @@
           </div>
           <p class="text-sm text-white/90">Read and reply to messages submitted by users.</p>
         </Link>
+
+        <Link :href="route('admin.reports.index')" class="block p-4 bg-blue-700 text-white rounded-lg shadow hover:bg-gray-800 transition">
+          <div class="flex items-center mb-2">
+            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" stroke-width="2"
+              viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M8 10h.01M12 10h.01M16 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h2 class="text-lg font-semibold">User Reports</h2>
+          </div>
+          <p class="text-sm text-white/90">Read and reply to reports submitted by users.</p>
+        </Link>
         
         <Link :href="route('admin.jobAds.index')" class="block p-4 bg-orange-500 text-white rounded-lg shadow hover:bg-orange-600 transition">
           <div class="flex items-center mb-2">

@@ -15,6 +15,8 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\JobAdvertisementPortfolioController;
 use App\Http\Controllers\AdminMessageController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\AdminController;
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -156,6 +158,7 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/messages', [AdminMessageController::class, 'indexForAdmin'])->name('admin-message.index');
     Route::post('/admin/messages/{adminMessage}/reply', [AdminMessageController::class, 'reply'])->name('admin-message.reply');
+    Route::get('/admin/reports', [AdminController::class, 'reportsIndex'])->name('admin.reports.index');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -166,6 +169,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin-message', [\App\Http\Controllers\AdminMessageController::class, 'store'])->name('admin-message.store');
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
+});
 
 
 use App\Http\Controllers\OrderController;
@@ -190,7 +196,6 @@ Route::middleware('auth')->get('/orders/{order}/messages', function (\App\Models
 Route::get('/messages/index', [MessageController::class, 'index'])->name('messages.index');
 
 
-use App\Http\Controllers\AdminController;
 
 Route::middleware(['auth', 'admin'])
     ->prefix('admin')

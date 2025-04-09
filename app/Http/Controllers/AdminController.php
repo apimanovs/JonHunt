@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Project;
 use App\Models\JobAdvertisement;
 use Illuminate\Http\Request;
+use App\Models\Report;
 use Inertia\Inertia;
 
 class AdminController extends Controller
@@ -157,4 +158,13 @@ class AdminController extends Controller
             'admin' => $admin
         ]);
     }
+
+    public function reportsIndex()
+    {
+        $reports = Report::with('user', 'project', 'jobAdvertisement')->latest()->paginate(20);
+        return Inertia::render('Admin/Reports/ReportsIndex', [
+            'reports' => $reports
+        ]);
+    }
+
 }

@@ -32,6 +32,59 @@ const getTimeRemaining = (deadline) => {
   return `${diffDays} days left`;
 };
 
+const showReportModal = ref(false);
+const reportReason = ref("");
+const reportTarget = ref({ project_id: null, job_ad_id: null });
+
+const openReportModal = (projectId = null, jobAdId = null) => {
+  reportTarget.value = {
+    project_id: projectId,
+    job_ad_id: jobAdId,
+  };
+  reportReason.value = "";
+  showReportModal.value = true;
+};
+
+const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+const submitReport = async () => {
+  if (!reportReason.value.trim()) {
+    alert("Please enter a reason.");
+    return;
+  }
+
+  const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+  try {
+    const response = await fetch("/reports", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": token,
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        reason: reportReason.value,
+        project_id: reportTarget.value.project_id,
+        job_advertisement_id: reportTarget.value.job_ad_id,
+      }),
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      alert(data.message || "Failed to submit report.");
+      return;
+    }
+
+    showReportModal.value = false;
+    alert("Report submitted!");
+  } catch (err) {
+    console.error(err);
+    alert("Error occurred.");
+  }
+};
+
+
 const user = computed(() => pageProps.auth || null);
 
 const activeTab = ref('projects');
@@ -229,6 +282,13 @@ const goToPageJobAds = (page) => {
                         <p class="text-gray-600 text-sm sm:text-base">
                           <strong>Niche:</strong> {{ project.niche }}
                         </p>
+                        <button
+                        v-if="user"
+                        @click="openReportModal(project.id, null)"
+                        class="text-red-500 hover:underline text-sm mt-2"
+                      >
+                        🚩 Report
+                      </button>
                       </div>
                     </div>
                   </div>
@@ -282,6 +342,13 @@ const goToPageJobAds = (page) => {
                         <p class="text-gray-600 text-sm">
                           <strong>Starts from:</strong> ${{ ad.Price }}
                         </p>
+                        <button
+                          v-if="user"
+                          @click="openReportModal(null, ad.id)"
+                          class="text-red-500 hover:underline text-sm mt-2"
+                        >
+                          🚩 Report
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -301,4 +368,19 @@ const goToPageJobAds = (page) => {
             </div>
           </div>
     </component>
+    <div v-if="showReportModal" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
+      <div class="bg-white p-6 rounded shadow-lg w-full max-w-md">
+        <h3 class="text-xl font-semibold mb-4">Report</h3>
+        <textarea
+          v-model="reportReason"
+          placeholder="Write your reason..."
+          class="w-full border border-gray-300 rounded p-2 mb-4"
+          rows="4"
+        ></textarea>
+        <div class="flex justify-end space-x-2">
+          <button @click="showReportModal = false" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancel</button>
+          <button @click="submitReport" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Submit</button>
+        </div>
+      </div>
+    </div>
 </template>

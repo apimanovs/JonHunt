@@ -1,10 +1,12 @@
 <script setup>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 defineProps({ messages: Array });
 </script>
 
 <template>
+  <AuthenticatedLayout>
   <div class="p-6 max-w-5xl mx-auto">
     <h1 class="text-3xl font-bold mb-6">User Messages</h1>
 
@@ -25,6 +27,7 @@ defineProps({ messages: Array });
       </div>
     </div>
   </div>
+  </AuthenticatedLayout>
 </template>
 
 <script>
