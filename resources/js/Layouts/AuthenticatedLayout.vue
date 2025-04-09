@@ -512,11 +512,15 @@ function search() {
           <h6 class="footer-title font-bold mb-3">Company</h6>
           <a class="link link-hover flex items-center"><span class="mr-2">👤</span>About us</a>          
           <a class="link link-hover flex items-center"><span class="mr-2">📞</span>Contact</a>        </nav>
-          <nav>
-            <h6 class="footer-title font-bold mb-2">Legal</h6>
-            <a class="link link-hover flex items-center"><span class="mr-2">📄</span>Terms of Service</a>
-            <a class="link link-hover flex items-center"><span class="mr-2">🔒</span>Privacy Policy</a>
+          <nav class="mb-6 md:mb-0">
+            <h6 class="footer-title font-bold mb-3">Support</h6>
+            <Link :href="route('contact-admin.form')" class="link link-hover flex items-center">
+              <span class="mr-2">📝</span>Contact Administration
+            </Link>
+            <a class="link link-hover flex items-center"><span class="mr-2">👤</span>About us</a>          
+            <a class="link link-hover flex items-center"><span class="mr-2">📞</span>Contact</a>
           </nav>
+          
       </footer>
       
       

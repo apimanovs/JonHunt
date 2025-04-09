@@ -14,6 +14,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\JobAdvertisementPortfolioController;
+use App\Http\Controllers\AdminMessageController;
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -137,6 +138,34 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/balance', [BalanceController::class, 'index'])->name('balance.index');
     Route::post('/balance', [BalanceController::class, 'store'])->name('balance.store');
 });
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::post('/contact-admin', [AdminMessageController::class, 'store'])->name('contact.admin');
+});
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/messages', [AdminMessageController::class, 'indexForAdmin'])->name('admin.messages');
+    Route::post('/messages/{adminMessage}/reply', [AdminMessageController::class, 'reply'])->name('admin.messages.reply');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::post('/admin-message', [AdminMessageController::class, 'store'])->name('admin-message.store');
+});
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/messages', [AdminMessageController::class, 'indexForAdmin'])->name('admin-message.index');
+    Route::post('/admin/messages/{adminMessage}/reply', [AdminMessageController::class, 'reply'])->name('admin-message.reply');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/contact-admin', function () {
+        return Inertia::render('ContactAdmin');
+    })->name('contact-admin.form');
+
+    Route::post('/admin-message', [\App\Http\Controllers\AdminMessageController::class, 'store'])->name('admin-message.store');
+});
+
 
 
 use App\Http\Controllers\OrderController;
