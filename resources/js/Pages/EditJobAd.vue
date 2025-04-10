@@ -129,10 +129,10 @@ const imageForm = useForm({
 const currentImage = ref(null);
 
 onMounted(() => {
-    mainForm.title = pageProps.jobAd.Title;
-    mainForm.description = pageProps.jobAd.Description;
-    mainForm.price = pageProps.jobAd.Price;
-    currentImage.value = pageProps.jobAd.ExampleUrl || null;
+    mainForm.title = pageProps.jobAd.title;
+    mainForm.description = pageProps.jobAd.description;
+    mainForm.price = pageProps.jobAd.price;
+    currentImage.value = pageProps.jobAd.exampleUrl || null;
 });
 
 const handleImageUpload = (event) => {
@@ -156,6 +156,8 @@ const submitImageForm = () => {
     })
     .then((response) => {
         currentImage.value = response.data.example_url;
+        imageForm.reset();
+        alert('Image updated successfully!');    
     })
     .catch((error) => {
         console.error(error.response.data);

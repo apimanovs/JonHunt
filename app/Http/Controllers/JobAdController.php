@@ -21,7 +21,7 @@ class JobAdController extends Controller
      */
     public function create()
     {
-        return inertia('CreateJobAd'); // Страница для создания объявления
+        return inertia('CreateJobAd');
     }
 
     /**
@@ -33,7 +33,7 @@ class JobAdController extends Controller
             'title'        => 'required|string|max:35|min:35',
             'description'  => 'required|string|max:1500|min:100',
             'price'        => 'required|numeric|min:0',
-            'examples.*'   => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'examples.*'   => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
     
         if ($validator->fails()) {
@@ -47,7 +47,6 @@ class JobAdController extends Controller
         $jobAd->creator     = Auth::user()->name;
         $jobAd->creator_id  = Auth::id();
     
-        // Устанавливаем статус "pending"
         $jobAd->status = 'pending';
         
         $jobAd->save(); 
@@ -90,7 +89,6 @@ class JobAdController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
     
-        // Удаление старого примера
         $oldExample = JobAdvertisementPortfolio::where('job_ad_id', $jobAd->id)->first();
     
         if ($oldExample) {
@@ -147,16 +145,26 @@ class JobAdController extends Controller
 
     public function edit(JobAdvertisement $jobAd)
     {
+        $example = $jobAd->portfolios()->first();
+    
         return inertia('EditJobAd', [
-            'jobAd' => $jobAd
+            'jobAd' => [
+                'id'          => $jobAd->id,
+                'title'       => $jobAd->Title,        
+                'description' => $jobAd->Description,  
+                'price'       => $jobAd->Price,       
+                'exampleUrl'  => $example ? $example->example_url : null,
+            ]
         ]);
     }
+    
+    
 
     public function index()
     {
         $user = Auth::user();
 
-        $jobAds = JobAdvertisement::where('creator_id', $user->id)->get(); // Фильтрация по ID создателя
+        $jobAds = JobAdvertisement::where('creator_id', $user->id)->get();
         return inertia('JobAdInProfile', ['jobAds' => $jobAds]);
     }
 
