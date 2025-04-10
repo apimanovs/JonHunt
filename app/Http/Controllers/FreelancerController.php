@@ -59,8 +59,6 @@ class FreelancerController extends Controller
             $freelancer->skills()->sync($skillIds);
         }
     
-        // Обновляем роль
-        $user->update(['role' => 'freelancer']);
     
         return redirect()->route('dashboard')->with('success', 'Your freelance profile went for moderation.');
     }

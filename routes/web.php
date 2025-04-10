@@ -227,7 +227,9 @@ Route::middleware(['auth', 'admin'])
         Route::get('/projects/moderation', [AdminController::class, 'moderateProjects'])->name('projects.moderation');
         Route::get('/job-ads/moderation', [AdminController::class, 'moderateJobAds'])->name('jobAds.moderation');
         
-        
+        Route::get('/freelancers/moderation', [AdminController::class, 'moderateFreelancers'])->name('freelancers.moderation');
+        Route::post('/freelancers/{freelancer}/approve', [AdminController::class, 'approveFreelancer'])->name('freelancers.approve');
+        Route::delete('/freelancers/{freelancer}/reject', [AdminController::class, 'rejectFreelancer'])->name('freelancers.reject');
     });
 
 require __DIR__.'/auth.php';

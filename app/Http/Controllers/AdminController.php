@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Project;
 use App\Models\JobAdvertisement;
+use App\Models\Freelancer;
 use Illuminate\Http\Request;
 use App\Models\Report;
 use Inertia\Inertia;
@@ -165,6 +166,35 @@ class AdminController extends Controller
         return Inertia::render('Admin/Reports/ReportsIndex', [
             'reports' => $reports
         ]);
+    }
+
+
+    public function moderateFreelancers()
+    {
+        $pendingFreelancers = \App\Models\Freelancer::where('is_approved', false)->get();
+
+        return Inertia::render('Admin/Freelancers/FreelancersIndex', [
+            'pendingFreelancers' => $pendingFreelancers
+        ]);
+    }
+
+    public function approveFreelancer(Freelancer $freelancer)
+    {
+        $freelancer->is_approved = true;
+        $freelancer->save();
+
+        $user = $freelancer->user;
+        $user->role = 'freelancer';
+        $user->save();
+
+        return redirect()->back()->with('success', 'Freelancer approved successfully!');
+    }
+
+    public function rejectFreelancer(Freelancer $freelancer)
+    {
+        $freelancer->delete();
+
+        return redirect()->back()->with('success', 'Freelancer rejected and profile removed!');
     }
 
 }
