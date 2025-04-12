@@ -18,8 +18,23 @@
             </div>
             <ul v-else class="mt-4 space-y-4 max-w-full py-12">
                 <li v-for="project in projects" :key="project.id" class="border-b border-gray-200 pb-4">
-                    <h3 class="text-lg font-medium text-gray-900 overflow-hidden text-ellipsis whitespace-nowrap">{{ project.title }}</h3>
-                    <p class="text-sm text-gray-600 overflow-hidden text-ellipsis whitespace-nowrap">{{ project.description }}</p>
+                  <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-medium text-gray-900 overflow-hidden text-ellipsis whitespace-nowrap">
+                      {{ project.title }}
+                    </h3>
+                    <span
+                      class="ml-4 text-xs font-semibold px-3 py-1 rounded-full"
+                      :class="{
+                        'bg-red-200 text-red-800': project.Status === 'pending',
+                        'bg-green-200 text-green-800': project.Status === 'approved',
+                        'bg-red-300 text-red-800': project.Status === 'rejected'
+                      }"
+                    >
+                      {{ project.Status === 'pending' ? 'Not approved yet' :
+                         project.Status === 'approved' ? 'Approved' :
+                         project.Status === 'rejected' ? 'Rejected' : 'Unknown status' }}
+                    </span>
+                  </div>                    <p class="text-sm text-gray-600 overflow-hidden text-ellipsis whitespace-nowrap">{{ project.description }}</p>
                     <p class="overflow-hidden text-ellipsis whitespace-nowrap"><strong>Niche:</strong> {{ project.niche }}</p>
                     <p class="overflow-hidden text-ellipsis whitespace-nowrap"><strong>Completion Date:</strong> {{ project.completion_date }}</p>
                     <p class="overflow-hidden text-ellipsis whitespace-nowrap"><strong>Budget:</strong> ${{ project.budget }}</p>
