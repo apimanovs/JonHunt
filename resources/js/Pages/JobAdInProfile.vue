@@ -21,8 +21,23 @@
             <ul class="mt-4 space-y-4 max-w-full">
                 <ul v-if="jobAds !== undefined" class="py-12">
                     <li v-for="jobAd in jobAds" :key="jobAd.id" class="border-b border-gray-200 pb-4">
-                        <br>
-                        <h3 class="text-lg font-medium text-gray-900 overflow-hidden text-ellipsis whitespace-nowrap">{{ jobAd.Title }}</h3>
+                        <div class="flex items-center justify-between">
+                          <h3 class="text-lg font-medium text-gray-900 overflow-hidden text-ellipsis whitespace-nowrap">
+                            {{ jobAd.Title }}
+                          </h3>
+                          <span
+                            class="ml-4 text-xs font-semibold px-3 py-1 rounded-full"
+                            :class="{
+                              'bg-red-300 text-yellow-800': jobAd.Status === 'pending',
+                              'bg-green-200 text-green-800': jobAd.Status === 'approved',
+                              'bg-red-200 text-red-800': jobAd.Status === 'rejected'
+                            }"
+                          >
+                            {{ jobAd.Status === 'pending' ? 'Not approved yet' :
+                                jobAd.Status === 'approved' ? 'Approved' :
+                                jobAd.Status === 'rejected' ? 'Rejected' : 'Unknown status' }}
+                          </span>
+                        </div>
                         <p class="text-sm text-gray-600 overflow-hidden text-ellipsis whitespace-nowrap">{{ jobAd.Description }}</p>
                         <p class="overflow-hidden text-ellipsis whitespace-nowrap"><strong>Price:</strong> ${{ jobAd.Price }}</p>
                          <div class="flex justify-end mt-2">
