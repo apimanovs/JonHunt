@@ -15,7 +15,7 @@ class JobApplicationNotification extends Notification
     public function __construct($jobApplication, $sender)
     {
         $this->jobApplication = $jobApplication;
-        $this->sender = $sender; // Отправитель уведомления
+        $this->sender = $sender;
     }
 
     public function via($notifiable)
@@ -30,7 +30,7 @@ class JobApplicationNotification extends Notification
         return [
             'message' => 'You have a new job application!',
             'application_id' => $this->jobApplication->id,
-            'job_title' => $this->jobApplication->jobAd->title ?? 'Unknown Job', // Получаем название вакансии
+            'job_title' => $this->jobApplication->jobAd->title ?? 'Unknown Job', 
             'sender_name' => $this->sender->name,
             'sender_id' => $this->sender->id,
         ];
