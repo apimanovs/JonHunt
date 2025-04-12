@@ -81,15 +81,13 @@ const previousStep = () => {
           <InputLabel for="title" value="Title" />
           <p class="text-sm text-gray-600">Choose a clear and concise title that reflects the project scope. (At least 30 characters)</p>
           <TextInput id="title" type="text" v-model="form.title" required class="mt-1 block w-full my-10" />
-          <InputError class="mt-2" :message="form.errors.title" />
 
           <InputLabel for="niche" value="Niche" />
           <p class="text-sm text-gray-600">Select the industry or category that best fits your project.</p>
           <select id="niche" v-model="form.niche" required class="select select-bordered mt-1 block w-full my-10">
             <option v-for="niche in niches" :key="niche" :value="niche">{{ niche }}</option>
           </select>
-          <InputError class="mt-2" :message="form.errors.niche" />
-          
+
           <div class="flex justify-between mt-6">
             <PrimaryButton @click="nextStep">Next Step</PrimaryButton>
           </div>
@@ -209,26 +207,29 @@ const previousStep = () => {
             <h3 class="text-lg font-semibold text-gray-800 mb-2">Project Summary</h3>
             <ul class="list-disc list-inside space-y-2">
               <li class="break-words"><strong>Title:</strong> <span class="text-gray-700">{{ form.title }}</span></li>
+              <InputError class="mt-2" :message="form.errors.title" />
               <li class="break-words"><strong>Niche:</strong> <span class="text-gray-700">{{ form.niche }}</span></li>
+              <InputError class="mt-2" :message="form.errors.niche" />
               <li class="break-words"><strong>Budget:</strong> <span class="text-gray-700">{{ formattedBudget }} ({{ form.budget_type }})</span></li>
+              <InputError class="mt-2" :message="form.errors.budget" />
+              <InputError class="mt-2" :message="form.errors.budget_type" />
               <li v-if="form.completion_date" class="break-words"><strong>Completion Date:</strong> <span class="text-gray-700">{{ form.completion_date }}</span></li>
+              <InputError class="mt-2" :message="form.errors.completion_date" />
               <li class="break-words whitespace-pre-line"><strong>Description:</strong> <span class="text-gray-700">{{ form.description }}</span></li>
+              <InputError class="mt-2" :message="form.errors.description" />
               <li class="break-words whitespace-pre-line"><strong>Project Tasks:</strong> <span class="text-gray-700">{{ form.tasks }}</span></li>
+              <InputError class="mt-2" :message="form.errors.tasks" />
               <li class="break-words whitespace-pre-line"><strong>Expected Outcome:</strong> <span class="text-gray-700">{{ form.expected_outcome }}</span></li>
+              <InputError class="mt-2" :message="form.errors.expected_outcome" />
               <li class="break-words whitespace-pre-line"><strong>Freelancer Requirements:</strong> <span class="text-gray-700">{{ form.requirements }}</span></li>
+              <InputError class="mt-2" :message="form.errors.requirements" />
             </ul>
         
           <div class="flex justify-between mt-6">
             <PrimaryButton @click="previousStep">Previous Step</PrimaryButton>
             <PrimaryButton type="submit">Submit Project</PrimaryButton>
           </div>
-          <InputError class="mt-2" :message="form.errors.budget" />
-          <InputError class="mt-2" :message="form.errors.budget_type" />
-          <InputError class="mt-2" :message="form.errors.completion_date" />
-          <InputError class="mt-2" :message="form.errors.requirements" />
-          <InputError class="mt-2" :message="form.errors.expected_outcome" />
-          <InputError class="mt-2" :message="form.errors.tasks" />
-          <InputError class="mt-2" :message="form.errors.description" />
+
         </div>        
       </form>
     </div>

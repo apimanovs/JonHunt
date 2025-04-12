@@ -26,7 +26,7 @@ class AdminMessageController extends Controller
 
         foreach ($swears as $swear) {
             if (stripos($messageText, $swear) !== false) {
-                return back()->withErrors(['message' => 'Ваше сообщение содержит недопустимые слова.']);
+                return back()->withErrors(['message' => 'Your message containt bad words!']);
             }
         }
 
@@ -35,7 +35,7 @@ class AdminMessageController extends Controller
             'message' => $messageText,
         ]);
 
-        return back()->with('success', 'Сообщение отправлено администрации.');
+        return back()->with('success', 'Message sent to administration!');
     }
 
     public function indexForAdmin()

@@ -59,6 +59,11 @@ class JobApplicationController extends Controller
             'status' => 'in_progress',
         ]);
         
+
+        $freelancer = \App\Models\User::find($jobAd->creator_id);
+
+        Mail::to($freelancer->email)->send(new NewOrderNotificationMail($order));
+
         return redirect()->route('orders.show', $order->id)
             ->with('success', 'Order created and payment processed successfully!');
     }

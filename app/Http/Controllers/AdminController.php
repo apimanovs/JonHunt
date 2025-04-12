@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Project;
 use App\Models\JobAdvertisement;
+use App\Mail\JobAdApprovedMail;
+use App\Mail\FreelancerApprovedMail;
+use App\Mail\ProjectApprovedMail;
+use Illuminate\Support\Facades\Mail;
 use App\Models\Freelancer;
 use Illuminate\Http\Request;
 use App\Models\Report;
@@ -73,9 +77,13 @@ class AdminController extends Controller
     
     public function approveProject(Project $project)
     {
-        $project->Status = 'approved';
+        $project->status = 'approved';
         $project->save();
     
+        $user = User::find($project->creator_id);
+     
+        Mail::to($user->email)->send(new ProjectApprovedMail($project));
+        
         return redirect()->back()->with('success', 'Проект успешно одобрен!');
     }
     
@@ -89,9 +97,13 @@ class AdminController extends Controller
     
     public function approveJobAd(JobAdvertisement $jobAd)
     {
-        $jobAd->Status = 'approved';
+        $jobAd->status = 'approved';
         $jobAd->save();
     
+        $user = User::find($jobAd->creator_id);
+
+        Mail::to($user->email)->send(new JobAdApprovedMail($jobAd));
+
         return redirect()->back()->with('success', 'Объявление о работе успешно одобрено!');
     }
     
@@ -186,6 +198,8 @@ class AdminController extends Controller
         $user = $freelancer->user;
         $user->role = 'freelancer';
         $user->save();
+
+        Mail::to($freelancer->user->email)->send(new FreelancerApprovedMail($freelancer));
 
         return redirect()->back()->with('success', 'Freelancer approved successfully!');
     }

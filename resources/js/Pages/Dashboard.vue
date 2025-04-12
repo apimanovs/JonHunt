@@ -332,7 +332,7 @@ const goToPageJobAds = (page) => {
                               {{ ad.creator.name.charAt(0).toUpperCase() }}
                             </div>
                           </a>
-                          <a :href="`/users/${ad.creator.username}`" class="text-gray-700 font-medium hover:text-blue-500 transition flex items-center">
+                          <a :href="`/user/${ad.creator.username}`" class="text-gray-700 font-medium hover:text-blue-500 transition flex items-center">
                             {{ ad.creator.name }}
                             <span v-if="ad.creator.role === 'freelancer'" class="badge badge-accent mx-2">
                               Freelancer

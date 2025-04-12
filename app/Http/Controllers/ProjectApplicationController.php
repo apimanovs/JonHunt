@@ -32,12 +32,16 @@ class ProjectApplicationController extends Controller
             'cover_letter' => 'required|string|max:2000',
         ]);
 
-        ProjectApplication::create([
+        $application = ProjectApplication::create([
             'project_id' => $project->id,
             'freelancer_id' => Auth::id(),
             'cover_letter' => $validated['cover_letter'],
             'status' => 'pending',
         ]);
+        
+        $projectOwner = User::find($project->creator_id);
+        
+        Mail::to($projectOwner->email)->send(new ProjectApplicationReceivedMail($application));
 
         return redirect()->route('projects.show', $project->id)
                         ->with('success', 'Your application has been submitted!');
