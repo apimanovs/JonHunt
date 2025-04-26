@@ -186,33 +186,16 @@ const goToPageJobAds = (page) => {
             </h2>
         </template>
 
-        <div class="bg-gradient-to-r from-red-500 via-red-700 to-red-900 overflow-hidden shadow-lg sm:rounded-xl w-2/3 mx-auto my-10">
-          <div class="text-center p-8 text-white">
-              <div v-if="$page.props.auth && $page.props.auth.user" class="text-3xl font-bold mb-6">
-                  👋 Welcome back, <span>{{ $page.props.auth.user.name }}</span>!
-              </div>
-              <div v-else class="text-3xl font-bold mb-6">
-                  👋 Welcome, Guest! 
-                  <a href="/login" class="underline hover:text-gray-200 transition">Login</a> to access more features.
-              </div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
-                <div class="bg-white p-6 text-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                  <h3 class="text-lg font-semibold text-left mb-4">
-                      🔔 Notifications
-                  </h3>
-                  <p class="text-base">You have 2 unread messages from clients.</p>
-                  <div class="mt-4 text-right">with love from JobHunt team</div>
-              </div>
-                <div class="bg-white p-6 text-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                  <h3 class="text-lg font-semibold text-left mb-4">
-                      🕒 Next Deadline
-                  </h3>
-                  <p class="text-base">Project: <strong>Website Redesign</strong></p>
-                  <p class="text-base">Due: <strong>3 days remaining</strong></p>
-                </div>
-            </div>
-          </div>
-      </div>
+        <div class="text-center mb-10 mt-10">
+          <h1 class="text-4xl font-extrabold mb-4 tracking-tight text-gray-900">
+            🚀 Explore Opportunities
+          </h1>
+          <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+            Discover exciting projects and connect with talented freelancers ready to bring ideas to life.  
+            Whether you're looking to hire or be hired, your next opportunity starts here!
+          </p>
+        </div>
+        
       
         <div class="filters mt-6">
           <div class="flex flex-wrap gap-4 justify-center">
@@ -231,13 +214,23 @@ const goToPageJobAds = (page) => {
       </div>
 
         <!-- Tabs for switching between Projects and Freelancer Ads -->
-        <div class="tabs flex justify-center gap-4 mt-6">
-            <button :class="{'border-b-4 border-red-500 font-bold': activeTab === 'projects'}" @click="setTab('projects')" class="py-2 px-4">
-                Projects
+        <div class="flex justify-center mt-8 mb-6">
+          <div class="bg-gray-200 p-1 rounded-full flex space-x-2">
+            <button
+              @click="setTab('projects')"
+              :class="activeTab === 'projects' ? 'bg-red-500 text-white' : 'text-gray-600'"
+              class="px-5 py-2 rounded-full text-sm font-semibold transition"
+            >
+              Projects
             </button>
-            <button :class="{'border-b-4 border-red-500 font-bold': activeTab === 'jobAds'}" @click="setTab('jobAds')" class="py-2 px-4">
-                Freelancer Ads
+            <button
+              @click="setTab('jobAds')"
+              :class="activeTab === 'jobAds' ? 'bg-red-500 text-white' : 'text-gray-600'"
+              class="px-5 py-2 rounded-full text-sm font-semibold transition"
+            >
+              Freelancer Ads
             </button>
+          </div>
         </div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
