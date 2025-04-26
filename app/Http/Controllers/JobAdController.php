@@ -173,7 +173,8 @@ class JobAdController extends Controller
     
         $jobAds->load([
             'creator.avatar',
-            'reviews.user'
+            'reviews.user',
+            'portfolios'
         ]);
         
         $averageRating = $jobAds->reviews->count() 

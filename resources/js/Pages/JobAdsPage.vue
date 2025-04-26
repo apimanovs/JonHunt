@@ -1,169 +1,139 @@
 <template>
-  <Head title="Job Ad Information" />
   <AuthenticatedLayout>
-    <!-- Детали объявления -->
-     <div class="my-10 max-w-4xl mx-auto bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6 sm:p-8 ">
-    <div class="my-10 max-w-4xl mx-auto bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6 sm:p-8">
-      <h2 class="text-2xl font-semibold text-gray-900 overflow-hidden text-ellipsis">{{ jobAds.Title }}</h2>
-      <div class="creator-info flex items-center mt-2">
-        <a
-          v-if="jobAds.creator && jobAds.creator.avatar"
-          :href="`/user/${jobAds.creator.username}`"
-          class="flex items-center"
-        >
-          <img
-            :src="jobAds.creator.avatar.photo_url"
-            alt="Avatar"
-            class="w-10 h-10 rounded-full mr-3"
-          />
-        </a>
-        <a
-          v-else
-          :href="`/user/${jobAds.creator.username}`"
-          class="flex items-center"
-        >
-          <div
-            class="w-10 h-10 rounded-full bg-gray-400 text-white font-bold flex items-center justify-center mr-3"
-          >
-            {{ jobAds.creator.name.charAt(0).toUpperCase() }}
+    <Head title="Service Information" />
+
+    <div class="my-6 sm:my-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 sm:p-8 space-y-10">
+
+        <!-- Title -->
+        <div class="text-center">
+          <h1 class="text-2xl sm:text-3xl font-bold text-red-600 break-words whitespace-pre-wrap">{{ jobAds.Title }}</h1>
+          <p class="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-300">Posted {{ timeSincePosted }}</p>
+        </div>
+
+        <!-- Freelancer Info -->
+        <div class="flex items-center space-x-4 mt-4 sm:mt-6">
+          <a v-if="jobAds.creator?.avatar" :href="`/user/${jobAds.creator.username}`" class="flex-shrink-0">
+            <img :src="jobAds.creator.avatar.photo_url" class="w-12 h-12 rounded-full border" alt="Freelancer Avatar" />
+          </a>
+          <a v-else :href="`/user/${jobAds.creator.username}`" class="flex-shrink-0">
+            <div class="w-12 h-12 rounded-full bg-gray-400 text-white font-bold flex items-center justify-center">
+              {{ jobAds.creator.name.charAt(0).toUpperCase() }}
+            </div>
+          </a>
+          <div>
+            <a :href="`/user/${jobAds.creator.username}`" class="block text-base sm:text-lg font-semibold text-gray-800 dark:text-gray-200 hover:text-blue-600">
+              {{ jobAds.creator.name }}
+            </a>
+            <div v-if="jobAds.creator.role === 'freelancer'" class="text-xs text-blue-600 mt-1">Freelancer</div>
           </div>
-        </a>
-        <a
-          :href="`/user/${jobAds.creator.username}`"
-          class="text-gray-700 font-medium hover:text-blue-500 transition flex items-center"
-        >
-          {{ jobAds.creator.name }}
-          <span
-            v-if="jobAds.creator.role === 'freelancer'"
-            class="badge badge-accent ml-2"
+        </div>
+
+        <!-- Service Details -->
+        <div class="space-y-6">
+          <div class="bg-gray-100 dark:bg-gray-700 p-4 sm:p-6 rounded-lg">
+            <h2 class="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">Service Details</h2>
+            <div class="mt-3 space-y-2">
+              <p class="text-gray-700 dark:text-gray-300 text-sm sm:text-base"><strong>Price:</strong> ${{ jobAds.Price }}</p>
+              <p class="text-gray-700 dark:text-gray-300 text-sm sm:text-base"><strong>Service Provider:</strong> {{ jobAds.creator.name }}</p>
+            </div>
+          </div>
+
+          <div class="bg-gray-100 dark:bg-gray-700 p-4 sm:p-6 rounded-lg">
+            <h2 class="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">Service Description</h2>
+            <p class="mt-3 text-gray-700 dark:text-gray-300 text-sm sm:text-base break-words whitespace-pre-wrap">
+              {{ jobAds.Description }}
+            </p>
+          </div>
+
+          <!-- Portfolio Section -->
+          <div class="bg-gray-100 dark:bg-gray-700 p-4 sm:p-6 rounded-lg">
+            <h2 class="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">Examples of Work</h2>
+            <div v-if="jobAds.portfolios.length > 0" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+              <div
+                v-for="example in jobAds.portfolios"
+                :key="example.id"
+                class="overflow-hidden rounded-lg shadow-md bg-white dark:bg-gray-800 cursor-pointer"
+                @click="openImage(example.example_url)"
+              >
+                <img :src="example.example_url" alt="Portfolio Example" class="w-full h-48 object-cover hover:scale-105 transition-transform" />
+              </div>
+            </div>
+            <p v-else class="text-gray-500 mt-4">No examples provided yet.</p>
+          </div>
+
+          <!-- How to Request Section -->
+          <div class="bg-red-50 border-l-4 border-red-400 p-4 sm:p-6 rounded-lg">
+            <h2 class="text-xl sm:text-2xl font-semibold text-red-600">How to Request This Service</h2>
+            <ul class="mt-3 space-y-2 text-gray-700 text-sm sm:text-base list-disc list-inside">
+              <li>🚀 Send a clear and polite request explaining your needs.</li>
+              <li>🚀 Specify expectations, deadlines, and any details.</li>
+              <li>🚀 Feel free to ask the freelancer any questions before ordering.</li>
+              <li>🚀 Click "Request Service" to contact and agree on terms.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="flex justify-center mt-8">
+          <button
+            @click="navigateToApplicationForm"
+            class="w-full sm:w-auto px-6 py-3 bg-red-600 hover:bg-red-700 text-white text-base sm:text-lg rounded-full shadow-md transition"
           >
-            Freelancer
-          </span>
-        </a>
+            🚀 Request Service
+          </button>
+        </div>
+
       </div>
-
-      <br />
-
-      <div class="mt-2">
-        <h3 class="text-xl font-semibold text-gray-900 overflow-hidden text-ellipsis whitespace-nowrap">
-          Details
-        </h3>
-        <p><strong>Price:</strong> ${{ jobAds.Price }}</p>
-        <p><strong>Posted:</strong> {{ timeSincePosted }}</p>
-        <p><strong>Creator:</strong> {{ jobAds.creator.name }}</p>
-      </div>
-      <br />
-
-      <p class="mt-2 text-lg text-gray-800 font-medium overflow-hidden text-ellipsis">
-        {{ jobAds.Description }}
-      </p>
-      <div class="mt-6 flex justify-between items-center">
-        <button 
-        @click="navigateToApplicationForm" 
-        class="btn bg-blue-600 text-white hover:bg-blue-700"
-        >
-        Apply for Job
-      </button>
     </div>
-  </div>
-  
-  <ReviewsSection 
-  :reviews="jobAds.reviews"
-  :averageRating="averageRating"
-  :authUser="auth.user"
-  :jobAdId="jobAds.id"
-/>
 
-  </div>
+    <!-- Modal for Image Preview -->
+    <div v-if="selectedImage" class="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
+      <div class="relative">
+        <img :src="selectedImage" class="max-h-[90vh] max-w-[90vw] object-contain rounded-lg" />
+        <button
+          @click="closeImage"
+          class="absolute top-2 right-2 text-white text-3xl font-bold hover:text-red-500"
+        >
+          X
+        </button>
+      </div>
+    </div>
+
   </AuthenticatedLayout>
 </template>
 
 <script setup>
-import { computed } from 'vue';
-import { Head, router, usePage, useForm } from '@inertiajs/vue3';
+import { ref, computed } from 'vue';
+import { Head, usePage, router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import InputError from '@/Components/InputError.vue';
-import ReviewsSection from '@/Components/ReviewsSection.vue';
 
 const { props: pageProps } = usePage();
-const { auth } = pageProps;
 
 const props = defineProps({
   jobAds: Object,
-  averageRating: {
-    type: String,
-    default: ''
-  },
 });
 
-console.log(props.jobAds);
+const selectedImage = ref(null);
+
+const openImage = (url) => {
+  selectedImage.value = url;
+};
+
+const closeImage = () => {
+  selectedImage.value = null;
+};
 
 const timeSincePosted = computed(() => {
   const postedDate = new Date(props.jobAds.created_at);
-  const currentDate = new Date();
-  const diffTime = Math.abs(currentDate - postedDate);
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  if (diffDays === 0) return "Today";
-  else if (diffDays === 1) return "1 day ago";
-  else return `${diffDays} days ago`;
+  const now = new Date();
+  const diff = Math.floor((now - postedDate) / (1000 * 60 * 60 * 24));
+  if (diff === 0) return "Today";
+  if (diff === 1) return "1 day ago";
+  return `${diff} days ago`;
 });
 
 const navigateToApplicationForm = () => {
   router.visit(`/jobs/${props.jobAds.id}/apply`);
-};
-
-const form = useForm({
-  Rating: '',
-  ReviewText: '',
-});
-
-const editForm = useForm({
-  Rating: '',
-  ReviewText: '',
-  id: null,
-});
-
-const submitReview = () => {
-  form.post(route('jobAds.addReview', props.jobAds.id), {
-    onSuccess: () => {
-      form.reset();
-      router.reload({ only: ['jobAds.reviews', 'averageRating'] });
-    },
-  });
-};
-
-const deleteReview = (review) => {
-  if (confirm('Are you sure you want to delete this review?')) {
-    form.delete(`/reviews/${review.ReviewID}`, {
-      onSuccess: () => {
-        router.reload({ only: ['jobAds.reviews', 'averageRating'] });
-      },
-      onError: (errors) => {
-        console.log('Error deleting review:', errors);
-      },
-    });
-  }
-};
-
-const cancelEdit = () => {
-  editForm.reset();
-  editForm.id = null;
-};
-
-const editReview = (review) => {
-  editForm.id = review.ReviewID;
-  editForm.Rating = review.Rating;
-  editForm.ReviewText = review.ReviewText;
-};
-
-const updateReview = () => {
-  editForm.post(`/reviews/${editForm.id}/edit`, {
-    onSuccess: () => {
-      editForm.reset();
-      editForm.id = null;
-      router.reload({ only: ['jobAds.reviews', 'averageRating'] });
-    },
-  });
 };
 </script>
