@@ -67,148 +67,13 @@
     </div>
   </div>
   
-  <!-- Секция отзывов -->
-  <h3 class="text-xl font-semibold text-gray-900 my-2.5">Average Rating</h3>
-  <p v-if="jobAds.reviews.length > 0" class="text-lg text-gray-800 font-medium">{{ averageRating }}</p>
-    <div class="mt-6">
-      <h3 class="text-xl font-semibold text-gray-900">Reviews</h3>
-      <div v-if="jobAds.reviews.length === 0" class="mt-2 text-sm text-gray-600">
-        No reviews yet.
-      </div>
-      <ul class="mt-4 space-y-4">
-        <li
-          v-for="review in jobAds.reviews"
-          :key="review.ReviewID"
-          class="border-b border-gray-200 pb-4"
-        >
-          <div v-if="editForm.id === review.ReviewID">
-            <div>
-              <label for="editRating" class="block text-sm font-medium">Rating</label>
-              <select
-                id="editRating"
-                v-model="editForm.Rating"
-                class="mt-1 block w-full"
-              >
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-              </select>
-            </div>
-            <div>
-              <label for="editReviewText" class="block text-sm font-medium">Review</label>
-              <textarea
-                id="editReviewText"
-                v-model="editForm.ReviewText"
-                class="mt-1 block w-full"
-              ></textarea>
-              <InputError class="mt-2" :message="form.errors.ReviewText" />
-            </div>
-            <div class="mt-2">
-              <PrimaryButton @click="updateReview" class="bg-blue-600 text-white">
-                Update Review
-              </PrimaryButton>
-              <button @click="cancelEdit" class="text-red-600 hover:text-red-800 ml-2">
-                Cancel
-              </button>
-            </div>
-          </div>
+  <ReviewsSection 
+  :reviews="jobAds.reviews"
+  :averageRating="averageRating"
+  :authUser="auth.user"
+  :jobAdId="jobAds.id"
+/>
 
-          <div v-else>
-            <p class="text-gray-900">{{ review.ReviewText }}</p>
-            <p class="text-sm text-gray-600">
-              {{ review.user.name }} (Rating: {{ review.Rating }})
-              <span v-if="auth.user && review.user.id === auth.user.id">
-                <div class="dropdown relative inline-block text-left">
-                  <button
-                    tabindex="0"
-                    role="button"
-                    class="flex items-center p-1 rounded-full hover:bg-gray-200 transition duration-150 ease-in-out"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      class="h-3 w-6 stroke-current text-gray-600"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
-                      ></path>
-                    </svg>
-                  </button>
-                  <ul
-                    tabindex="0"
-                    class="dropdown-content absolute mt-2 w-40 menu bg-base-100 rounded-md shadow-lg p-1 z-10"
-                  >
-                    <li>
-                      <button
-                        @click="editReview(review)"
-                        class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 hover:text-blue-600 transition duration-150 ease-in-out text-left"
-                      >
-                        Edit
-                      </button>
-                    </li>
-                    <li>
-                      <button
-                        @click="deleteReview(review)"
-                        class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 hover:text-red-600 transition duration-150 ease-in-out text-left"
-                      >
-                        Delete
-                      </button>
-                    </li>
-                  </ul>
-                </div>
-              </span>
-            </p>
-          </div>
-        </li>
-      </ul>
-    </div>
-
-    <!-- Форма добавления нового отзыва -->
-    <div class="mt-6">
-      <h3 class="text-xl font-semibold text-gray-900">Add a Review</h3>
-      <form @submit.prevent="submitReview" class="space-y-4">
-        <div>
-          <label for="rating" class="block text-sm font-medium">Rating</label>
-          <select
-            id="rating"
-            v-model="form.Rating"
-            class="select select-bordered mt-1 block w-full"
-          >
-            <option disabled selected>Choose rating for this job ad</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-          </select>
-        </div>
-        <div>
-          <label for="ReviewText" class="block text-sm font-medium">Review</label>
-          <textarea
-            id="ReviewText"
-            v-model="form.ReviewText"
-            class="textarea textarea-bordered mt-1 block w-full"
-          ></textarea>
-        </div>
-
-        <div v-if="$page.props.errors.error" class="text-red-600 mb-4">
-          {{ $page.props.errors.error }}
-        </div>
-        <div v-if="$page.props.errors.Rating" class="text-red-600 mb-4">
-          {{ $page.props.errors.Rating }}
-        </div>
-        <PrimaryButton type="submit" class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-md">
-          Post a review
-        </PrimaryButton>
-        <InputError class="mt-2" :message="form.errors.ReviewText" />
-      </form>
-    </div>
   </div>
   </AuthenticatedLayout>
 </template>
@@ -219,6 +84,7 @@ import { Head, router, usePage, useForm } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputError from '@/Components/InputError.vue';
+import ReviewsSection from '@/Components/ReviewsSection.vue';
 
 const { props: pageProps } = usePage();
 const { auth } = pageProps;

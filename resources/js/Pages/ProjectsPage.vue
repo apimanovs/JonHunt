@@ -87,78 +87,16 @@
           <p class="mt-1"><strong>Cover Letter:</strong> {{ currentUserApplication.cover_letter }}</p>
         </div>
 
-        <!-- Reviews Section -->
-        <h3 class="text-xl font-semibold text-gray-900 my-2.5">Average Rating</h3>
-        <p v-if="reviews.length > 0" class="text-lg text-gray-800 font-medium">{{ averageRating }}</p>
-
-        <div class="mt-6">
-          <h3 class="text-xl font-semibold">Reviews</h3>
-          <ul class="mt-4 space-y-4">
-            <li
-              v-for="review in reviews"
-              :key="review.id"
-              class="p-4 bg-white dark:bg-gray-800 shadow rounded border border-gray-200 dark:border-gray-700"
-            >
-              <div v-if="editForm.id === review.ReviewID">
-                <div class="mb-2">
-                  <label class="block font-medium">Rating</label>
-                  <select v-model="editForm.Rating" class="w-full p-1 border rounded">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                  </select>
-                </div>
-                <div class="mb-2">
-                  <label class="block font-medium">Review</label>
-                  <textarea v-model="editForm.ReviewText" class="w-full p-2 border rounded"></textarea>
-                  <InputError :message="form.errors.ReviewText" class="mt-1" />
-                </div>
-                <div class="flex gap-2">
-                  <PrimaryButton @click="updateReview" class="bg-blue-600 text-white">Update</PrimaryButton>
-                  <button @click="cancelEdit" class="text-red-500 hover:underline">Cancel</button>
-                </div>
-              </div>
-              <div v-else>
-                <p class="text-gray-900 dark:text-white">{{ review.ReviewText }}</p>
-                <p class="text-sm text-gray-600 dark:text-gray-400">
-                  {{ review.user.name }} (Rating: {{ review.Rating }})
-                  <span v-if="auth.user && review.user.id === auth.user.id">
-                    <button @click="editReview(review)" class="ml-2 text-blue-500 hover:underline">Edit</button>
-                    <button @click="deleteReview(review)" class="ml-2 text-red-500 hover:underline">Delete</button>
-                  </span>
-                </p>
-              </div>
-            </li>
-          </ul>
-        </div>
-
-        <!-- Add Review -->
-        <div class="mt-10">
-          <h3 class="text-xl font-semibold">Add a Review</h3>
-          <form @submit.prevent="submitReview" class="space-y-4">
-            <div>
-              <label class="block font-medium">Rating</label>
-              <select v-model="form.Rating" class="w-full p-2 border rounded">
-                <option disabled selected>Choose rating</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-              </select>
-            </div>
-            <div>
-              <label class="block font-medium">Review</label>
-              <textarea v-model="form.ReviewText" class="w-full p-2 border rounded"></textarea>
-              <InputError class="mt-1" :message="form.errors.ReviewText" />
-            </div>
-            <PrimaryButton type="submit" class="bg-red-600 text-white">Post Review</PrimaryButton>
-          </form>
-        </div>
+        
+        <ReviewsSection 
+        :reviews="reviews"
+        :averageRating="averageRating"
+        :authUser="auth.user"
+        :projectId="project.id"
+        />
+        
       </div>
-
+      
       <!-- Right: Apply Sidebar -->
       <div class="sticky top-28 self-start space-y-4">
         <div v-if="canApply" class="bg-blue-50 dark:bg-gray-900 p-6 rounded shadow">
@@ -192,6 +130,7 @@ import { useForm, Head, usePage } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputError from '@/Components/InputError.vue';
 import { Inertia } from '@inertiajs/inertia';
+import ReviewsSection from '@/Components/ReviewsSection.vue';
 
 const { props: pageProps } = usePage();
 const { auth } = pageProps;
