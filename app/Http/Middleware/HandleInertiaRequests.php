@@ -30,21 +30,14 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request)
     {
-        // Берём пользователя из сессии
         $user = $request->user();
 
-        // Переменная под аватар (по умолчанию null)
         $avatar = null;
 
-        // Если пользователь залогинен
         if ($user) {
-            // Подгружаем отношение avatar, если нужно
             $user->load('avatar');
 
-            // Явно получаем аватар из базы (или через связь)
             $avatar = Avatar::where('user_id', $user->id)->first();
-            // или, если связь точно работает, можно сразу:
-            // $avatar = $user->avatar;
         }
 
         return array_merge(parent::share($request), [
@@ -59,6 +52,7 @@ class HandleInertiaRequests extends Middleware
                     'id'    => $user->id,
                     'name'  => $user->name,
                     'email' => $user->email,
+                    'username' => $user->username,
                     'role'  => $user->role,
                     'isNewUser' => $request->session()->get('isNewUser'),
                     'balance' => $request->user()->balance->amount ?? 0, 

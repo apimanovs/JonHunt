@@ -4,7 +4,6 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
-import { ref } from 'vue';
 
 defineProps({
     mustVerifyEmail: {
@@ -19,27 +18,22 @@ const user = usePage().props.auth.user;
 
 const form = useForm({
     name: user.name,
+    username: user.username,
     email: user.email,
 });
-
 </script>
 
 <template>
     <section>
-
-
         <header>
             <h2 class="mt-10 text-lg font-medium text-gray-900">Profile Information</h2>
 
-            
             <p class="mt-1 text-sm text-gray-600">
                 Update your account's profile information and email address.
             </p>
         </header>
-        
+
         <form @submit.prevent="form.patch(route('profile.update'))" class="mt-6 space-y-6">
-           
-           
             <div>
                 <InputLabel for="name" value="Name" />
 
@@ -52,8 +46,22 @@ const form = useForm({
                     autofocus
                     autocomplete="name"
                 />
+                <InputError class="mt-2" :message="usePage().props.errors.name" />
+            </div>
 
-                <InputError class="mt-2" :message="form.errors.name" />
+            <div>
+                <InputLabel for="username" value="Username" />
+
+                <TextInput
+                    id="username"
+                    type="text"
+                    class="mt-1 block w-full"
+                    v-model="form.username"
+                    :class="{ 'border-red-500': usePage().props.errors.username }"
+                    required
+                    autocomplete="username"
+                />
+                <InputError class="mt-2" :message="usePage().props.errors.username" />
             </div>
 
             <div>
@@ -64,11 +72,11 @@ const form = useForm({
                     type="email"
                     class="mt-1 block w-full"
                     v-model="form.email"
+                    :class="{ 'border-red-500': usePage().props.errors.email }"
                     required
-                    autocomplete="username"
+                    autocomplete="email"
                 />
-
-                <InputError class="mt-2" :message="form.errors.email" />
+                <InputError class="mt-2" :message="usePage().props.errors.email" />
             </div>
 
             <div v-if="mustVerifyEmail && user.email_verified_at === null">
@@ -83,7 +91,6 @@ const form = useForm({
                         Click here to re-send the verification email.
                     </Link>
                 </p>
-
 
                 <div
                     v-show="status === 'verification-link-sent'"

@@ -38,46 +38,38 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $user = $request->user(); 
-    
         
         $user->fill($request->validated());
-    
         
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
+            $user->sendEmailVerificationNotification();
         }
     
-
         $user->save();
     
-       
         return Redirect::route('profile.edit');
     }
     
 
     public function show($username)
     {
-        // Получаем пользователя
         $user = User::where('username', $username)->firstOrFail();
     
-        // Получаем аватар пользователя напрямую
         $avatar = Avatar::where('user_id', $user->id)->first();
     
-        // Получаем связанные данные
         $projects = Project::where('creator_id', $user->id)->get();
         $jobads = JobAdvertisement::where('creator_id', $user->id)->get();
     
-        // Проверяем, является ли пользователь фрилансером
         $skills = [];
         $freelancer = null;
         if ($user->role === 'freelancer') {
             $freelancer = Freelancer::with('skills')->where('user_id', $user->id)->first();
             if ($freelancer) {
-                $skills = $freelancer->skills->pluck('name'); // Получаем имена навыков
+                $skills = $freelancer->skills->pluck('name');
             }
         }
 
-        // Возвращаем данные во фронтенд
         return Inertia::render('UserProfile', [
             'user' => [
                 'id' => $user->id,

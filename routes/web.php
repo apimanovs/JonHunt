@@ -232,4 +232,8 @@ Route::middleware(['auth', 'admin'])
         Route::delete('/freelancers/{freelancer}/reject', [AdminController::class, 'rejectFreelancer'])->name('freelancers.reject');
     });
 
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/avatar/get', [PhotoController::class, 'getAvatar'])->name('avatar.get');
+    });
+
 require __DIR__.'/auth.php';

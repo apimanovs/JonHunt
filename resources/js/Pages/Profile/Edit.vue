@@ -16,24 +16,21 @@ defineProps({
     },
 });
 
-// Состояния
-const avatarUrl = ref(null); // URL текущего аватара
-const avatar = ref(null); // Файл для загрузки
-const status = ref(''); // Статус загрузки
+const avatarUrl = ref(null);
+const avatar = ref(null);
+const status = ref('');
 
-// Получение текущего аватара
 const fetchAvatar = () => {
     axios
         .get(route('avatar.get'))
         .then(response => {
-            avatarUrl.value = response.data.photo_url; // Устанавливаем URL аватара
+            avatarUrl.value = response.data.photo_url;
         })
         .catch(error => {
             console.error('Error fetching avatar:', error);
         });
 };
 
-// Обработка загрузки аватара
 const submitForm = () => {
     if (!avatar.value) {
         status.value = 'Please select a file before uploading.';
@@ -51,7 +48,7 @@ const submitForm = () => {
         })
         .then(response => {
             status.value = 'Avatar uploaded successfully!';
-            fetchAvatar(); // Обновляем аватар после загрузки
+            fetchAvatar(); 
         })
         .catch(error => {
             console.error('Upload error:', error);
@@ -59,17 +56,15 @@ const submitForm = () => {
         });
 };
 
-// Обработка выбора файла
 const handleFileChange = event => {
-    avatar.value = event.target.files[0]; // Получаем файл из input
+    avatar.value = event.target.files[0];
 };
 
-// Удаление аватара
 const deleteAvatar = () => {
     axios
         .delete(route('avatar.delete'))
         .then(() => {
-            avatarUrl.value = null; // Удаляем URL аватара
+            avatarUrl.value = null;
             status.value = 'Avatar deleted successfully!';
         })
         .catch(error => {
@@ -78,7 +73,6 @@ const deleteAvatar = () => {
         });
 };
 
-// Получение аватара при монтировании компонента
 onMounted(() => {
     fetchAvatar();
 });
@@ -94,7 +88,7 @@ onMounted(() => {
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                <!-- Форма загрузки аватара -->
+
                 <div class="p-6 bg-white shadow rounded-lg">
                     <h2 class="text-lg font-semibold text-gray-800 mb-4">Upload Avatar</h2>
                     <form @submit.prevent="submitForm" class="space-y-4">
@@ -106,13 +100,13 @@ onMounted(() => {
                         />
                         <button
                             type="submit"
-                            class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition duration-200"
+                            class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg transition duration-200"
                         >
                             Upload
                         </button>
                     </form>
                     <p v-if="status" class="mt-4 text-green-600 font-medium">{{ status }}</p>
-                    <!-- Отображение аватара -->
+
                     <div v-if="avatarUrl" class="mt-6">
                         <h3 class="text-lg font-medium text-gray-700">Current Avatar</h3>
                         <div class="mt-4 flex items-center space-x-4">
@@ -127,7 +121,6 @@ onMounted(() => {
                     </div>
                 </div>
 
-                <!-- Форма обновления профиля -->
                 <div class="p-6 bg-white shadow rounded-lg">
                     <UpdateProfileInformationForm
                         :must-verify-email="mustVerifyEmail"
@@ -136,12 +129,10 @@ onMounted(() => {
                     />
                 </div>
 
-                <!-- Форма обновления пароля -->
                 <div class="p-6 bg-white shadow rounded-lg">
                     <UpdatePasswordForm class="max-w-xl" />
                 </div>
 
-                <!-- Форма удаления аккаунта -->
                 <div class="p-6 bg-white shadow rounded-lg">
                     <DeleteUserForm class="max-w-xl" />
                 </div>
@@ -149,7 +140,3 @@ onMounted(() => {
         </div>
     </AuthenticatedLayout>
 </template>
-
-<style scoped>
-/* Дополнительные стили */
-</style>
