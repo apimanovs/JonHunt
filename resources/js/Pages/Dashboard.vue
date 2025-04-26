@@ -6,92 +6,16 @@ import GuestLayout from "@/Layouts/GuestLayout.vue";
 import introJs from 'intro.js';
 import 'intro.js/introjs.css';
 
-
-
 const { props: pageProps } = usePage();
-
-const Layout = computed(() => {
-    return pageProps.auth ? AuthenticatedLayout : GuestLayout;
-});
-
-const getTimeRemaining = (deadline) => {
-  if (!deadline) return '';
-  const now = new Date();
-  const end = new Date(deadline);
-
-  const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const endDate = new Date(end.getFullYear(), end.getMonth(), end.getDate());
-  const diffDays = Math.round((endDate - nowDate) / (1000 * 60 * 60 * 24));
-
-  if (diffDays === 0) {
-    return "Today is deadline!";
-  }
-  if (diffDays < 0) {
-    return "Deadline passed";
-  }
-  return `${diffDays} days left`;
-};
-
-const showReportModal = ref(false);
-const reportReason = ref("");
-const reportTarget = ref({ project_id: null, job_ad_id: null });
-
-const openReportModal = (projectId = null, jobAdId = null) => {
-  reportTarget.value = {
-    project_id: projectId,
-    job_ad_id: jobAdId,
-  };
-  reportReason.value = "";
-  showReportModal.value = true;
-};
-
-const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-
-const submitReport = async () => {
-  if (!reportReason.value.trim()) {
-    alert("Please enter a reason.");
-    return;
-  }
-
-  const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-
-  try {
-    const response = await fetch("/reports", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRF-TOKEN": token,
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        reason: reportReason.value,
-        project_id: reportTarget.value.project_id,
-        job_advertisement_id: reportTarget.value.job_ad_id,
-      }),
-    });
-
-    if (!response.ok) {
-      const data = await response.json();
-      alert(data.message || "Failed to submit report.");
-      return;
-    }
-
-    showReportModal.value = false;
-    alert("Report submitted!");
-  } catch (err) {
-    console.error(err);
-    alert("Error occurred.");
-  }
-};
-
-
+const Layout = computed(() => pageProps.auth ? AuthenticatedLayout : GuestLayout);
 const user = computed(() => pageProps.auth || null);
 
 const activeTab = ref('projects');
 
+// Фильтры
 const selectedNiche = ref('');
 const selectedBudgetRange = ref('');
-const selectedCompletionDate = ref('');
+const sortBy = ref('newest');
 
 const budgetRanges = [
     { label: 'Any', value: '' },
@@ -100,49 +24,79 @@ const budgetRanges = [
     { label: 'Over $1000', value: '1000+' },
 ];
 
-const sortedProjects = computed(() => {
-    return pageProps.projects
-        .filter(project => project.Status === 'approved')
-        .slice()
-        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-});
+const sortOptions = [
+    { label: 'Newest first', value: 'newest' },
+    { label: 'Oldest first', value: 'oldest' },
+    { label: 'Lowest budget first', value: 'low_budget' },
+    { label: 'Highest budget first', value: 'high_budget' },
+];
 
+const getTimeRemaining = (deadline) => {
+  if (!deadline) return '';
+  const now = new Date();
+  const end = new Date(deadline);
+  const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const endDate = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+  const diffDays = Math.round((endDate - nowDate) / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) return "Today is deadline!";
+  if (diffDays < 0) return "Deadline passed";
+  return `${diffDays} days left`;
+};
+
+// ----- Сортировка проектов -----
 const filteredProjects = computed(() => {
-    return sortedProjects.value.filter(project => {
-        if (selectedNiche.value && project.niche !== selectedNiche.value) {
-            return false;
-        }
-        if (selectedBudgetRange.value) {
-            const [min, max] = selectedBudgetRange.value.split('-').map(Number);
-            const budget = project.budget || 0;
-            if ((min && budget < min) || (max && budget > max)) {
-                return false;
-            }
-        }
-        if (selectedCompletionDate.value && project.completion_date !== selectedCompletionDate.value) {
-            return false;
-        }
-        return true;
-    });
+    let projects = pageProps.projects.filter(p => p.Status === 'approved');
+
+    if (selectedNiche.value) {
+        projects = projects.filter(p => p.niche === selectedNiche.value);
+    }
+    if (selectedBudgetRange.value) {
+        const [min, max] = selectedBudgetRange.value.split('-').map(Number);
+        projects = projects.filter(p => {
+            const budget = p.budget || 0;
+            if (min && budget < min) return false;
+            if (max && budget > max) return false;
+            return true;
+        });
+    }
+
+    switch (sortBy.value) {
+        case 'newest':
+            projects.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            break;
+        case 'oldest':
+            projects.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+            break;
+        case 'low_budget':
+            projects.sort((a, b) => (a.budget || 0) - (b.budget || 0));
+            break;
+        case 'high_budget':
+            projects.sort((a, b) => (b.budget || 0) - (a.budget || 0));
+            break;
+    }
+
+    return projects;
 });
 
+// Сортировка фрилансеров (ads)
 const filteredJobAds = computed(() => {
-    return pageProps.jobAds.filter(ad => {
-        if (ad.Status !== 'approved') {
-            return false;
-        }
-        if (selectedBudgetRange.value) {
-            const [min, max] = selectedBudgetRange.value.split('-').map(Number);
+    let ads = pageProps.jobAds.filter(ad => ad.Status === 'approved');
+
+    if (selectedBudgetRange.value) {
+        const [min, max] = selectedBudgetRange.value.split('-').map(Number);
+        ads = ads.filter(ad => {
             const price = ad.Price || 0;
-            if ((min !== undefined && price < min) || (max !== undefined && price > max)) {
-                return false;
-            }
-        }
-        return true;
-    });
+            if (min && price < min) return false;
+            if (max && price > max) return false;
+            return true;
+        });
+    }
+
+    return ads;
 });
 
-// ----- Pagination Setup -----
+// ----- Pagination -----
 const itemsPerPage = 18;
 const currentPageProjects = ref(1);
 const currentPageJobAds = ref(1);
@@ -158,7 +112,6 @@ const paginatedProjects = computed(() => {
     const start = (currentPageProjects.value - 1) * itemsPerPage;
     return filteredProjects.value.slice(start, start + itemsPerPage);
 });
-
 const paginatedJobAds = computed(() => {
     const start = (currentPageJobAds.value - 1) * itemsPerPage;
     return filteredJobAds.value.slice(start, start + itemsPerPage);
@@ -166,6 +119,8 @@ const paginatedJobAds = computed(() => {
 
 const setTab = (tab) => {
     activeTab.value = tab;
+    currentPageProjects.value = 1;
+    currentPageJobAds.value = 1;
 };
 
 const goToPageProjects = (page) => {
@@ -174,7 +129,56 @@ const goToPageProjects = (page) => {
 const goToPageJobAds = (page) => {
     currentPageJobAds.value = page;
 };
+
+// Репортинг
+const showReportModal = ref(false);
+const reportReason = ref("");
+const reportTarget = ref({ project_id: null, job_ad_id: null });
+
+const openReportModal = (projectId = null, jobAdId = null) => {
+    reportTarget.value = { project_id: projectId, job_ad_id: jobAdId };
+    reportReason.value = "";
+    showReportModal.value = true;
+};
+
+const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+const submitReport = async () => {
+    if (!reportReason.value.trim()) {
+        alert("Please enter a reason.");
+        return;
+    }
+
+    try {
+        const response = await fetch("/reports", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": token,
+            },
+            credentials: "include",
+            body: JSON.stringify({
+                reason: reportReason.value,
+                project_id: reportTarget.value.project_id,
+                job_advertisement_id: reportTarget.value.job_ad_id,
+            }),
+        });
+
+        if (!response.ok) {
+            const data = await response.json();
+            alert(data.message || "Failed to submit report.");
+            return;
+        }
+
+        showReportModal.value = false;
+        alert("Report submitted!");
+    } catch (err) {
+        console.error(err);
+        alert("Error occurred.");
+    }
+};
 </script>
+
 
 <template>
     <Head title="JobHunt - Projects List" />
@@ -198,20 +202,22 @@ const goToPageJobAds = (page) => {
         
       
         <div class="filters mt-6">
-          <div class="flex flex-wrap gap-4 justify-center">
-              <select v-model="selectedNiche" class="p-2 border border-gray-300 rounded-lg">
-                  <option value="">All Niches</option>
-                  <option v-for="niche in [...new Set(pageProps.projects.map(p => p.niche))]" :key="niche" :value="niche">
-                      {{ niche }}
-                  </option>
-              </select>
-              <select v-model="selectedBudgetRange" class="p-2 border border-gray-300 rounded-lg">
-                  <option v-for="range in budgetRanges" :key="range.value" :value="range.value">
-                      {{ range.label }}
-                  </option>
-              </select>
+          <div class="flex flex-wrap justify-center gap-4">
+            <select v-model="selectedNiche" class="p-2 border border-gray-300 rounded-lg">
+              <option value="">All Niches</option>
+              <option v-for="niche in [...new Set(pageProps.projects.map(p => p.niche))]" :key="niche" :value="niche">
+                {{ niche }}
+              </option>
+            </select>
+            <select v-model="selectedBudgetRange" class="p-2 border border-gray-300 rounded-lg">
+              <option v-for="range in budgetRanges" :key="range.value" :value="range.value">{{ range.label }}</option>
+            </select>
+            <select v-model="sortBy" class="p-2 border border-gray-300 rounded-lg">
+              <option v-for="option in sortOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
+            </select>
           </div>
-      </div>
+        </div>
+        
 
         <!-- Tabs for switching between Projects and Freelancer Ads -->
         <div class="flex justify-center mt-8 mb-6">
