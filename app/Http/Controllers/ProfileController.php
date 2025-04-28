@@ -58,8 +58,23 @@ class ProfileController extends Controller
     
         $avatar = Avatar::where('user_id', $user->id)->first();
     
-        $projects = Project::where('creator_id', $user->id)->get();
-        $jobads = JobAdvertisement::where('creator_id', $user->id)->get();
+        $projects = Project::where('creator_id', $user->id)
+            ->where('Status', 'approved')
+            ->get();
+    
+        $jobAds = JobAdvertisement::where('creator_id', $user->id)
+            ->where('Status', 'approved')
+            ->get()
+            ->map(function ($ad) {
+                return [
+                    'id' => $ad->id,
+                    'title' => $ad->Title,
+                    'description' => $ad->Description,
+                    'price' => $ad->Price,
+                    'creator' => $ad->creator,
+                    'created_at' => $ad->created_at,
+                ];
+            });
     
         $skills = [];
         $freelancer = null;
@@ -69,7 +84,7 @@ class ProfileController extends Controller
                 $skills = $freelancer->skills->pluck('name');
             }
         }
-
+    
         return Inertia::render('UserProfile', [
             'user' => [
                 'id' => $user->id,
@@ -83,10 +98,9 @@ class ProfileController extends Controller
             'freelancer' => $freelancer,
             'skills' => $skills,
             'projects' => $projects,
-            'jobads' => $jobads,
+            'jobAds' => $jobAds,
         ]);
-    }
-    
+    }    
     
 
     /**
