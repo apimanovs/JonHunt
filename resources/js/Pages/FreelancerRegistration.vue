@@ -82,12 +82,13 @@
             <p class="mt-2 text-sm text-gray-600">
               Use this space to briefly describe your background, interests, or any unique qualities that set you apart.
             </p>
-            <textarea
-              id="bio"
-              class="textarea textarea-bordered h-24 mt-1 block w-full resize-none"
-              v-model="form.bio"
-              required
-            />
+            <CharactedLimitedInput
+            id="bio"
+            v-model="form.bio"
+            :max="1000"
+            label="Bio"
+            :textarea="true"
+          />
             <InputError class="mt-2" :message="form.errors.bio" />
           </div>
 
@@ -241,6 +242,8 @@ import TextInput from '@/Components/TextInput.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Multiselect from "vue-multiselect";
+import CharactedLimitedInput from '@/Components/CharactedLimitedInput.vue';
+
 import "vue-multiselect/dist/vue-multiselect.min.css";
 
 const page = usePage();     

@@ -23,29 +23,28 @@
                 <form @submit.prevent="submitMainForm" class="space-y-6">
                     <div>
                         <InputLabel for="title" value="Title" />
-                        <TextInput
-                            id="title"
-                            type="text"
-                            class="mt-1 block w-full"
-                            v-model="mainForm.title"
-                            required
-                            autofocus
-                            autocomplete="title"
-                        />
                         <span class="text-sm text-gray-500">Keep it clear and concise (60 symbols minimum).</span>
+                        <CharactedLimitedInput
+                        id="title"
+                        v-model="mainForm.title"
+                        :max="35"
+                        label="Title"
+                        :textarea="false"
+                      />
                         <InputError class="mt-2" :message="mainForm.errors.title" />
                     </div>
 
                     <div>
                         <InputLabel for="description" value="Description" />
-                        <textarea
-                            id="description"
-                            class="mt-1 block w-full h-32 focus-red-700 border"
-                            v-model="mainForm.description"
-                            required
-                            autocomplete="description"
-                        ></textarea>
                         <span class="text-sm text-gray-500">Provide a detailed and engaging description of your advertisement.</span>
+                        <CharactedLimitedInput
+                        id="description"
+                        v-model="mainForm.description"
+                        :max="1500"
+                        label="Description"
+                        :textarea="true"
+                      />
+                      
                         <InputError class="mt-2" :message="mainForm.errors.description" />
                     </div>
 
@@ -114,6 +113,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import CharactedLimitedInput from '@/Components/CharactedLimitedInput.vue';
 
 const { props: pageProps } = usePage();
 const mainForm = useForm({

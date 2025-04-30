@@ -1,7 +1,6 @@
 <template>
     <div class="p-6 bg-gray-100">
       <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg">
-        <!-- Верхний раздел с градиентом -->
         <div class="bg-gradient-to-l from-red-600 to-purple-500 h-32 relative">
           <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 -mb-10">
             <img
@@ -19,7 +18,6 @@
           </div>
         </div>
   
-        <!-- Информация о фрилансере -->
         <div class="mt-12 px-6 pb-6 text-center">
           <h1 class="text-2xl font-bold">{{ user.name }}</h1>
           <p v-if="freelancer.bio" class="text-gray-500 mt-2">{{ freelancer.bio }}</p>
@@ -36,7 +34,6 @@
           </p>
         </div>
   
-        <!-- Проекты -->
         <div v-if="projects && projects.length > 0" class="px-6 py-4">
           <h3 class="text-lg font-medium text-gray-700">Projects</h3>
           <ul class="mt-4 space-y-4">

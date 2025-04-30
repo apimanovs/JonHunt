@@ -6,6 +6,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import CharactedLimitedInput from '@/Components/CharactedLimitedInput.vue';
 
 const { props: pageProps } = usePage();
 
@@ -46,7 +47,7 @@ const submit = () => {
         <div>
           <InputLabel for="title" value="Title" />
           <p class="mt-2 text-sm text-gray-600">Write a title for your project (minimum 30 characters)</p>
-          <TextInput id="title" type="text" v-model="form.title" required class="mt-1 block w-full" />
+          <CharactedLimitedInput id="title" label="Title" v-model="form.title" :max="200" />
           <InputError class="mt-2" :message="form.errors.title" />
         </div>
 
@@ -56,7 +57,7 @@ const submit = () => {
           <p class="mt-2 text-sm text-gray-600">
             Write a detailed description for your project (minimum 100 characters). Include an overview, requirements, and expected outcomes.
           </p>
-          <textarea id="description" v-model="form.description" required class="textarea textarea-bordered w-full h-32"></textarea>
+          <CharactedLimitedInput id="description" label="Description" v-model="form.description" :max="1500" :textarea="true" />
           <InputError class="mt-2" :message="form.errors.description" />
         </div>
 
@@ -64,7 +65,7 @@ const submit = () => {
         <div>
           <InputLabel for="tasks" value="Project Tasks" />
           <p class="mt-2 text-sm text-gray-600">List the main tasks that need to be completed.</p>
-          <textarea id="tasks" v-model="form.tasks" class="textarea textarea-bordered w-full h-24"></textarea>
+          <CharactedLimitedInput id="tasks" label="Project Tasks" v-model="form.tasks" :max="1500" :textarea="true" />
           <InputError class="mt-2" :message="form.errors.tasks" />
         </div>
 
@@ -72,7 +73,7 @@ const submit = () => {
         <div>
           <InputLabel for="expected_outcome" value="Expected Outcome" />
           <p class="mt-2 text-sm text-gray-600">Describe what the final result should be.</p>
-          <textarea id="expected_outcome" v-model="form.expected_outcome" class="textarea textarea-bordered w-full h-24"></textarea>
+          <CharactedLimitedInput id="expected_outcome" label="Expected Outcome" v-model="form.expected_outcome" :max="1500" :textarea="true" />
           <InputError class="mt-2" :message="form.errors.expected_outcome" />
         </div>
 
@@ -80,7 +81,7 @@ const submit = () => {
         <div>
           <InputLabel for="requirements" value="Freelancer Requirements" />
           <p class="mt-2 text-sm text-gray-600">List skills or qualifications that freelancers should have.</p>
-          <textarea id="requirements" v-model="form.requirements" class="textarea textarea-bordered w-full h-24"></textarea>
+          <CharactedLimitedInput id="requirements" label="Freelancer Requirements" v-model="form.requirements" :max="1500" :textarea="true" />
           <InputError class="mt-2" :message="form.errors.requirements" />
         </div>
 

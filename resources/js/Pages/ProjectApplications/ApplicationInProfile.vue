@@ -22,7 +22,6 @@
         </button>
       </div>
 
-      <!-- Вкладка: Владелец проектов -->
       <div v-if="activeTab === 'owner'">
         <div v-if="projects.length === 0">
           <p>You have no projects.</p>
@@ -106,7 +105,6 @@
         </div>
       </div>
 
-      <!-- Вкладка: Фрилансер (мои заявки) -->
       <div v-if="activeTab === 'freelancer'">
         <div v-if="myApplications.length === 0">
           <p>You have not applied to any projects.</p>

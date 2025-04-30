@@ -15,14 +15,12 @@
                     <form @submit.prevent="submitForm" class="mt-6 space-y-6">
                         <div>
                             <InputLabel for="title" value="Title" />
-                            <TextInput
+                            <CharactedLimitedInput
                                 id="title"
-                                type="text"
-                                class="mt-1 block w-full"
                                 v-model="form.title"
-                                required
-                                autofocus
-                                autocomplete="title"
+                                :max="35"
+                                label="Title"
+                                :textarea="false"
                             />
                             <span class="label-text-alt">Must have 35 characters</span>
                             <InputError class="mt-2" :message="form.errors.title" />
@@ -33,13 +31,13 @@
                             <p class="mt-2 text-sm text-gray-600">Write a description for your advertisement</p>
                             <br />
                             <InputLabel for="description" value="Description" />
-                            <textarea
+                            <CharactedLimitedInput
                                 id="description"
-                                class="mt-1 block w-full h-32 focus-red-700 border"
                                 v-model="form.description"
-                                required
-                                autocomplete="description"
-                            ></textarea>
+                                :max="1500"
+                                label="Description"
+                                :textarea="true"
+                            />
                             <InputError class="mt-2" :message="form.errors.description" />
                             <label class="form-control w-full max-w-xs mt-2">
                                 <span class="label-text-alt">At least 100 characters</span>
@@ -100,6 +98,9 @@ import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import CharactedLimitedInput from '@/Components/CharactedLimitedInput.vue';
+
+
 import { useForm } from '@inertiajs/vue3';
 
 const form = useForm({

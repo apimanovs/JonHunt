@@ -4,6 +4,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import CharactedLimitedInput from "@/Components/CharactedLimitedInput.vue";
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 
@@ -80,7 +81,7 @@ const previousStep = () => {
 
           <InputLabel for="title" value="Title" />
           <p class="text-sm text-gray-600">Choose a clear and concise title that reflects the project scope. (At least 30 characters)</p>
-          <TextInput id="title" type="text" v-model="form.title" required class="mt-1 block w-full my-10" />
+          <CharactedLimitedInput id="title" label="Title" v-model="form.title" :max="200" />
 
           <InputLabel for="niche" value="Niche" />
           <p class="text-sm text-gray-600">Select the industry or category that best fits your project.</p>
@@ -99,19 +100,19 @@ const previousStep = () => {
           
           <InputLabel for="description" value="Description" />
           <p class="text-sm text-gray-600 mb-5">Give an overview of the project. Include its purpose, key details, and any other necessary information.</p>
-          <textarea id="description" v-model="form.description" required class="textarea textarea-bordered w-full mb-10"></textarea>
+          <CharactedLimitedInput id="description" label="Description" v-model="form.description" :max="1500" :textarea="true" />
           
           <InputLabel for="tasks" value="Project Tasks" />
           <p class="text-sm text-gray-600 mb-5">List the main tasks that need to be completed.</p>
-          <textarea id="tasks" v-model="form.tasks" class="textarea textarea-bordered w-full mb-10"></textarea>
+          <CharactedLimitedInput id="tasks" label="Project Tasks" v-model="form.tasks" :max="1500" :textarea="true" />
           
           <InputLabel for="expected_outcome" value="Expected Outcome" />
           <p class="text-sm text-gray-600 mb-5">Describe what the final result should be.</p>
-          <textarea id="expected_outcome" v-model="form.expected_outcome" class="textarea textarea-bordered w-full mb-10"></textarea>
+          <CharactedLimitedInput id="expected_outcome" label="Expected Outcome" v-model="form.expected_outcome" :max="1500" :textarea="true" />
           
           <InputLabel for="requirements" value="Freelancer Requirements" />
           <p class="text-sm text-gray-600 mb-5">List skills or qualifications that freelancers should have.</p>
-          <textarea id="requirements" v-model="form.requirements" class="textarea textarea-bordered w-full mb-10"></textarea>
+          <CharactedLimitedInput id="requirements" label="Freelancer Requirements" v-model="form.requirements" :max="1500" :textarea="true" />
           
           <div class="flex justify-between mt-6">
             <PrimaryButton @click="previousStep">Previous Step</PrimaryButton>
@@ -126,7 +127,6 @@ const previousStep = () => {
             If your project does not require a strict deadline, you can select the "No strict deadline" option.
           </p>
         
-          <!-- Дедлайн проекта -->
           <h3 class="text-lg font-semibold mt-4">Completion Date</h3>
           <p class="text-sm text-gray-600 mb-4">
             Select the date by which the project should be completed. If there is no strict deadline, 
@@ -146,14 +146,12 @@ const previousStep = () => {
             <TextInput id="completion_date" type="date" class="mt-1 block w-full" v-model="form.completion_date" required />
           </div>
         
-          <!-- Бюджет проекта -->
           <h3 class="text-lg font-semibold mt-6">Budget</h3>
           <p class="text-sm text-gray-600 mb-2">
             Set an estimated budget for the project. If unsure, provide an approximate value. 
             (Use the slider to adjust the amount.)
           </p>
         
-          <!-- Выбор типа бюджета -->
           <h3 class="text-lg font-semibold mt-6">Budget Type</h3>
           <p class="text-sm text-gray-600 mb-2">
             Specify whether the budget is fixed or based on an hourly rate.
@@ -169,7 +167,6 @@ const previousStep = () => {
             <option value="hourly">Hourly Rate</option>
           </select>
         
-          <!-- Поле для ввода бюджета -->
           <div class="mt-6">
             <InputLabel for="budget" value="Budget" />
             <p class="mt-2 text-sm text-gray-600">

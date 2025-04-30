@@ -18,7 +18,6 @@ console.log(page.props);
     <h1 class="text-2xl font-bold mb-4">Search Results</h1>
     <p class="mb-4">Results for: <strong>"{{ query }}"</strong></p>
 
-    <!-- Пользователи -->
     <div v-if="users.length" class="mb-10">
       <h2 class="text-xl font-semibold mb-4">Users</h2>
       <div class="flex flex-wrap -mx-2 sm:-mx-3">
@@ -46,7 +45,6 @@ console.log(page.props);
     </div>
     <p v-else class="text-gray-500">No users found.</p>
 
-    <!-- Проекты -->
     <div v-if="projects.length" class="mb-10">
       <h2 class="text-xl font-semibold mb-4">Projects</h2>
       <div class="flex flex-wrap -mx-2 sm:-mx-3">
@@ -111,7 +109,7 @@ console.log(page.props);
                 {{ job.Title }}
               </a>
               <div class="creator-info flex items-center mt-2">
-                <!-- Проверка на наличие creator -->
+
                 <img
                   v-if="job.creator && job.creator.avatar"
                   :src="job.creator.avatar.photo_url"
