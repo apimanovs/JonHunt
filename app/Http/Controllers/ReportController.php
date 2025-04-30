@@ -35,6 +35,5 @@ class ReportController extends Controller
         ]);
     
         return back()->with('success', 'Report submitted successfully!');
-    }
-    
+    }    
 }

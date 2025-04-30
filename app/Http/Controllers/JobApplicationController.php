@@ -7,7 +7,8 @@ use App\Models\JobApplication;
 use App\Models\Order;
 use App\Http\Controllers\OrderController;
 use Illuminate\Http\Request;
-use App\Notifications\JobApplicationNotification;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NewOrderNotificationMail;
 
 class JobApplicationController extends Controller
 {
@@ -48,9 +49,6 @@ class JobApplicationController extends Controller
             'requirements' => $request->input('requirements'),
         ]);
 
-        if ($jobAd->creatorUser) {
-            $jobAd->creatorUser->notify(new JobApplicationNotification($jobApplication, auth()->user()));
-        }
 
         $order = Order::create([
             'job_application_id' => $jobApplication->id,

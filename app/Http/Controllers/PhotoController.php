@@ -68,7 +68,7 @@ class PhotoController extends Controller
             return response()->json(['message' => 'Avatar not found'], 404);
         }
 
-        return response()->json(['photo_url' => $avatar->photo_url]); // Возвращаем URL аватара
+        return response()->json(['photo_url' => $avatar->photo_url]);
     }
 
     public function deleteAvatar()

@@ -22,11 +22,6 @@ class Project extends Model
         'tasks',
     ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }  
-    
     public function reviews()
     {
         return $this->morphMany(Review::class, 'reviewable');

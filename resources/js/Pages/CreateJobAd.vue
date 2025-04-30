@@ -72,7 +72,7 @@
                                 @change="handleFileUpload"
                                 class="mt-1 block w-full"
                             />
-                            <InputError class="mt-2" :message="form.errors['examples.*']" />
+                            <InputError class="mt-2" :message="form.errors['examples']" />
                         </div>
 
                         <div class="flex justify-end">

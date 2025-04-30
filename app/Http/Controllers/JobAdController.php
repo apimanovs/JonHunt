@@ -33,6 +33,7 @@ class JobAdController extends Controller
             'title'        => 'required|string|max:35|min:35',
             'description'  => 'required|string|max:1500|min:100',
             'price'        => 'required|numeric|min:0',
+            'examples'     => 'required|array|min:1',
             'examples.*'   => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
     

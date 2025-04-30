@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use App\Models\JobAdvertisement;
 use App\Models\JobAdvertisementPortfolio;
-use App\Notifications\JobApplicationNotification;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 

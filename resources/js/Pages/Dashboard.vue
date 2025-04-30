@@ -318,7 +318,7 @@ const submitReport = async () => {
                       </figure>
                       <div class="card-body">
                         <h2 class="card-title">
-                          <a :href="`/gigs/${ad.id}`" class="hover:underline">
+                          <a :href="`/gigs/${ad.id}`" class="hover:underline truncate break-words">
                             {{ ad.Title || 'No title provided' }}
                           </a>
                         </h2>
