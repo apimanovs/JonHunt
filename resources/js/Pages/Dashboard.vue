@@ -12,7 +12,6 @@ const user = computed(() => pageProps.auth || null);
 
 const activeTab = ref('projects');
 
-// Фильтры
 const selectedNiche = ref('');
 const selectedBudgetRange = ref('');
 const sortBy = ref('newest');
@@ -44,7 +43,6 @@ const getTimeRemaining = (deadline) => {
   return `${diffDays} days left`;
 };
 
-// ----- Сортировка проектов -----
 const filteredProjects = computed(() => {
     let projects = pageProps.projects.filter(p => p.Status === 'approved');
 
@@ -97,7 +95,7 @@ const filteredJobAds = computed(() => {
 });
 
 // ----- Pagination -----
-const itemsPerPage = 18;
+const itemsPerPage = 10;
 const currentPageProjects = ref(1);
 const currentPageJobAds = ref(1);
 
@@ -244,53 +242,53 @@ const submitReport = async () => {
             <div v-if="activeTab === 'projects'">
               <ul v-if="paginatedProjects.length">
                 <div class="flex flex-wrap -mx-2 sm:-mx-3">
-                  <div v-for="project in paginatedProjects" :key="project.id" class="w-full sm:w-1/2 md:w-1/2 lg:w-1/3 px-2 sm:px-3 mb-6 sm:mb-8">
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                      <div class="p-4 sm:p-6">
-                        <a :href="`/projects/${project.id}`" class="text-base sm:text-lg font-semibold text-gray-800 mb-3 hover:underline block truncate">
+                  <div v-for="project in paginatedProjects" :key="project.id" class="w-full mb-6">
+                    <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition duration-300 w-full">
+                      <!-- Автор сверху -->
+                      <div class="flex items-center mb-4">
+                        <a v-if="project.creator?.avatar" :href="`/user/${project.creator.username}`" class="flex items-center">
+                          <img :src="project.creator.avatar.photo_url" alt="Avatar" class="w-12 h-12 rounded-full mr-3" />
+                          <div>
+                            <div class="text-gray-900 font-semibold">{{ project.creator.name }}</div>
+                            <div class="text-gray-500 text-sm">@{{ project.creator.username }}</div>
+                          </div>
+                        </a>
+                        <a v-else :href="`/user/${project.creator.username}`" class="flex items-center">
+                          <div class="w-12 h-12 rounded-full bg-gray-400 text-white font-bold flex items-center justify-center mr-3">
+                            {{ project.creator.name.charAt(0).toUpperCase() }}
+                          </div>
+                          <div>
+                            <div class="text-gray-900 font-semibold">{{ project.creator.name }}</div>
+                            <div class="text-gray-500 text-sm">@{{ project.creator.username }}</div>
+                          </div>
+                        </a>
+                      </div>
+                  
+                      <div class="mt-2">
+                        <a :href="`/projects/${project.id}`" class="text-xl font-bold text-gray-800 hover:underline block mb-2">
                           {{ project.title }}
                         </a>
-                        <div class="creator-info flex items-center mt-2">
-                          <a v-if="project.creator && project.creator.avatar" :href="`/user/${project.creator.username}`" class="flex items-center">
-                            <img :src="project.creator.avatar.photo_url" alt="Avatar" class="w-10 h-10 rounded-full mr-3" />
-                          </a>
-                          <a v-else :href="`/user/${project.creator.username}`" class="flex items-center">
-                            <div class="w-10 h-10 rounded-full bg-gray-400 text-white font-bold flex items-center justify-center mr-3">
-                              {{ project.creator.name.charAt(0).toUpperCase() }}
-                            </div>
-                          </a>
-                          <a :href="`/user/${project.creator.username}`" class="text-gray-700 font-medium hover:text-blue-500 transition flex items-center">
-                            {{ project.creator.name }}
-                            <span v-if="project.creator.role === 'freelancer'" class="badge badge-accent ml-2">
-                              Freelancer
-                            </span>
-                          </a>
-                        </div>
-                        <p class="text-gray-600 text-sm sm:text-base mb-1 sm:mb-2 mt-2">
-                          <strong>Budget:</strong> ${{ project.budget }}
+                        <p class="text-gray-700 mb-1"><strong>Budget:</strong> ${{ project.budget }}</p>
+                        <p class="text-gray-700 mb-1"><strong>Niche:</strong> {{ project.niche }}</p>
+                        <p class="text-gray-700 mb-1">
+                          <strong>Deadline:</strong>
+                          <span v-if="project.completion_date">{{ project.completion_date }} ({{ getTimeRemaining(project.completion_date) }})</span>
+                          <span v-else>No deadline</span>
                         </p>
-                        <p v-if="project.completion_date === null" class="text-gray-600 text-sm sm:text-base mb-1 sm:mb-2">
-                          <strong>Completion Date:</strong> No deadline
-                        </p>
-                        <p v-else class="text-gray-600 text-sm sm:text-base mb-1 sm:mb-2">
-                          <strong>Completion Date:</strong> {{ project.completion_date }}
-                          <span class="ml-2 text-gray-500">
-                            ({{ getTimeRemaining(project.completion_date) }})
-                          </span>
-                        </p>      
-                        <p class="text-gray-600 text-sm sm:text-base">
-                          <strong>Niche:</strong> {{ project.niche }}
-                        </p>
+                      </div>
+                  
+                      <div class="mt-4 text-right">
                         <button
-                        v-if="user"
-                        @click="openReportModal(project.id, null)"
-                        class="text-red-500 hover:underline text-sm mt-2"
-                      >
-                        🚩 Report
-                      </button>
+                          v-if="user"
+                          @click="openReportModal(project.id, null)"
+                          class="text-red-500 hover:underline text-sm"
+                        >
+                          🚩 Report
+                        </button>
                       </div>
                     </div>
                   </div>
+                  
                 </div>
               </ul>
               <div v-else class="text-gray-600">
