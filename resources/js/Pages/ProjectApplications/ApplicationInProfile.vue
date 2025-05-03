@@ -1,102 +1,99 @@
 <template>
   <AuthenticatedLayout>
     <Head title="My Applications" />
-    <div class="max-w-5xl mx-auto p-6 bg-white dark:bg-gray-800">
-      <h2 class="text-2xl font-bold mb-4">Applications</h2>
+    <div class="max-w-6xl mx-auto p-8 bg-white dark:bg-gray-900 shadow-md rounded-xl">
+      <h2 class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-100">📋 My Applications</h2>
 
-      <!-- Вкладки -->
-      <div class="tabs flex gap-4 mb-6">
+      <div class="flex gap-4 mb-8 border-b border-gray-300 dark:border-gray-700">
         <button
-          :class="{'border-b-2 border-blue-500': activeTab === 'owner'}"
+          :class="{'text-blue-600 border-b-4 border-blue-500 font-semibold': activeTab === 'owner'}"
           @click="activeTab = 'owner'"
-          class="px-4 py-2"
+          class="px-4 py-2 focus:outline-none"
         >
-          Applications to My Projects
+          📁 Applications to My Projects
         </button>
         <button
-          :class="{'border-b-2 border-blue-500': activeTab === 'freelancer'}"
+          :class="{'text-blue-600 border-b-4 border-blue-500 font-semibold': activeTab === 'freelancer'}"
           @click="activeTab = 'freelancer'"
-          class="px-4 py-2"
+          class="px-4 py-2 focus:outline-none"
         >
-          My Applications
+          🙋 My Applications
         </button>
       </div>
 
       <div v-if="activeTab === 'owner'">
         <div v-if="projects.length === 0">
-          <p>You have no projects.</p>
+          <p class="text-gray-600 dark:text-gray-300">You have no projects.</p>
         </div>
-        <div v-else class="space-y-6">
+        <div v-else class="space-y-8">
           <div
             v-for="proj in projects"
             :key="proj.id"
-            class="border p-4 bg-gray-50 dark:bg-gray-700 rounded"
+            class="p-6 bg-gray-100 dark:bg-gray-800 rounded-xl shadow"
           >
-            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Project: {{ proj.title }}</h3>
-            <p class="text-gray-700 dark:text-gray-300"><strong>Budget:</strong> {{ proj.budget }}</p>
+            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">💼 Project: {{ proj.title }}</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-4"><strong>💰 Budget:</strong> {{ proj.budget }}</p>
 
-            <div v-if="proj.applications.length === 0" class="mt-2">
-              <p class="text-gray-500">No applications yet.</p>
+            <div v-if="proj.applications.length === 0">
+              <p class="text-gray-500 italic">No applications yet.</p>
             </div>
 
-            <div v-else class="mt-4 space-y-4">
+            <div v-else class="space-y-6">
               <div
                 v-for="app in proj.applications"
                 :key="app.id"
-                class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 p-4 rounded shadow-sm"
+                class="bg-white dark:bg-gray-900 p-5 rounded-xl shadow-md border border-gray-200 dark:border-gray-700"
               >
-                <!-- User Info -->
-                <div class="flex items-center mb-3">
+                <div class="flex items-center gap-4 mb-4">
                   <a :href="`/user/${app.freelancer?.username}`">
                     <img
                       v-if="app.freelancer?.avatar"
                       :src="app.freelancer.avatar.photo_url"
                       alt="Avatar"
-                      class="w-12 h-12 rounded-full mr-3 border"
+                      class="w-12 h-12 rounded-full border shadow"
                     />
                     <div
                       v-else
-                      class="w-12 h-12 rounded-full bg-gray-400 text-white font-bold flex items-center justify-center mr-3"
+                      class="w-12 h-12 rounded-full bg-gray-400 text-white font-bold flex items-center justify-center"
                     >
                       {{ app.freelancer?.name.charAt(0).toUpperCase() }}
                     </div>
                   </a>
-                  <a :href="`/user/${app.freelancer?.username}`" class="text-lg font-medium text-gray-500 dark:text-blue-300 hover:text-gray-600">
+                  <a :href="`/user/${app.freelancer?.username}`" class="text-lg font-medium text-gray-700 dark:text-blue-300 hover:underline">
                     {{ app.freelancer?.name }}
                   </a>
                 </div>
 
-                <!-- Cover Letter + Status -->
-                <div class="text-gray-700 dark:text-gray-200">
-                  <p class="mb-2 text-xl"><strong>Cover letter</strong></p>
-                  <p class="bg-gray-100 dark:bg-gray-700 p-3 rounded whitespace-pre-line">{{ app.cover_letter }}</p>
-                  <p class="mt-3">
-                    <strong>Status: </strong>
+                <div class="text-gray-800 dark:text-gray-200">
+                  <p class="font-semibold mb-2">📄 Cover Letter</p>
+                  <p class="bg-gray-100 dark:bg-gray-800 p-4 rounded whitespace-pre-line">{{ app.cover_letter }}</p>
+                  <p class="mt-4">
+                    <strong>Status:</strong>
                     <span
                       :class="{
-                        'text-yellow-600': app.status === 'pending',
-                        'text-green-600': app.status === 'approved',
-                        'text-red-600': app.status === 'reject'
+                        'text-yellow-500': app.status === 'pending',
+                        'text-green-500': app.status === 'approved',
+                        'text-red-500': app.status === 'reject'
                       }"
+                      class="font-semibold"
                     >
                       {{ app.status }}
                     </span>
                   </p>
                 </div>
 
-                <!-- Actions -->
-                <div class="mt-4 flex gap-2" v-if="app.status === 'pending'">
+                <div class="mt-4 flex gap-3" v-if="app.status === 'pending'">
                   <button
                     @click="approveApplication(app.id)"
-                    class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                    class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg shadow"
                   >
-                    Approve
+                    ✅ Approve
                   </button>
                   <button
                     @click="rejectApplication(app.id)"
-                    class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                    class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow"
                   >
-                    Reject
+                    ❌ Reject
                   </button>
                 </div>
               </div>
@@ -107,20 +104,34 @@
 
       <div v-if="activeTab === 'freelancer'">
         <div v-if="myApplications.length === 0">
-          <p>You have not applied to any projects.</p>
+          <p class="text-gray-600 dark:text-gray-300">You have not applied to any projects.</p>
         </div>
-        <div v-else class="space-y-6">
+        <div v-else class="space-y-8">
           <div
             v-for="app in myApplications"
             :key="app.id"
-            class="border p-4 bg-gray-50 dark:bg-gray-700 rounded"
+            class="p-6 bg-gray-100 dark:bg-gray-800 rounded-xl shadow"
           >
-            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-              Project: {{ app.project.title }}
+            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">
+              💼 Project: {{ app.project.title }}
             </h3>
-            <p class="text-gray-700 text-xl dark:text-gray-300"><strong>Cover letter:</strong></p>
-            <p class="bg-white dark:bg-gray-800 p-3 rounded whitespace-pre-line mt-1 text-gray-800 dark:text-gray-100">{{ app.cover_letter }}</p>
-            <p class="mt-2 text-gray-700 dark:text-gray-300"><strong>Status:</strong> {{ app.status }}</p>
+            <p class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-1">📄 Cover Letter:</p>
+            <p class="bg-white dark:bg-gray-900 p-4 rounded whitespace-pre-line text-gray-800 dark:text-gray-100">
+              {{ app.cover_letter }}
+            </p>
+            <p class="mt-3 text-gray-600 dark:text-gray-300">
+              <strong>Status:</strong>
+              <span
+                :class="{
+                  'text-yellow-500': app.status === 'pending',
+                  'text-green-500': app.status === 'approved',
+                  'text-red-500': app.status === 'reject'
+                }"
+                class="font-semibold"
+              >
+                {{ app.status }}
+              </span>
+            </p>
           </div>
         </div>
       </div>

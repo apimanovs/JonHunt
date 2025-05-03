@@ -1,12 +1,13 @@
 <template>
   <AuthenticatedLayout>
     <div class="max-w-4xl mx-auto bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6">
-      <h2 class="text-3xl font-bold text-gray-900 mb-2">{{ jobAd.Title }}</h2>
+      <h2 class="text-3xl font-bold text-gray-900 mb-2 break-words">{{ jobAd.Title }}</h2>
       <p class="text-md text-gray-600 mb-6 italic">
         You're about to apply for this freelance job opportunity. Make sure to carefully describe what you can offer and any specific needs you have regarding this project.
       </p>
 
-      <p class="text-lg text-gray-700 mb-2">{{ jobAd.Description }}</p>
+      <h2 class="text-2xl font-bold text-gray-900 mb-2 break-words">Description</h2>
+      <p class="text-lg text-gray-700 mb-2 break-words">{{ jobAd.Description }}</p>
       <p class="text-xl font-semibold text-gray-600 mb-8">
         💰 Price: ${{ jobAd.Price }}
       </p>
