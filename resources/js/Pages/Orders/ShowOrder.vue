@@ -119,30 +119,6 @@
                   📂 Download Attached File
                 </a>
               </div>
-              <div v-if="order.status !== 'completed' && order.status !== 'cancelled'">
-                <button
-                  @click="showCancelForm = !showCancelForm"
-                  class="mt-4 px-5 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-                >
-                  Cancel Order
-                </button>
-                <div v-if="showCancelForm" class="mt-4">
-                  <form @submit.prevent="cancelOrder" class="space-y-3">
-                    <textarea
-                      v-model="cancelReason"
-                      placeholder="Reason for cancellation..."
-                      class="w-full p-3 border rounded-lg text-gray-800 dark:text-gray-300"
-                      rows="3"
-                    ></textarea>
-                    <button
-                      type="submit"
-                      class="w-full px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-                    >
-                      Confirm Cancellation
-                    </button>
-                  </form>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -291,7 +267,6 @@ onMounted(() => {
   })
 })
 
-// Отправка работы (фрилансер)
 const submitWork = async () => {
   const formData = new FormData()
   formData.append('result_text', resultText.value)
@@ -309,7 +284,6 @@ const submitWork = async () => {
   }
 }
 
-// Завершить заказ (клиент)
 const completeOrder = async () => {
   try {
     await axios.post(route('orders.complete', order.id))
@@ -318,26 +292,6 @@ const completeOrder = async () => {
   } catch (error) {
     console.error(error)
     alert('Failed to complete order.')
-  }
-}
-
-// Отменить заказ (фрилансер)
-const cancelOrder = async () => {
-  if (!cancelReason.value.trim()) {
-    alert('Please provide a reason for cancellation.')
-    return
-  }
-
-  try {
-    await axios.post(route('orders.updateStatus', order.id), {
-      status: 'cancelled',
-      cancel_reason: cancelReason.value,
-    })
-    alert('Order has been cancelled.')
-    location.reload()
-  } catch (error) {
-    console.error(error)
-    alert('Failed to cancel order.')
   }
 }
 </script>

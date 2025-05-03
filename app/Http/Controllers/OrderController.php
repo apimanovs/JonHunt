@@ -25,29 +25,11 @@ public function updateStatus(Request $request, Order $order)
     $this->authorize('update', $order);
 
     $validated = $request->validate([
-        'status' => 'required|in:in_progress,completed,cancelled',
-        'cancel_reason' => 'required_if:status,cancelled|string|nullable|max:1000',
+        'status' => 'required|in:in_progress,completed',
     ]);
 
     if (in_array($order->status, ['cancelled', 'completed'])) {
         return back()->withErrors(['message' => 'Order is already completed or cancelled.']);
-    }
-
-    if ($validated['status'] === 'cancelled') {
-        $order->cancel_reason = $validated['cancel_reason'];
-
-        $clientBalance = $order->client->balance;
-        if (!$clientBalance) {
-            return back()->withErrors(['message' => 'Client balance not found.']);
-        }
-        $price = $order->jobApplication->jobAd->Price;
-        $clientBalance->amount += $price;
-        $clientBalance->save();
-
-        $order->status = 'cancelled';
-        $order->save();
-
-        return back()->with('success', 'Order cancelled. Funds have been refunded.');
     }
 
     if ($validated['status'] === 'completed') {
@@ -57,7 +39,6 @@ public function updateStatus(Request $request, Order $order)
 
         return back()->with('success', 'Order completed!');
     }
-
 
     $order->status = $validated['status'];
     $order->save();
@@ -114,12 +95,23 @@ public function completeOrder(Request $request, Order $order)
         return back()->withErrors(['message' => 'Order cannot be completed in its current status.']);
     }
 
+    $freelancerBalance = $order->freelancer->balance;
+
+    if (!$freelancerBalance) {
+        return back()->withErrors(['message' => 'Freelancer balance not found.']);
+    }
+
+    $price = $order->jobApplication->jobAd->Price;
+    $freelancerBalance->amount += $price;
+    $freelancerBalance->save();
+
     $order->update([
         'status' => 'completed',
     ]);
 
-    return back()->with('success', 'Order has been completed successfully.');
+    return back()->with('success', 'Order has been completed successfully. Payment has been sent to the freelancer.');
 }
+
 
 
 public function submitWork(Request $request, Order $order)
