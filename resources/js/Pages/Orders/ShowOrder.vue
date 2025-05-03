@@ -16,7 +16,7 @@
               <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-200">
                 📁 Project
               </h3>
-              <a :href="`/gigs/${order.job_application.job_ad.id}`" class="text-lg text-blue-600 hover:text-red-600 hover:underline">
+              <a :href="`/gigs/${order.job_application.job_ad.id}`" class="text-lg text-gray-700 hover:text-red-600">
                 {{ order.job_application.job_ad.Title }}
               </a>
             </div>
@@ -25,7 +25,7 @@
               <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-200">
                 Requirements
               </h3>
-              <div class="border-l-4 border-blue-400 bg-blue-50 dark:bg-blue-900 dark:border-blue-600 p-4 rounded-lg shadow-sm max-h-60 overflow-y-auto whitespace-pre-line text-gray-800 dark:text-gray-200">
+              <div class="border-l-4 border-red-400 bg-blue-50 dark:bg-red-900 dark:border-red-600 p-4 rounded-lg shadow-sm max-h-60 overflow-y-auto whitespace-pre-line text-gray-800 dark:text-gray-200">
                 {{ order.job_application.requirements }}
               </div>
             </div>
@@ -34,7 +34,7 @@
               <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-200">
                 {{ auth.user?.id === order.freelancer.id ? '👤 Client' : '🧑‍💼 Freelancer' }}
               </h3>
-              <a :href="auth.user?.id === order.freelancer.id ? `/profile/${order.client.username}` : `/profile/${order.freelancer.username}`" class="text-blue-600 hover:text-red-600 hover:underline">
+              <a :href="auth.user?.id === order.freelancer.id ? `/profile/${order.client.username}` : `/profile/${order.freelancer.username}`" class="text-gray-700 hover:text-red-600">
                 {{ auth.user?.id === order.freelancer.id ? order.client.name : order.freelancer.name }}
               </a>
             </div>
@@ -72,7 +72,7 @@
           </div>
 
           <div class="mt-8 space-y-6">
-            <div v-if="auth.user?.id === order.client_id && order.status === 'submitted'">
+            <div v-if="auth.user?.id === order.client_id && (order.status === 'submitted' || order.status === 'completed')">
               <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">
                 ✅ Submitted Work
               </h3>
@@ -85,7 +85,7 @@
               >
                 📂 Download Attached File
               </a>
-              <form @submit.prevent="completeOrder" class="mt-4">
+              <form v-if="order.status === 'submitted'" @submit.prevent="completeOrder" class="mt-4">
                 <button class="px-5 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
                   Mark as Complete
                 </button>
@@ -105,7 +105,7 @@
                   </button>
                 </form>
               </div>
-              <div v-else-if="order.status === 'submitted'">
+              <div v-else-if="order.status === 'submitted' || order.status === 'completed'">
                 <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">
                   📄 Your Submitted Work
                 </h3>
