@@ -3,59 +3,68 @@
     <Head title="Order Details" />
     <meta name="csrf-token" content="{{ csrf_token() }}" />
 
-    <div class="max-w-7xl mx-auto px-4 py-6">
-      <!-- Контейнер с двумя колонками -->
+    <div class="max-w-7xl mx-auto px-4 py-8">
       <div class="flex flex-col lg:flex-row gap-6">
-        <!-- Карточка с информацией о заказе -->
-        <div class="w-full lg:w-2/3 bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6">
-          <h2 class="text-3xl font-bold mb-4 text-gray-800 dark:text-gray-100">
+
+        <!-- 📆 Order Information -->
+        <div class="w-full lg:w-2/3 bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6">
+          <h2 class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-100">
             Order #{{ order.id }}
           </h2>
-    
-          <div class="mb-6">
-            <p class="text-lg text-gray-800 dark:text-gray-300">
-              <a :href="`/gigs/${order.job_application.job_ad.id}`" class="ml-2 text-2xl text-gray-600 hover:text-red-600">
+
+          <div class="space-y-6">
+            <div>
+              <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-200">
+                📁 Project
+              </h3>
+              <a :href="`/gigs/${order.job_application.job_ad.id}`" class="text-lg text-blue-600 hover:text-red-600 hover:underline">
                 {{ order.job_application.job_ad.Title }}
               </a>
-            </p>            
-            <p v-if="auth.user?.id === order.freelancer.id" class="text-lg text-gray-800 dark:text-gray-300">
-              <strong>Client:</strong>
-              <a :href="`/profile/${order.client.username}`" class="ml-2 text-gray-600 hover:text-red-600">
-                {{ order.client.name }}
+            </div>
+
+            <div>
+              <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-200">
+                Requirements
+              </h3>
+              <div class="border-l-4 border-blue-400 bg-blue-50 dark:bg-blue-900 dark:border-blue-600 p-4 rounded-lg shadow-sm max-h-60 overflow-y-auto whitespace-pre-line text-gray-800 dark:text-gray-200">
+                {{ order.job_application.requirements }}
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-200">
+                {{ auth.user?.id === order.freelancer.id ? '👤 Client' : '🧑‍💼 Freelancer' }}
+              </h3>
+              <a :href="auth.user?.id === order.freelancer.id ? `/profile/${order.client.username}` : `/profile/${order.freelancer.username}`" class="text-blue-600 hover:text-red-600 hover:underline">
+                {{ auth.user?.id === order.freelancer.id ? order.client.name : order.freelancer.name }}
               </a>
-            </p>
-            <p v-if="auth.user?.id === order.client_id" class="text-lg text-gray-800 dark:text-gray-300">
-              <strong>Freelancer:</strong>
-              <a :href="`/profile/${order.freelancer.username}`" class="ml-2 text-gray-600 hover:text-red-600">
-                {{ order.freelancer.name }}
-              </a>
-            </p>
-            
+            </div>
           </div>
-    
-          <div class="mb-6">
-            <h3 v-if="auth.user?.id === order.client_id" class="text-2xl font-semibold mb-2 text-gray-800 dark:text-gray-100">
-              Status
+
+          <!-- 📊 Order Status -->
+          <div class="mt-8">
+            <h3 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+              📊 Status
             </h3>
-            <div v-if="auth.user?.id === order.client_id" class="p-4 border rounded-lg">
+            <div class="p-4 border rounded-xl bg-gray-50 dark:bg-gray-700">
               <template v-if="order.status === 'in_progress'">
-                <p class="text-gray-700 dark:text-gray-300">
+                <p class="text-gray-800 dark:text-gray-200">
                   Freelancer <span class="font-semibold">{{ order.freelancer.name }}</span> is currently working on your project.
                 </p>
               </template>
               <template v-else-if="order.status === 'submitted'">
-                <p class="text-gray-700 dark:text-gray-300">
-                  Freelancer <span class="font-semibold">{{ order.freelancer.name }}</span> has submitted the work. Please review below.
+                <p class="text-gray-800 dark:text-gray-200">
+                  Work submitted. Please review below.
                 </p>
               </template>
               <template v-else-if="order.status === 'completed'">
                 <p class="text-green-600 font-semibold">
-                  This order is completed.
+                  This order is completed. ✔️
                 </p>
               </template>
               <template v-else-if="order.status === 'cancelled'">
                 <p class="text-red-600 font-semibold">
-                  This order was cancelled.
+                  This order was cancelled. ❌
                 </p>
                 <p v-if="order.cancel_reason" class="text-gray-700 dark:text-gray-300 mt-1">
                   <strong>Reason:</strong> {{ order.cancel_reason }}
@@ -63,84 +72,62 @@
               </template>
             </div>
           </div>
-    
-          <!-- Блок действий для Клиента или Фрилансера -->
-          <div>
-            <!-- Для клиента -->
-            <div v-if="auth.user?.id === order.client_id">
-              <div v-if="order.status === 'submitted'" class="mt-6">
-                <h3 class="text-2xl font-semibold mb-2 text-gray-800 dark:text-gray-100">
-                  Submitted Work
-                </h3>
-                <p class="mb-2 text-gray-800 dark:text-gray-300">
-                  <strong>Description:</strong> {{ order.result_text }}
-                </p>
-                <div class="mb-4">
-                  <a
-                    v-if="order.result_file"
-                    :href="order.result_file"
-                    target="_blank"
-                    class="text-blue-600 hover:underline font-medium"
-                  >
-                    Download Attached File
-                  </a>
-                </div>
-                <form @submit.prevent="completeOrder">
-                  <button
-                    type="submit"
-                    class="px-5 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-200 ease-in-out"
-                  >
-                    Mark as Complete
-                  </button>
-                </form>
-              </div>
+
+          <!-- 💼 Actions -->
+          <div class="mt-8 space-y-6">
+            <!-- Client view -->
+            <div v-if="auth.user?.id === order.client_id && order.status === 'submitted'">
+              <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">
+                ✅ Submitted Work
+              </h3>
+              <p class="text-gray-800 dark:text-gray-300"><strong>Description:</strong> {{ order.result_text }}</p>
+              <a
+                v-if="order.result_file"
+                :href="order.result_file"
+                target="_blank"
+                class="text-blue-600 hover:underline font-medium"
+              >
+                📂 Download Attached File
+              </a>
+              <form @submit.prevent="completeOrder" class="mt-4">
+                <button class="px-5 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                  Mark as Complete
+                </button>
+              </form>
             </div>
-    
-            <!-- Для фрилансера -->
+
+            <!-- Freelancer view -->
             <div v-else-if="auth.user?.id === order.freelancer_id">
-              <div v-if="order.status === 'in_progress'" class="mt-6">
-                <h3 class="text-2xl font-semibold mb-2 text-gray-800 dark:text-gray-100">
-                  Submit Your Work
+              <div v-if="order.status === 'in_progress'">
+                <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">
+                  🚀 Submit Your Work
                 </h3>
-                <form @submit.prevent="submitWork" class="space-y-4">
-                  <textarea
-                    v-model="resultText"
-                    placeholder="Describe your work..."
-                    class="w-full p-3 border rounded-lg text-gray-800 dark:text-gray-300"
-                    required
-                  ></textarea>
+                <form @submit.prevent="submitWork" class="space-y-4 mt-4">
+                  <textarea v-model="resultText" placeholder="Describe your work..." class="w-full p-3 border rounded-lg text-gray-800 dark:text-gray-300" required></textarea>
                   <input type="file" @change="handleFileUpload" class="block" />
-                  <button
-                    type="submit"
-                    class="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 transition duration-200 ease-in-out"
-                  >
+                  <button class="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600">
                     Submit Work
                   </button>
                 </form>
               </div>
-              <div v-else-if="order.status === 'submitted'" class="mt-6">
-                <h3 class="text-2xl font-semibold mb-2 text-gray-800 dark:text-gray-100">
-                  Your Submitted Work
+              <div v-else-if="order.status === 'submitted'">
+                <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">
+                  📄 Your Submitted Work
                 </h3>
-                <p class="mb-2 text-gray-800 dark:text-gray-300">
-                  <strong>Description:</strong> {{ order.result_text }}
-                </p>
-                <div>
-                  <a
-                    v-if="order.result_file"
-                    :href="order.result_file"
-                    target="_blank"
-                    class="text-blue-600 hover:underline font-medium"
-                  >
-                    Download Attached File
-                  </a>
-                </div>
+                <p class="text-gray-800 dark:text-gray-300"><strong>Description:</strong> {{ order.result_text }}</p>
+                <a
+                  v-if="order.result_file"
+                  :href="order.result_file"
+                  target="_blank"
+                  class="text-blue-600 hover:underline font-medium"
+                >
+                  📂 Download Attached File
+                </a>
               </div>
-              <!-- Кнопка отмены заказа -->
-              <div v-if="order.status !== 'completed' && order.status !== 'cancelled'" class="mt-6">
+              <div v-if="order.status !== 'completed' && order.status !== 'cancelled'">
                 <button
                   @click="showCancelForm = !showCancelForm"
-                  class="px-5 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-200 ease-in-out"
+                  class="mt-4 px-5 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
                 >
                   Cancel Order
                 </button>
@@ -154,7 +141,7 @@
                     ></textarea>
                     <button
                       type="submit"
-                      class="w-full px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-200 ease-in-out"
+                      class="w-full px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
                     >
                       Confirm Cancellation
                     </button>
@@ -162,47 +149,35 @@
                 </div>
               </div>
             </div>
-    
-            <!-- Если не клиент и не фрилансер -->
-            <div v-else>
-              <p class="text-gray-700">You do not have permission to view this order.</p>
-            </div>
           </div>
         </div>
-          
 
-        <!-- Чат-окно -->
-        <div class="lg:w-1/3 bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 flex flex-col">
-          <h3 class="text-2xl font-bold mb-4">Chat</h3>
+        <!-- 💬 Chat Section -->
+        <div class="lg:w-1/3 bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6 flex flex-col">
+          <h3 class="text-2xl font-bold mb-4">
+            💬 Chat
+          </h3>
           <div
             ref="chatContainer"
-            class="flex-1 max-h-[400px] overflow-y-auto border rounded-lg p-4 bg-gray-100"
+            class="flex-1 max-h-[400px] overflow-y-auto border rounded-xl p-4 bg-gray-100"
+          >
+            <div
+              v-for="msg in messages"
+              :key="msg.MessageID"
+              class="mb-3"
+              :class="msg.SenderID === auth.user.id ? 'text-right' : 'text-left'"
             >
-          <div
-          v-for="msg in messages"
-          :key="msg.MessageID"
-          class="chat"
-          :class="msg.SenderID === auth.user.id ? 'chat-end' : 'chat-start'"
-        >
-              <div class="flex items-start">
-                <div>
-                  <div class="flex items-center">
-                    <span class="font-semibold mr-2">{{ msg.sender.name }}</span>
-                    <time class="text-xs text-gray-500">
-                      {{ new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
-                    </time>
-                  </div>
-                  <div
-                    class="mt-1 p-3 rounded-lg"
-                    :class="msg.SenderID === auth.user.id ? 'bg-blue-500 text-white self-end' : 'bg-gray-200 text-black'"
-                  >
-                    {{ msg.Content }}
-                  </div>
+              <div class="inline-block max-w-[80%] p-3 rounded-2xl shadow"
+                :class="msg.SenderID === auth.user.id ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-900'">
+                <div class="text-sm font-semibold mb-1">{{ msg.sender.name }}</div>
+                <div>{{ msg.Content }}</div>
+                <div class="text-xs mt-1 text-right">
+                  {{ new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
                 </div>
               </div>
             </div>
           </div>
-          <!-- Поле ввода сообщения -->
+          <!-- Input -->
           <div class="mt-4 flex">
             <input
               type="text"
@@ -213,7 +188,7 @@
             />
             <button
               @click="sendMessage"
-              class="ml-2 px-5 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+              class="ml-2 px-5 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
             >
               Send
             </button>
