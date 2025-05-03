@@ -6,14 +6,14 @@
 
       <div class="flex gap-4 mb-8 border-b border-gray-300 dark:border-gray-700">
         <button
-          :class="{'text-blue-600 border-b-4 border-blue-500 font-semibold': activeTab === 'owner'}"
+          :class="{'text-red-600 border-b-4 border-red-500 font-semibold': activeTab === 'owner'}"
           @click="activeTab = 'owner'"
           class="px-4 py-2 focus:outline-none"
         >
           📁 Applications to My Projects
         </button>
         <button
-          :class="{'text-blue-600 border-b-4 border-blue-500 font-semibold': activeTab === 'freelancer'}"
+          :class="{'text-red-600 border-b-4 border-red-500 font-semibold': activeTab === 'freelancer'}"
           @click="activeTab = 'freelancer'"
           class="px-4 py-2 focus:outline-none"
         >
@@ -31,8 +31,8 @@
             :key="proj.id"
             class="p-6 bg-gray-100 dark:bg-gray-800 rounded-xl shadow"
           >
-            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">💼 Project: {{ proj.title }}</h3>
-            <p class="text-gray-600 dark:text-gray-300 mb-4"><strong>💰 Budget:</strong> {{ proj.budget }}</p>
+            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-2 break-words">💼 Project: {{ proj.title }}</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-4 break-words"><strong>💰 Budget:</strong> {{ proj.budget }}</p>
 
             <div v-if="proj.applications.length === 0">
               <p class="text-gray-500 italic">No applications yet.</p>
@@ -112,11 +112,11 @@
             :key="app.id"
             class="p-6 bg-gray-100 dark:bg-gray-800 rounded-xl shadow"
           >
-            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">
+            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-2 break-words">
               💼 Project: {{ app.project.title }}
             </h3>
-            <p class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-1">📄 Cover Letter:</p>
-            <p class="bg-white dark:bg-gray-900 p-4 rounded whitespace-pre-line text-gray-800 dark:text-gray-100">
+            <p class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-1 break-words">📄 Cover Letter:</p>
+            <p class="bg-white dark:bg-gray-900 p-4 rounded whitespace-pre-line text-gray-800 dark:text-gray-10 break-words">
               {{ app.cover_letter }}
             </p>
             <p class="mt-3 text-gray-600 dark:text-gray-300">
