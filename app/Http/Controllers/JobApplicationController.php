@@ -33,11 +33,11 @@ class JobApplicationController extends Controller
 
         $userBalance = auth()->user()->balance;
         if (!$userBalance) {
-            return back()->withErrors(['message' => 'Баланс пользователя не найден.']);
+            return back()->withErrors(['message' => 'Balance of a user is not found']);
         }
 
         if ($userBalance->amount < $total) {
-            return back()->withErrors(['message' => 'Недостаточно средств на балансе.']);
+            return back()->withErrors(['message' => 'No enough money on the balance!']);
         }
 
         $userBalance->amount -= $total;
@@ -54,7 +54,7 @@ class JobApplicationController extends Controller
             'job_application_id' => $jobApplication->id,
             'client_id' => auth()->id(),           
             'freelancer_id' => $jobAd->creator_id, 
-            'status' => 'in_progress',
+            'status' => 'pending',
         ]);
         
 

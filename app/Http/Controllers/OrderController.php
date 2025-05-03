@@ -65,6 +65,47 @@ public function updateStatus(Request $request, Order $order)
     return back()->with('success', 'Order status updated!');
 }
 
+public function respondToOrder(Request $request, Order $order)
+{
+    $this->authorize('update', $order);
+
+    if ($order->status !== 'pending') {
+        return back()->withErrors(['message' => 'This order is no longer available for response.']);
+    }
+
+    $validated = $request->validate([
+        'action' => 'required|in:accept,decline',
+    ]);
+
+    if ($validated['action'] === 'accept') {
+        $order->status = 'in_progress';
+        $order->save();
+
+        return back()->with('success', 'You have accepted the order. Work can now begin.');
+    }
+
+    if ($validated['action'] === 'decline') {
+        $clientBalance = $order->client->balance;
+
+        if (!$clientBalance) {
+            return back()->withErrors(['message' => 'Client balance not found.']);
+        }
+
+        $price = $order->jobApplication->jobAd->Price;
+        $clientBalance->amount += $price;
+        $clientBalance->save();
+
+        $order->status = 'cancelled';
+        $order->cancel_reason = 'Freelancer declined the order';
+        $order->save();
+
+        return back()->with('success', 'You have declined the order. Funds returned to the client.');
+    }
+
+    return back()->withErrors(['message' => 'Invalid action.']);
+}
+
+
 public function completeOrder(Request $request, Order $order)
 {
     $this->authorize('update', $order);
@@ -91,23 +132,23 @@ public function submitWork(Request $request, Order $order)
 
     $validated = $request->validate([
         'result_text' => 'required|string',
-        'result_file' => 'nullable|file|max:10240', // Ограничение на размер файла 10 MB
+        'result_file' => 'nullable|file|max:10240',
     ]);
 
     $filePath = null;
     if ($request->hasFile('result_file')) {
         $uploadedFile = $request->file('result_file');
         $cloudinaryResult = Cloudinary::uploadFile($uploadedFile->getRealPath(), [
-            'folder' => 'order-results/' . $order->id, // Папка на Cloudinary
+            'folder' => 'order-results/' . $order->id,
         ]);
 
-        $filePath = $cloudinaryResult->getSecurePath(); // Получение публичной ссылки на файл
+        $filePath = $cloudinaryResult->getSecurePath();
     }
 
     $order->update([
         'result_text' => $validated['result_text'],
-        'result_file' => $filePath, // Ссылка на файл из Cloudinary
-        'status' => 'submitted', // Новый статус заказа
+        'result_file' => $filePath,
+        'status' => 'submitted',
     ]);
 
     return back()->with('success', 'Work submitted successfully. The client will review it.');

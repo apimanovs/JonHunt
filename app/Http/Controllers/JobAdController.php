@@ -16,17 +16,11 @@ use Illuminate\Support\Facades\Validator;
 
 class JobAdController extends Controller
 {
-    /**
-     * Отображение формы создания объявления
-     */
     public function create()
     {
         return inertia('CreateJobAd');
     }
 
-    /**
-     * Сохранение нового объявления
-     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [

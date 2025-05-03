@@ -6,7 +6,6 @@
     <div class="max-w-7xl mx-auto px-4 py-8">
       <div class="flex flex-col lg:flex-row gap-6">
 
-        <!-- 📆 Order Information -->
         <div class="w-full lg:w-2/3 bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6">
           <h2 class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-100">
             Order #{{ order.id }}
@@ -41,7 +40,6 @@
             </div>
           </div>
 
-          <!-- 📊 Order Status -->
           <div class="mt-8">
             <h3 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
               📊 Status
@@ -73,9 +71,7 @@
             </div>
           </div>
 
-          <!-- 💼 Actions -->
           <div class="mt-8 space-y-6">
-            <!-- Client view -->
             <div v-if="auth.user?.id === order.client_id && order.status === 'submitted'">
               <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">
                 ✅ Submitted Work
@@ -96,7 +92,6 @@
               </form>
             </div>
 
-            <!-- Freelancer view -->
             <div v-else-if="auth.user?.id === order.freelancer_id">
               <div v-if="order.status === 'in_progress'">
                 <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">
@@ -152,7 +147,6 @@
           </div>
         </div>
 
-        <!-- 💬 Chat Section -->
         <div class="lg:w-1/3 bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6 flex flex-col">
           <h3 class="text-2xl font-bold mb-4">
             💬 Chat
@@ -177,7 +171,7 @@
               </div>
             </div>
           </div>
-          <!-- Input -->
+
           <div class="mt-4 flex">
             <input
               type="text"

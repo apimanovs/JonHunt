@@ -6,7 +6,6 @@
   
         <h1 class="text-2xl font-bold mb-6 mt">My Orders</h1>
   
-        <!-- Блок: заказы, где пользователь — клиент -->
         <div class="mb-8">
           <h2 class="text-xl font-semibold mb-2">Orders as Client</h2>
   
@@ -32,18 +31,19 @@
                     Status: {{ order.status }}
                   </div>
                 </div>
-                <Link
-                  :href="route('orders.show', order.id)"
-                  class="btn bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                >
-                  View
-                </Link>
+                <template v-if="['in_progress', 'submitted', 'completed'].includes(order.status)">
+                  <Link
+                    :href="route('orders.show', order.id)"
+                    class="btn bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                  >
+                    View
+                  </Link>
+                </template>
               </div>
             </div>
           </div>
         </div>
   
-        <!-- Блок: заказы, где пользователь — фрилансер -->
         <div>
           <h2 class="text-xl font-semibold mb-2">Orders as Freelancer</h2>
   
@@ -69,12 +69,22 @@
                     Status: {{ order.status }}
                   </div>
                 </div>
-                <Link
-                  :href="route('orders.show', order.id)"
-                  class="btn bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                >
-                  View
-                </Link>
+                <template v-if="['in_progress', 'submitted', 'completed'].includes(order.status)">
+                  <Link
+                    :href="route('orders.show', order.id)"
+                    class="btn bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                  >
+                    View
+                  </Link>
+                </template>
+                <div v-if="auth.user?.id === order.freelancer_id && order.status === 'pending'" class="space-x-4">
+                  <form @submit.prevent="respondToOrder(order.id, 'accept')" class="inline-block">
+                    <button class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">✅ Accept</button>
+                  </form>
+                  <form @submit.prevent="respondToOrder(order.id, 'decline')" class="inline-block">
+                    <button class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">❌ Decline</button>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
@@ -88,8 +98,19 @@
   import { usePage, Head, Link } from '@inertiajs/vue3'
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
   
+  const respondToOrder = async (orderId, action) => {
+  try {
+    await axios.post(route('orders.respond', orderId), { action });
+    location.reload();
+  } catch (err) {
+    alert(err.response?.data?.message || 'Error responding to order.');
+  }
+}
+
   const { props } = usePage()
   const ordersAsClient = props.ordersAsClient
   const ordersAsFreelancer = props.ordersAsFreelancer
+  const auth = props.auth || { user: null }
+
   </script>
   

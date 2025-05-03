@@ -183,6 +183,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/orders/{order}/complete', [OrderController::class, 'completeOrder'])->name('orders.complete');
 });
 
+Route::post('/orders/{order}/respond', [OrderController::class, 'respondToOrder'])
+    ->middleware(['auth'])
+    ->name('orders.respond');
+
+
 use App\Http\Controllers\MessageController;
 
 Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
