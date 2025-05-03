@@ -8,6 +8,7 @@ class Order extends Model
 {
     protected $fillable = [
         'job_application_id',
+        'project_application_id',
         'client_id',
         'freelancer_id',
         'status',
@@ -15,6 +16,7 @@ class Order extends Model
         'result_file',
         'cancel_reason',
     ];
+    
 
     public function jobApplication()
     {
@@ -30,4 +32,15 @@ class Order extends Model
     {
         return $this->belongsTo(User::class, 'freelancer_id');
     }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'creator_id');
+    }
+
+    public function projectApplication()
+    {
+        return $this->belongsTo(ProjectApplication::class);
+    }
+    
 }

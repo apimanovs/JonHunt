@@ -55,6 +55,7 @@ class JobApplicationController extends Controller
             'client_id' => auth()->id(),           
             'freelancer_id' => $jobAd->creator_id, 
             'status' => 'pending',
+            'project_application_id' => null,
         ]);
         
 

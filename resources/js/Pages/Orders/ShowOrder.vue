@@ -11,33 +11,27 @@
             Order #{{ order.id }}
           </h2>
 
-          <div class="space-y-6">
-            <div>
-              <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-200">
-                📁 Project
-              </h3>
+          <div>
+            <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-200">
+              📁 Project
+            </h3>
+          
+            <template v-if="order.job_application">
               <a :href="`/gigs/${order.job_application.job_ad.id}`" class="text-lg text-gray-700 hover:text-red-600">
                 {{ order.job_application.job_ad.Title }}
               </a>
-            </div>
-
-            <div>
-              <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-200">
-                Requirements
-              </h3>
-              <div class="border-l-4 border-red-400 bg-blue-50 dark:bg-red-900 dark:border-red-600 p-4 rounded-lg shadow-sm max-h-60 overflow-y-auto whitespace-pre-line text-gray-800 dark:text-gray-200">
-                {{ order.job_application.requirements }}
-              </div>
-            </div>
-
-            <div>
-              <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-200">
-                {{ auth.user?.id === order.freelancer.id ? '👤 Client' : '🧑‍💼 Freelancer' }}
-              </h3>
-              <a :href="auth.user?.id === order.freelancer.id ? `/profile/${order.client.username}` : `/profile/${order.freelancer.username}`" class="text-gray-700 hover:text-red-600">
-                {{ auth.user?.id === order.freelancer.id ? order.client.name : order.freelancer.name }}
+            </template>
+          
+            <template v-else-if="order.project_application">
+              <a :href="`/projects/${order.project_application.project.id}`" class="text-lg text-gray-700 hover:text-red-600">
+                {{ order.project_application.project.title }}
               </a>
-            </div>
+            </template>
+          
+            <!-- Если нет ни того, ни другого -->
+            <template v-else>
+              <span class="text-red-500">Unknown project type</span>
+            </template>
           </div>
 
           <div class="mt-8">

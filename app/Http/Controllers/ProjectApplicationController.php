@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\Order;
+use App\Models\User;
 use Inertia\Inertia;
 use App\Models\ProjectApplication;
 use Illuminate\Http\Request;
@@ -52,12 +54,38 @@ class ProjectApplicationController extends Controller
         if ($application->project->creator_id !== Auth::id()) {
             abort(403, 'You are not the owner of this project.');
         }
+    
+        if ($application->status !== 'pending') {
+            return back()->withErrors(['message' => 'This application has already been processed.']);
+        }
+    
+        $freelancer = $application->freelancer;
+        $client = auth()->user();
+    
+        $balance = $client->balance;
+        $price = $application->project->budget;
+    
+        if (!$balance || $balance->amount < $price) {
+            return back()->withErrors(['message' => 'Insufficient funds in client balance.']);
+        }
+    
+        $balance->amount -= $price;
+        $balance->save();
+    
         $application->status = 'approved';
         $application->save();
-
-        return back()->with('success', 'Application approved!');
+    
+        Order::create([
+            'job_application_id' => null,
+            'project_application_id' => $application->id,
+            'client_id' => $client->id,
+            'freelancer_id' => $freelancer->id,
+            'status' => 'in_progress',
+        ]);
+    
+        return back()->with('success', 'Application approved and order created!');
     }
-
+    
 
     public function reject(ProjectApplication $application)
     {
