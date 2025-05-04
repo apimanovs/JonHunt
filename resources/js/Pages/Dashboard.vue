@@ -77,7 +77,6 @@ const filteredProjects = computed(() => {
     return projects;
 });
 
-// Сортировка фрилансеров (ads)
 const filteredJobAds = computed(() => {
     let ads = pageProps.jobAds.filter(ad => ad.Status === 'approved');
 
@@ -94,8 +93,7 @@ const filteredJobAds = computed(() => {
     return ads;
 });
 
-// ----- Pagination -----
-const itemsPerPage = 10;
+const itemsPerPage = 9;
 const currentPageProjects = ref(1);
 const currentPageJobAds = ref(1);
 
@@ -128,7 +126,6 @@ const goToPageJobAds = (page) => {
     currentPageJobAds.value = page;
 };
 
-// Репортинг
 const showReportModal = ref(false);
 const reportReason = ref("");
 const reportTarget = ref({ project_id: null, job_ad_id: null });
@@ -244,7 +241,6 @@ const submitReport = async () => {
                 <div class="flex flex-wrap -mx-2 sm:-mx-3">
                   <div v-for="project in paginatedProjects" :key="project.id" class="w-full mb-6">
                     <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition duration-300 w-full">
-                      <!-- Автор сверху -->
                       <div class="flex items-center mb-4">
                         <a v-if="project.creator?.avatar" :href="`/user/${project.creator.username}`" class="flex items-center">
                           <img :src="project.creator.avatar.photo_url" alt="Avatar" class="w-12 h-12 rounded-full mr-3" />
@@ -265,7 +261,7 @@ const submitReport = async () => {
                       </div>
                   
                       <div class="mt-2">
-                        <a :href="`/projects/${project.id}`" class="text-xl font-bold text-gray-800 hover:underline block mb-2">
+                        <a :href="`/projects/${project.id}`" class="text-xl font-bold text-gray-800 hover:text-red-500 block mb-2">
                           {{ project.title }}
                         </a>
                         <p class="text-gray-700 mb-1"><strong>Budget:</strong> ${{ project.budget }}</p>
@@ -294,6 +290,7 @@ const submitReport = async () => {
               <div v-else class="text-gray-600">
                 Users haven't created any projects yet.
               </div>
+
               <!-- Pagination for Projects -->
               <div v-if="totalPagesProjects > 1" class="flex justify-center mt-6 space-x-2">
                 <button :disabled="currentPageProjects === 1" @click="currentPageProjects--" class="px-3 py-1 border rounded disabled:opacity-50">Prev</button>
@@ -331,9 +328,7 @@ const submitReport = async () => {
                           </a>
                           <a :href="`/user/${ad.creator.username}`" class="text-gray-700 font-medium hover:text-blue-500 transition flex items-center">
                             {{ ad.creator.name }}
-                            <span v-if="ad.creator.role === 'freelancer'" class="badge badge-accent mx-2">
-                              Freelancer
-                            </span>
+                            <div v-if="ad.creator.role === 'freelancer'" class="m-3 text-xs  bg-red-500 rounded text-white">Freelancer</div>
                           </a>
                         </div>
                         <p class="text-gray-600 text-sm">
@@ -354,6 +349,7 @@ const submitReport = async () => {
               <div v-else class="text-gray-600">
                 No freelancer ads available.
               </div>
+              
               <!-- Pagination for Job Ads -->
               <div v-if="totalPagesJobAds > 1" class="flex justify-center mt-6 space-x-2">
                 <button :disabled="currentPageJobAds === 1" @click="currentPageJobAds--" class="px-3 py-1 border rounded disabled:opacity-50">Prev</button>
