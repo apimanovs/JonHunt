@@ -4,14 +4,14 @@
     <div class="my-10 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
 
       <!-- Left: Main Content -->
-      <div class="lg:col-span-2 bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6 sm:p-2">
+      <div class="lg:col-span-2 bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6 sm:p-2 break-words">
         <!-- Title -->
         <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2 break-words">
           {{ project.title }}
         </h2>
 
         <!-- Creator Info -->
-        <div class="creator-info flex flex-wrap items-center mt-4 mb-6">
+        <div class="creator-info flex flex-wrap items-center mt-4 mb-6 break-words">
           <a v-if="project.creator && project.creator.avatar" :href="`/user/${project.creator.username}`" class="flex items-center">
             <img :src="project.creator.avatar.photo_url" alt="Avatar" class="w-10 h-10 rounded-full mr-3 border" />
           </a>
@@ -29,10 +29,10 @@
         </div>
 
         <!-- Project Details -->
-        <div class="space-y-4 text-gray-800 dark:text-gray-100">
+        <div class="space-y-4 text-gray-800 dark:text-gray-100 break-words">
           <h3 class="text-3xl font-semibold border-b pb-1 mb-2">Project Details</h3>
 
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 break-words">
             <div class="stat bg-gray-50 dark:bg-gray-700 rounded shadow p-4">
               <div class="stat-title text-sm text-gray-500">Total budget</div>
               <div class="stat-value text-primary text-3xl break-words">${{ project.budget }}</div>
@@ -54,29 +54,29 @@
           <h4 class="text-black dark:text-blue-200 text-xl font-semibold flex items-center gap-2">
             Description
           </h4>
-          <p class="text-gray-800 text-lg dark:text-gray-100 mt-1">{{ project.description }}</p>
+          <p class="text-gray-800 text-lg dark:text-gray-100 mt-1 break-words">{{ project.description }}</p>
         </div>
 
-        <div class="grid gap-6 mt-6">
-          <div class="border-l-4 border-red-500 bg-blue-50 dark:bg-red-900 p-5 rounded shadow">
+        <div class="grid gap-6 mt-6 break-words">
+          <div class="border-l-4 border-red-500 bg-blue-50 dark:bg-red-900 p-5 rounded shadow break-words">
             <h4 class="text-blue-700 dark:text-blue-200 text-xl font-semibold flex items-center gap-2">
               Expected Outcome
             </h4>
-            <p class="text-gray-800 text-lg dark:text-gray-100 mt-1">{{ project.expected_outcome }}</p>
+            <p class="text-gray-800 text-lg dark:text-gray-100 mt-1 break-words">{{ project.expected_outcome }}</p>
           </div>
 
-          <div class="border-l-4 border-green-500 bg-green-50 dark:bg-green-900 p-5 rounded shadow">
+          <div class="border-l-4 border-green-500 bg-green-50 dark:bg-green-900 p-5 rounded shadow break-words">
             <h4 class="text-green-700 dark:text-green-200 text-xl font-semibold flex items-center gap-2">
               Requirements
             </h4>
-            <p class="text-gray-800 text-lg dark:text-gray-100 mt-1">{{ project.requirements }}</p>
+            <p class="text-gray-800 text-lg dark:text-gray-100 mt-1 break-words">{{ project.requirements }}</p>
           </div>
 
-          <div class="border-l-4 border-yellow-500 bg-yellow-50 dark:bg-yellow-900 p-5 rounded shadow">
+          <div class="border-l-4 border-yellow-500 bg-yellow-50 dark:bg-yellow-900 p-5 rounded shadow break-words">
             <h4 class="text-yellow-700 dark:text-yellow-200 text-xl font-semibold flex items-center gap-2">
               Tasks
             </h4>
-            <p class="text-gray-800 text-lg dark:text-gray-100 mt-1 whitespace-pre-line">{{ project.tasks }}</p>
+            <p class="text-gray-800 text-lg dark:text-gray-100 mt-1 whitespace-pre-line break-words">{{ project.tasks }}</p>
           </div>
         </div>
 
@@ -88,15 +88,154 @@
         </div>
 
         
-        <ReviewsSection 
-        :reviews="reviews"
-        :averageRating="averageRating"
-        :authUser="auth.user"
-        :projectId="project.id"
-        />
-        
-      </div>
+        <!-- Reviews Section -->
+        <div v-if="Array.isArray(reviews) && reviews.length > 0" class="text-center mb-6">
+          <h3 class="text-2xl font-bold text-gray-900">Average Rating</h3>
+          <p class="text-red-600 text-3xl font-extrabold mt-1">{{ averageRating }}/5</p>
+          <p class="text-sm text-gray-600 mt-1">
+            Based on {{ reviews.length }} review<span v-if="reviews.length > 1">s</span>
+          </p>
+        </div>    
+        <div class="mt-6">
+            <h3 class="text-xl font-semibold text-gray-900">Reviews</h3>
+            <div v-if="project.reviews.length === 0" class="mt-2 text-sm text-gray-600">
+              No reviews yet.
+            </div>
+            <ul class="mt-4 space-y-4">
+              <li
+                v-for="review in project.reviews"
+                :key="review.ReviewID"
+                class="border-b border-gray-200 pb-4"
+              >
+                <div v-if="editForm.id === review.ReviewID">
+                  <div>
+                    <label for="editRating" class="block text-sm font-medium">Rating</label>
+                    <select
+                      id="editRating"
+                      v-model="editForm.Rating"
+                      class="mt-1 block w-full"
+                    >
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label for="editReviewText" class="block text-sm font-medium">Review</label>
+                    <textarea
+                      id="editReviewText"
+                      v-model="editForm.ReviewText"
+                      class="mt-1 block w-full"
+                    ></textarea>
+                    <InputError class="mt-2" :message="form.errors.ReviewText" />
+                  </div>
+                  <div class="mt-2">
+                    <PrimaryButton @click="updateReview" class="bg-blue-600 text-white">
+                      Update Review
+                    </PrimaryButton>
+                    <button @click="cancelEdit" class="text-red-600 hover:text-red-800 ml-2">
+                      Cancel
+                    </button>
+                  </div>
+                </div>
       
+                <div v-else>
+                  <p class="text-gray-900">{{ review.ReviewText }}</p>
+                  <p class="text-sm text-gray-600">
+                    {{ review.user.name }} (Rating: {{ review.Rating }})
+                    <span v-if="auth.user && review.user.id === auth.user.id">
+                      <div class="dropdown relative inline-block text-left">
+                        <button
+                          tabindex="0"
+                          role="button"
+                          class="flex items-center p-1 rounded-full hover:bg-gray-200 transition duration-150 ease-in-out"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            class="h-3 w-6 stroke-current text-gray-600"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
+                            ></path>
+                          </svg>
+                        </button>
+                        <ul
+                          tabindex="0"
+                          class="dropdown-content absolute mt-2 w-40 menu bg-base-100 rounded-md shadow-lg p-1 z-10"
+                        >
+                          <li>
+                            <button
+                              @click="editReview(review)"
+                              class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 hover:text-blue-600 transition duration-150 ease-in-out text-left"
+                            >
+                              Edit
+                            </button>
+                          </li>
+                          <li>
+                            <button
+                              @click="deleteReview(review)"
+                              class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 hover:text-red-600 transition duration-150 ease-in-out text-left"
+                            >
+                              Delete
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
+                    </span>
+                  </p>
+                </div>
+              </li>
+            </ul>
+          </div>
+      
+          <div class="mt-6">
+            <h3 class="text-xl font-semibold text-gray-900">Add a Review</h3>
+            <form @submit.prevent="submitReview" class="space-y-4">
+              <div>
+                <label for="rating" class="block text-sm font-medium">Rating</label>
+                <select
+                  id="rating"
+                  v-model="form.Rating"
+                  class="select select-bordered mt-1 block w-full"
+                >
+                  <option disabled selected>Choose rating for this project</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </div>
+              <div>
+                <label for="ReviewText" class="block text-sm font-medium">Review</label>
+                <textarea
+                  id="ReviewText"
+                  v-model="form.ReviewText"
+                  class="textarea textarea-bordered mt-1 block w-full"
+                ></textarea>
+              </div>
+      
+              <div v-if="$page.props.errors.error" class="text-red-600 mb-4">
+                {{ $page.props.errors.error }}
+              </div>
+              <div v-if="$page.props.errors.Rating" class="text-red-600 mb-4">
+                {{ $page.props.errors.Rating }}
+              </div>
+              <PrimaryButton type="submit" class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-md">
+                Post a review
+              </PrimaryButton>
+              <InputError class="mt-2" :message="$page.props.errors?.error" />
+            </form>
+          </div>
+
+      </div>
       <!-- Right: Apply Sidebar -->
       <div class="sticky top-28 self-start space-y-4">
         <div v-if="canApply" class="bg-blue-50 dark:bg-gray-900 p-6 rounded shadow">
@@ -130,7 +269,8 @@ import { useForm, Head, usePage } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputError from '@/Components/InputError.vue';
 import { Inertia } from '@inertiajs/inertia';
-import ReviewsSection from '@/Components/ReviewsSection.vue';
+import ReviewsProjectSection from '@/Components/ReviewsProjectSection.vue';
+
 
 const { props: pageProps } = usePage();
 const { auth } = pageProps;
@@ -261,7 +401,5 @@ const deadline = computed(() => {
     day: 'numeric',
   });
 });
-
-
 </script>
   

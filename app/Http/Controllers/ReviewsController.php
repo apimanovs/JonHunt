@@ -89,7 +89,6 @@ public function deleteReview(Request $request, Review $review)
             ->with('success', 'Review deleted successfully.');
     }
 
-    // Если тип неизвестен — редирект назад
     return redirect()->back()->with('success', 'Review deleted successfully.');
 }
 

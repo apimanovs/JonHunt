@@ -75,7 +75,7 @@ class ProjectApplicationController extends Controller
         $application->status = 'approved';
         $application->save();
     
-        Order::create([
+        $order = Order::create([
             'job_application_id' => null,
             'project_application_id' => $application->id,
             'client_id' => $client->id,
@@ -83,7 +83,8 @@ class ProjectApplicationController extends Controller
             'status' => 'in_progress',
         ]);
     
-        return back()->with('success', 'Application approved and order created!');
+        return redirect()->route('orders.show', $order->id)
+            ->with('success', 'Order created and payment processed successfully!');    
     }
     
 
