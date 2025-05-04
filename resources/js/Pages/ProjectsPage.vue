@@ -231,7 +231,6 @@
               <PrimaryButton type="submit" class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-md">
                 Post a review
               </PrimaryButton>
-              <InputError class="mt-2" :message="$page.props.errors?.error" />
             </form>
           </div>
 
@@ -269,7 +268,6 @@ import { useForm, Head, usePage } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputError from '@/Components/InputError.vue';
 import { Inertia } from '@inertiajs/inertia';
-import ReviewsProjectSection from '@/Components/ReviewsProjectSection.vue';
 
 
 const { props: pageProps } = usePage();

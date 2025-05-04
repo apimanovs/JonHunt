@@ -253,7 +253,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { useForm } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputError from '@/Components/InputError.vue';
-import { Inertia } from '@inertiajs/inertia';
 
 const { props: pageProps } = usePage();
 const { auth } = pageProps;
