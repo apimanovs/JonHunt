@@ -152,14 +152,15 @@ const activeTab = ref('owner')
 
 const approveApplication = async (applicationId) => {
   try {
-    await axios.post(route('projects.applications.approve', applicationId))
-    alert('Application approved!')
-    location.reload()
+    const response = await axios.post(route('projects.applications.approve', applicationId))
+    const redirectUrl = response.data.redirect_url
+    window.location.href = redirectUrl
   } catch (error) {
     console.error(error)
     alert('Failed to approve.')
   }
 }
+
 
 const rejectApplication = async (applicationId) => {
   try {

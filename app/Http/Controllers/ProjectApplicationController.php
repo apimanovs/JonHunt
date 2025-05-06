@@ -83,8 +83,11 @@ class ProjectApplicationController extends Controller
             'status' => 'in_progress',
         ]);
     
-        return redirect()->route('orders.show', $order->id)
-            ->with('success', 'Order created and payment processed successfully!');    
+        return response()->json([
+            'redirect_url' => route('orders.show', $order->id),
+            'message' => 'Order created and payment processed successfully!',
+        ]);
+        
     }
     
 
