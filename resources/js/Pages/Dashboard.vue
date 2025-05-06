@@ -20,7 +20,7 @@ const budgetRanges = [
     { label: 'Any', value: '' },
     { label: 'Up to $500', value: '0-500' },
     { label: '$500 - $1000', value: '500-1000' },
-    { label: 'Over $1000', value: '1000+' },
+    { label: 'Over $1000', value: '1000-999999' },
 ];
 
 const sortOptions = [
@@ -49,12 +49,15 @@ const filteredProjects = computed(() => {
     if (selectedNiche.value) {
         projects = projects.filter(p => p.niche === selectedNiche.value);
     }
-    if (selectedBudgetRange.value) {
-        const [min, max] = selectedBudgetRange.value.split('-').map(Number);
+        if (selectedBudgetRange.value) {
+        const [minStr, maxStr] = selectedBudgetRange.value.split('-');
+        const min = Number(minStr);
+        const max = Number(maxStr);
+
         projects = projects.filter(p => {
             const budget = p.budget || 0;
-            if (min && budget < min) return false;
-            if (max && budget > max) return false;
+            if (!isNaN(min) && budget < min) return false;
+            if (!isNaN(max) && budget > max) return false;
             return true;
         });
     }
@@ -80,14 +83,32 @@ const filteredProjects = computed(() => {
 const filteredJobAds = computed(() => {
     let ads = pageProps.jobAds.filter(ad => ad.Status === 'approved');
 
-    if (selectedBudgetRange.value) {
-        const [min, max] = selectedBudgetRange.value.split('-').map(Number);
+        if (selectedBudgetRange.value) {
+        const [minStr, maxStr] = selectedBudgetRange.value.split('-');
+        const min = Number(minStr);
+        const max = Number(maxStr);
+
         ads = ads.filter(ad => {
             const price = ad.Price || 0;
-            if (min && price < min) return false;
-            if (max && price > max) return false;
+            if (!isNaN(min) && price < min) return false;
+            if (!isNaN(max) && price > max) return false;
             return true;
         });
+    }
+
+    switch (sortBy.value) {
+        case 'newest':
+          ads.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            break;
+        case 'oldest':
+          ads.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+            break;
+        case 'low_budget':
+          ads.sort((a, b) => (a.Price || 0) - (b.Price || 0));
+            break;
+        case 'high_budget':
+          ads.sort((a, b) => (b.Price || 0) - (a.Price || 0));
+            break;
     }
 
     return ads;
