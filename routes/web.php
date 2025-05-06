@@ -99,10 +99,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/freelancer-registration', function () {
         return inertia('FreelancerRegistration');
     })->name('freelancer.registration');
+
     Route::post('/api/become-freelancer', [FreelancerController::class, 'store'])->name('freelancer.store');
-    Route::get('/freelancer/{username}/edit', [FreelancerController::class, 'edit'])->name('freelancers.edit');
+});
+
+Route::middleware(['auth', 'verified', 'freelancer'])->group(function () {
+    Route::get('/freelancer/{username}/edit', [FreelancerController::class, 'display'])->name('freelancers.display');
     Route::put('/freelancer/{username}/update', [FreelancerController::class, 'update'])->name('freelancers.update');
 });
+
 
 Route::post('/notifications/mark-all-as-read', function () {
     Auth::user()->unreadNotifications->markAsRead();

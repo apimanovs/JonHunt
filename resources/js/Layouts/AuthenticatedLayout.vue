@@ -322,6 +322,9 @@ function search() {
                                       <template v-if="$page.props.auth.user.role === 'user'">
                                         <DropdownLink :href="route('freelancer.registration')"> Become a Freelancer </DropdownLink>
                                       </template>
+                                      <template v-if="$page.props.auth.user.role === 'freelancer'">
+                                        <DropdownLink :href="route('freelancers.display', $page.props.auth.user.username)"> Edit freelancer page </DropdownLink>
+                                      </template>
                                             <DropdownLink :href="route('profile.edit')"> Profile </DropdownLink>
                                             <DropdownLink :href="route('logout')" method="post" as="button">
                                                 Log Out
@@ -339,7 +342,6 @@ function search() {
     </div>
                         </div>
 
-                        <!-- Hamburger -->
                         <div class="-me-2 flex items-center sm:hidden">
                             <button
                                 @click="showingNavigationDropdown = !showingNavigationDropdown"
@@ -372,7 +374,6 @@ function search() {
                     </div>
                 </div>
 
-                <!-- Responsive Navigation Menu -->
                 <div
                     :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }"
                     class="sm:hidden"
@@ -383,10 +384,8 @@ function search() {
                         </ResponsiveNavLink>
                     </div>
 
-                    <!-- Responsive Settings Options -->
                     <div class="pt-4 pb-1 border-t border-gray-200">
                         <div class="px-4 flex items-center">
-                            <!-- Если у пользователя есть аватар, отображаем его -->
                             <img 
                                 v-if="$page.props.auth.user && $page.props.auth.user.avatar" 
                                 :src="$page.props.auth.user.avatar.photo_url" 
@@ -394,7 +393,6 @@ function search() {
                                 class="w-10 h-10 rounded-full mr-3"
                             />
                     
-                            <!-- Если аватара нет, отображаем круг с инициалом -->
                             <div 
                                 v-else 
                                 class="w-10 h-10 rounded-full mr-3 flex items-center justify-center bg-gray-400 text-white font-bold"
@@ -402,7 +400,6 @@ function search() {
                                 {{ $page.props.auth.user ? $page.props.auth.user.name.charAt(0).toUpperCase() : 'G' }}
                             </div>
                             
-                            <!-- Отображаем имя и email пользователя -->
                             <div>
                                 <div class="font-medium text-base text-gray-800">
                                     {{ $page.props.auth.user ? $page.props.auth.user.name : 'Guest' }}
@@ -426,14 +423,12 @@ function search() {
 
 
 
-            <!-- Page Heading -->
             <header class="bg-white shadow" v-if="$slots.header">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <slot name="header" />
                 </div>
             </header>
 
-            <!-- Page Content -->
             <main>
                 <slot />
             </main>
