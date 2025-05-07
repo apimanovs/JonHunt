@@ -16,9 +16,6 @@ use Inertia\Inertia;
 
 class AdminController extends Controller
 {
-    /**
-     * Главная страница админ-панели (dashboard).
-     */
     public function index(): \Inertia\Response
     {
 
@@ -33,9 +30,6 @@ class AdminController extends Controller
         ]);
     }
 
-    /**
-     * Список всех пользователей.
-     */
     public function usersIndex(): \Inertia\Response
     {
         $users = User::orderBy('created_at', 'desc')->paginate(20);
@@ -45,9 +39,6 @@ class AdminController extends Controller
         ]);
     }
 
-    /**
-     * Удаление пользователя.
-     */
     public function usersDestroy($userId)
     {
         $user = User::findOrFail($userId);
@@ -115,10 +106,6 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Объявление о работе отклонено!');
     }
     
-    
-    /**
-     * Список всех проектов.
-     */
     public function projectsIndex(): \Inertia\Response
     {
         $projects = Project::orderBy('id', 'asc')->paginate(20);
@@ -128,9 +115,6 @@ class AdminController extends Controller
         ]);
     }
 
-    /**
-     * Удаление проекта.
-     */
     public function projectsDestroy(Project $project)
     {
         $project->delete();
@@ -138,9 +122,6 @@ class AdminController extends Controller
         return back()->with('success', 'Проект удалён!');
     }
 
-    /**
-     * Список всех объявлений о работе.
-     */
     public function jobAdsIndex(): \Inertia\Response
     {
         $jobAds = JobAdvertisement::orderBy('id', 'asc')->paginate(20);
@@ -150,9 +131,6 @@ class AdminController extends Controller
         ]);
     }
 
-    /**
-     * Удаление объявления о работе.
-     */
     public function jobAdsDestroy(JobAdvertisement $jobAd)
     {
         $jobAd->delete();
@@ -160,9 +138,6 @@ class AdminController extends Controller
         return back()->with('success', 'Объявление о работе удалено!');
     }
 
-    /**
-     * Личная страница администратора (профиль).
-     */
     public function profile(): \Inertia\Response
     {
         $admin = auth()->user(); 

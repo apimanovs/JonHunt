@@ -25,14 +25,12 @@ class SearchController extends Controller
             ]);
         }
 
-        // Поиск по пользователям (по имени или username)
         $users = User::where('name', 'like', "%$query%")
             ->orWhere('username', 'like', "%$query%")
-            ->with('avatar') // Предзагрузка аватара
+            ->with('avatar')
             ->take(5)
             ->get();
 
-        // Поиск по фрилансерам (по навыкам, имени, username или специализации)
         $freelancers = Freelancer::whereHas('user', function ($userQuery) use ($query) {
                 $userQuery->where('name', 'like', "%$query%")
                     ->orWhere('username', 'like', "%$query%");
@@ -41,32 +39,29 @@ class SearchController extends Controller
             ->orWhereHas('skills', function ($skillQuery) use ($query) {
                 $skillQuery->where('name', 'like', "%$query%");
             })
-            ->with(['user.avatar', 'skills']) // Предзагрузка пользователя, аватара и навыков
+            ->with(['user.avatar', 'skills']) 
             ->take(5)
             ->get();
 
-        // Поиск по проектам (по названию, нише, имени создателя или username создателя)
         $projects = Project::where('title', 'like', "%$query%")
             ->orWhere('niche', 'like', "%$query%")
             ->orWhereHas('creator', function ($creatorQuery) use ($query) {
                 $creatorQuery->where('name', 'like', "%$query%")
                     ->orWhere('username', 'like', "%$query%");
             })
-            ->with(['creator.avatar']) // Загружаем создателя проекта с его аватаром
+            ->with(['creator.avatar']) 
             ->take(5)
             ->get();
 
-        // Поиск по объявлениям (по названию, имени создателя или username создателя)
         $jobAds = JobAdvertisement::where('title', 'like', "%$query%")
             ->orWhereHas('creator', function ($creatorQuery) use ($query) {
                 $creatorQuery->where('name', 'like', "%$query%")
                     ->orWhere('username', 'like', "%$query%");
             })
-            ->with(['creator.avatar']) // Загружаем создателя объявления с его аватаром
+            ->with(['creator.avatar']) 
             ->take(5)
             ->get();
 
-        // Формирование ответа для фронтенда
         return Inertia::render('SearchPage', [
             'query' => $query,
             'users' => $users,

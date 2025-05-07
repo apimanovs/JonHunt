@@ -29,10 +29,8 @@ class ChatController extends Controller
 {
     $currentUser = auth()->user();
 
-    // Ищем или создаем чат между текущим пользователем и выбранным пользователем
     $chat = Chat::findOrCreateChat($currentUser->id, $user->id);
 
-    // Передаем чат и сообщения в вид
     return view('chat.show', [
         'chat' => $chat,
         'messages' => $chat->messages()->with('sender')->get(),

@@ -17,7 +17,7 @@ return new class extends Migration {
     {
         Schema::table('orders', function (Blueprint $table) {
             $table->unsignedBigInteger('job_application_id')->nullable(false)->change();
-            $table->unsignedBigInteger('project_application_id')->nullable()->change(); // оставим project nullable
+            $table->unsignedBigInteger('project_application_id')->nullable()->change();
         });
     }
 };

@@ -22,9 +22,6 @@ use App\Models\Review;
 
 class UserController extends Controller
 {
-    /**
-     * Display the user's projects.
-     */
     public function projectsInProfile(): Response
     {
         $user = Auth::user();
@@ -36,10 +33,6 @@ class UserController extends Controller
     }
 
     
-
-    /**
-     * Show the form for editing the specified project.
-     */
     public function editProject(Request $request, Project $project): Response
     {
         return Inertia::render('EditProject', [
@@ -49,9 +42,6 @@ class UserController extends Controller
         ]);
     }
     
-    /**
-     * Update the specified project in storage.
-     */
     public function updateProject(Request $request, Project $project)
     {
         $user = Auth::user();
@@ -98,8 +88,6 @@ class UserController extends Controller
         return redirect()->route('dashboard')->with('success', 'Project deleted successfully!');
     }
     
-
-
     public function show(User $user)
     {
         return view('user.show', compact('user'));

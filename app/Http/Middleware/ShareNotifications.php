@@ -13,15 +13,11 @@ class ShareNotifications
      */
     public function handle($request, Closure $next)
     {
-        // Проверяем, авторизован ли пользователь
         if (Auth::check()) {
-            // Получаем уведомления текущего пользователя
             $notifications = Auth::user()->notifications()->latest()->get();
 
-            // Делаем уведомления доступными во всех Inertia страницах
             Inertia::share('notifications', $notifications);
         } else {
-            // Если пользователь не авторизован, уведомления не передаются
             Inertia::share('notifications', []);
         }
 

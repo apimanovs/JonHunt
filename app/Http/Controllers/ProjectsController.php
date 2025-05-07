@@ -25,21 +25,15 @@ use App\Models\Review;
 
 class ProjectsController extends Controller
 {
-    /**
-     * Display the form for creating a new project.
-     */
     public function create(): Response
-{
-    $niches = ['Technology', 'Health', 'Education', 'Finance', 'Entertainment'];
+    {
+        $niches = ['Technology', 'Health', 'Education', 'Finance', 'Entertainment'];
 
-    return Inertia::render('projects.create', [
-        'niches' => $niches,
-    ]);
-}
+        return Inertia::render('projects.create', [
+            'niches' => $niches,
+        ]);
+    }
 
-    /**
-     * Store a newly created project in storage.
-     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [

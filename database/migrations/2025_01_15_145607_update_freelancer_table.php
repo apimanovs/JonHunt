@@ -18,7 +18,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('freelancers', function (Blueprint $table) {
-            // Откатываем изменения
             if (Schema::hasColumn('freelancers', 'experience_from')) {
                 $table->dropColumn('experience_from');
             }

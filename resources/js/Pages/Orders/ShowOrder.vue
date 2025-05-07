@@ -28,7 +28,6 @@
               </a>
             </template>
           
-            <!-- Если нет ни того, ни другого -->
             <template v-else>
               <span class="text-red-500">Unknown project type</span>
             </template>
