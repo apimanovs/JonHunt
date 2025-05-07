@@ -1,7 +1,7 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { computed } from 'vue';
-import { usePage } from '@inertiajs/vue3';
+import { usePage, Head } from '@inertiajs/vue3';
 
 const page = usePage();
 const query = computed(() => page.props.query);
@@ -14,6 +14,8 @@ console.log(page.props);
 
 <template>
     <AuthenticatedLayout>
+      <Head title="Search results" />
+
   <div class="container mx-auto mt-6">
     <h1 class="text-2xl font-bold mb-4">Search Results</h1>
     <p class="mb-4">Results for: <strong>"{{ query }}"</strong></p>

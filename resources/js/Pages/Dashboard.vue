@@ -219,9 +219,17 @@ const submitReport = async () => {
       
         <div class="filters mt-6">
           <div class="flex flex-wrap justify-center gap-4">
-            <select v-model="selectedNiche" class="p-2 border border-gray-300 rounded-lg">
+            <select
+              v-if="activeTab !== 'jobAds'"
+              v-model="selectedNiche"
+              class="p-2 border border-gray-300 rounded-lg"
+            >
               <option value="">All Niches</option>
-              <option v-for="niche in [...new Set(pageProps.projects.map(p => p.niche))]" :key="niche" :value="niche">
+              <option
+                v-for="niche in [...new Set(pageProps.projects.map(p => p.niche))]"
+                :key="niche"
+                :value="niche"
+              >
                 {{ niche }}
               </option>
             </select>

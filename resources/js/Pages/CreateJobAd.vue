@@ -101,7 +101,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import CharactedLimitedInput from '@/Components/CharactedLimitedInput.vue';
 
 
-import { useForm } from '@inertiajs/vue3';
+import { useForm, Head } from '@inertiajs/vue3';
 
 const form = useForm({
     title: '',

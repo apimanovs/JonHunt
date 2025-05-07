@@ -164,7 +164,7 @@
 
 <script setup>
 import { ref, onMounted, nextTick } from 'vue'
-import { usePage } from '@inertiajs/vue3'
+import { usePage, Head } from '@inertiajs/vue3'
 import axios from 'axios'
 import Echo from 'laravel-echo'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
