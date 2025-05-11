@@ -63,13 +63,27 @@
           </p>        
         </div>
       </section>
-
+      
       <!-- Current User Application -->
       <section v-if="currentUserApplication" class="bg-gray-50 dark:bg-gray-700 p-6 rounded border dark:border-gray-600">
         <h3 class="text-xl font-semibold mb-2">Your Application</h3>
         <p><strong>Status:</strong> {{ currentUserApplication.status }}</p>
         <p class="mt-1"><strong>Cover Letter:</strong> {{ currentUserApplication.cover_letter }}</p>
       </section>
+      
+      <!-- Sidebar: Application Form -->
+      <div class="lg:col-span-1">
+        <div v-if="canApply" class="bg-blue-50 dark:bg-gray-900 p-6 rounded shadow sticky top-28">
+          <h3 class="text-xl font-semibold mb-4 text-red-700 dark:text-blue-300">Apply to this Project</h3>
+          <form @submit.prevent="submitApplication" class="space-y-4">
+            <div>
+              <label class="block font-semibold">Cover Letter</label>
+              <textarea v-model="coverLetter" class="border w-full p-2 rounded" rows="4" placeholder="Explain why you are the best fit..." required></textarea>
+            </div>
+            <button class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 w-full">Submit Application</button>
+          </form>
+        </div>
+      </div>
 
       <!-- Reviews -->
       <section>
@@ -114,7 +128,7 @@
                   <span v-if="auth.user && review.user.id === auth.user.id">
                     <div class="dropdown relative inline-block text-left">
                       <button tabindex="0" class="flex items-center p-1 rounded-full hover:bg-gray-200 transition">
-                         ...
+                         . . .
                       </button>
                       <ul tabindex="0" class="dropdown-content absolute mt-2 w-40 menu bg-base-100 rounded-md shadow-lg p-1 z-10">
                         <li>
@@ -158,19 +172,6 @@
         </div>
       </section>
 
-      <!-- Sidebar: Application Form -->
-      <div class="lg:col-span-1">
-        <div v-if="canApply" class="bg-blue-50 dark:bg-gray-900 p-6 rounded shadow sticky top-28">
-          <h3 class="text-xl font-semibold mb-4 text-red-700 dark:text-blue-300">Apply to this Project</h3>
-          <form @submit.prevent="submitApplication" class="space-y-4">
-            <div>
-              <label class="block font-semibold">Cover Letter</label>
-              <textarea v-model="coverLetter" class="border w-full p-2 rounded" rows="4" placeholder="Explain why you are the best fit..." required></textarea>
-            </div>
-            <button class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 w-full">Submit Application</button>
-          </form>
-        </div>
-      </div>
       </div>
     </div>
   </AuthenticatedLayout>
@@ -217,17 +218,13 @@ const currentUserApplication = computed(() => {
 })
 
 const submitApplication = async () => {
-  try {
+
     const formData = new FormData()
     formData.append('cover_letter', coverLetter.value)
 
     await axios.post(route('projects.apply', props.project.id), formData)
     alert('Application submitted!')
     location.reload();
-  } catch (error) {
-    console.error(error)
-    alert('Failed to submit application.')
-  }
 }
 
 const timeSincePosted = computed(() => {

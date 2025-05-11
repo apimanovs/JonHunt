@@ -219,28 +219,64 @@ const submitReport = async () => {
       
         <div class="filters mt-6">
           <div class="flex flex-wrap justify-center gap-4">
-            <select
-              v-if="activeTab !== 'jobAds'"
-              v-model="selectedNiche"
-              class="p-2 border border-gray-300 rounded-lg"
-            >
-              <option value="">All Niches</option>
-              <option
-                v-for="niche in [...new Set(pageProps.projects.map(p => p.niche))]"
-                :key="niche"
-                :value="niche"
+            <div class="flex flex-col items-start">
+              <label                 v-if="activeTab !== 'jobAds'"
+              for="niche-select" class="text-sm font-medium text-gray-700">Niche</label>
+              <select
+                id="niche-select"
+                v-if="activeTab !== 'jobAds'"
+                v-model="selectedNiche"
+                class="p-2 border border-gray-300 rounded-lg"
               >
-                {{ niche }}
-              </option>
-            </select>
-            <select v-model="selectedBudgetRange" class="p-2 border border-gray-300 rounded-lg">
-              <option v-for="range in budgetRanges" :key="range.value" :value="range.value">{{ range.label }}</option>
-            </select>
-            <select v-model="sortBy" class="p-2 border border-gray-300 rounded-lg">
-              <option v-for="option in sortOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
-            </select>
+                <option value="">Select a niche</option>
+                <option
+                  v-for="niche in [...new Set(pageProps.projects.map(p => p.niche))]"
+                  :key="niche"
+                  :value="niche"
+                >
+                  {{ niche }}
+                </option>
+              </select>
+            </div>
+        
+            <div class="flex flex-col items-start">
+              <label for="budget-select" class="text-sm font-medium text-gray-700">Budget</label>
+              <select
+                id="budget-select"
+                v-model="selectedBudgetRange"
+                class="p-2 border border-gray-300 rounded-lg"
+              >
+                <option value="">Select budget range</option>
+                <option
+                  v-for="range in budgetRanges"
+                  :key="range.value"
+                  :value="range.value"
+                >
+                  {{ range.label }}
+                </option>
+              </select>
+            </div>
+        
+            <div class="flex flex-col items-start">
+              <label for="sort-select" class="text-sm font-medium text-gray-700">Sort by</label>
+              <select
+                id="sort-select"
+                v-model="sortBy"
+                class="p-2 border border-gray-300 rounded-lg"
+              >
+                <option value="">Select sorting</option>
+                <option
+                  v-for="option in sortOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </option>
+              </select>
+            </div>
           </div>
         </div>
+        
         
 
         <!-- Tabs for switching between Projects and Freelancer Ads -->

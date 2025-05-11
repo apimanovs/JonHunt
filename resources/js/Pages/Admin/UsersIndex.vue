@@ -26,28 +26,27 @@
                   @click="deleteUser(user.id)"
                   class="text-red-600 hover:text-red-900"
                 >
-                  Удалить
+                  Delete
                 </button>
               </td>
             </tr>
           </tbody>
         </table>
   
-        <!-- Пагинация -->
         <div class="mt-4 flex space-x-2">
           <button
             :disabled="!users.links.prev"
             @click="goTo(users.links.prev)"
             class="btn bg-gray-300 px-3 py-1 rounded"
           >
-            Предыдущая
+            Previous
           </button>
           <button
             :disabled="!users.links.next"
             @click="goTo(users.links.next)"
             class="btn bg-gray-300 px-3 py-1 rounded"
           >
-            Следующая
+            Next
           </button>
         </div>
       </div>

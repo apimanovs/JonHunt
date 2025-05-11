@@ -1,6 +1,7 @@
 <template>
+  <Head title="Service Application" />
   <AuthenticatedLayout>
-    <div class="max-w-4xl mx-auto bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6">
+    <div class="max-w-4xl mx-auto bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6 mt-20">
       <h2 class="text-3xl font-bold text-gray-900 mb-2 break-words">{{ jobAd.Title }}</h2>
       <p class="text-md text-gray-600 mb-6 italic">
         You're about to apply for this freelance job opportunity. Make sure to carefully describe what you can offer and any specific needs you have regarding this project.
@@ -48,7 +49,7 @@
   import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
   import CharactedLimitedInput from "@/Components/CharactedLimitedInput.vue";
 
-  import { useForm } from "@inertiajs/vue3";
+  import { useForm, Head } from "@inertiajs/vue3";
   
   const props = defineProps({
     jobAd: Object,

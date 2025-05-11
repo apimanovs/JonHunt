@@ -6,37 +6,33 @@
     <div class="max-w-7xl mx-auto px-4 py-8">
       <div class="flex flex-col lg:flex-row gap-6">
 
+        <!-- Left Column (Order Content) -->
         <div class="w-full lg:w-2/3 bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6">
           <h2 class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-100">
             Order #{{ order.id }}
           </h2>
 
+          <!-- Project Link -->
           <div>
-            <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-200">
-              📁 Project
-            </h3>
-          
+            <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-200">📁 Project</h3>
             <template v-if="order.job_application">
               <a :href="`/gigs/${order.job_application.job_ad.id}`" class="text-lg text-gray-700 hover:text-red-600">
                 {{ order.job_application.job_ad.Title }}
               </a>
             </template>
-          
             <template v-else-if="order.project_application">
               <a :href="`/projects/${order.project_application.project.id}`" class="text-lg text-gray-700 hover:text-red-600">
                 {{ order.project_application.project.title }}
               </a>
             </template>
-          
             <template v-else>
               <span class="text-red-500">Unknown project type</span>
             </template>
           </div>
 
+          <!-- Status Section -->
           <div class="mt-8">
-            <h3 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
-              📊 Status
-            </h3>
+            <h3 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">📊 Status</h3>
             <div class="p-4 border rounded-xl bg-gray-50 dark:bg-gray-700">
               <template v-if="order.status === 'in_progress'">
                 <p class="text-gray-800 dark:text-gray-200">
@@ -49,14 +45,10 @@
                 </p>
               </template>
               <template v-else-if="order.status === 'completed'">
-                <p class="text-green-600 font-semibold">
-                  This order is completed. ✔️
-                </p>
+                <p class="text-green-600 font-semibold">This order is completed. ✔️</p>
               </template>
               <template v-else-if="order.status === 'cancelled'">
-                <p class="text-red-600 font-semibold">
-                  This order was cancelled. ❌
-                </p>
+                <p class="text-red-600 font-semibold">This order was cancelled. ❌</p>
                 <p v-if="order.cancel_reason" class="text-gray-700 dark:text-gray-300 mt-1">
                   <strong>Reason:</strong> {{ order.cancel_reason }}
                 </p>
@@ -64,51 +56,46 @@
             </div>
           </div>
 
+          <!-- Order Actions & Content -->
           <div class="mt-8 space-y-6">
+            <!-- Client View -->
             <div v-if="auth.user?.id === order.client_id && (order.status === 'submitted' || order.status === 'completed')">
-              <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">
-                ✅ Submitted Work
-              </h3>
+              <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">✅ Submitted Work</h3>
               <p class="text-gray-800 dark:text-gray-300"><strong>Description:</strong> {{ order.result_text }}</p>
-              <a
-                v-if="order.result_file"
-                :href="order.result_file"
-                target="_blank"
-                class="text-blue-600 hover:underline font-medium"
-              >
+              <a v-if="order.result_file" :href="order.result_file" target="_blank" class="text-blue-600 hover:underline font-medium">
                 📂 Download Attached File
               </a>
               <form v-if="order.status === 'submitted'" @submit.prevent="completeOrder" class="mt-4">
-                <button class="px-5 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                  Mark as Complete
-                </button>
+                <button class="px-5 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Mark as Complete</button>
               </form>
             </div>
 
+            <!-- Freelancer View -->
             <div v-else-if="auth.user?.id === order.freelancer_id">
-              <div v-if="order.status === 'in_progress'">
-                <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">
-                  🚀 Submit Your Work
-                </h3>
+              <div v-if="order.status === 'submitted'">
+                <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">🔄 Update Submitted Work</h3>
+                <form @submit.prevent="submitWork" class="space-y-4 mt-4">
+                  <label class="block text-gray-700 dark:text-gray-300">Description:</label>
+                  <textarea v-model="resultText" placeholder="Update your description..." class="w-full p-3 border rounded-lg text-gray-800 dark:text-gray-300" required></textarea>
+                  <p v-if="order.result_file" class="text-sm text-gray-500">
+                    Current file: <a :href="order.result_file" target="_blank" class="text-blue-600 underline">Download current</a>
+                  </p>
+                  <input type="file" @change="handleFileUpload" class="block" />
+                  <button class="bg-yellow-500 text-white px-5 py-2 rounded-lg hover:bg-yellow-600">Update Work</button>
+                </form>
+              </div>
+              <div v-else-if="order.status === 'in_progress'">
+                <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">🚀 Submit Your Work</h3>
                 <form @submit.prevent="submitWork" class="space-y-4 mt-4">
                   <textarea v-model="resultText" placeholder="Describe your work..." class="w-full p-3 border rounded-lg text-gray-800 dark:text-gray-300" required></textarea>
                   <input type="file" @change="handleFileUpload" class="block" />
-                  <button class="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600">
-                    Submit Work
-                  </button>
+                  <button class="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600">Submit Work</button>
                 </form>
               </div>
-              <div v-else-if="order.status === 'submitted' || order.status === 'completed'">
-                <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">
-                  📄 Your Submitted Work
-                </h3>
+              <div v-else-if="order.status === 'completed'">
+                <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">📄 Your Submitted Work</h3>
                 <p class="text-gray-800 dark:text-gray-300"><strong>Description:</strong> {{ order.result_text }}</p>
-                <a
-                  v-if="order.result_file"
-                  :href="order.result_file"
-                  target="_blank"
-                  class="text-blue-600 hover:underline font-medium"
-                >
+                <a v-if="order.result_file" :href="order.result_file" target="_blank" class="text-blue-600 hover:underline font-medium">
                   📂 Download Attached File
                 </a>
               </div>
@@ -116,51 +103,29 @@
           </div>
         </div>
 
+        <!-- Right Column (Chat) -->
         <div class="lg:w-1/3 bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6 flex flex-col">
-          <h3 class="text-2xl font-bold mb-4">
-            💬 Chat
-          </h3>
-          <div
-            ref="chatContainer"
-            class="flex-1 max-h-[400px] overflow-y-auto border rounded-xl p-4 bg-gray-100"
-          >
-            <div
-              v-for="msg in messages"
-              :key="msg.MessageID"
-              class="mb-3"
-              :class="msg.SenderID === auth.user.id ? 'text-right' : 'text-left'"
-            >
-              <div class="inline-block max-w-[80%] p-3 rounded-2xl shadow"
-                :class="msg.SenderID === auth.user.id ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-900'">
+          <h3 class="text-2xl font-bold mb-4">💬 Chat</h3>
+          <div ref="chatContainer" class="flex-1 max-h-[400px] overflow-y-auto border rounded-xl p-4 bg-gray-100">
+            <div v-for="msg in messages" :key="msg.MessageID" class="mb-3" :class="msg.SenderID === auth.user.id ? 'text-right' : 'text-left'">
+              <div class="inline-block max-w-[80%] p-3 rounded-2xl shadow" :class="msg.SenderID === auth.user.id ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-900'">
                 <div class="text-sm font-semibold mb-1">{{ msg.sender.name }}</div>
                 <div>{{ msg.Content }}</div>
-                <div class="text-xs mt-1 text-right">
-                  {{ new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
-                </div>
+                <div class="text-xs mt-1 text-right">{{ new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}</div>
               </div>
             </div>
           </div>
-
           <div class="mt-4 flex">
-            <input
-              type="text"
-              v-model="chatMessage"
-              placeholder="Type your message..."
-              class="flex-1 p-3 border rounded-lg"
-              @keyup.enter="sendMessage"
-            />
-            <button
-              @click="sendMessage"
-              class="ml-2 px-5 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-            >
-              Send
-            </button>
+            <input type="text" v-model="chatMessage" placeholder="Type your message..." class="flex-1 p-3 border rounded-lg" @keyup.enter="sendMessage" />
+            <button @click="sendMessage" class="ml-2 px-5 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Send</button>
           </div>
         </div>
+
       </div>
     </div>
   </AuthenticatedLayout>
 </template>
+
 
 <script setup>
 import { ref, onMounted, nextTick } from 'vue'
@@ -221,6 +186,10 @@ const sendMessage = async () => {
 
 onMounted(() => {
   loadMessages()
+
+  if (order.result_text && auth.user?.id === order.freelancer_id) {
+    resultText.value = order.result_text
+  }
 
   const pusher = new Pusher(import.meta.env.VITE_PUSHER_APP_KEY, {
     wsHost: window.location.hostname,

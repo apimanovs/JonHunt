@@ -122,32 +122,48 @@ class OrderController extends Controller
     public function submitWork(Request $request, Order $order)
     {
         $this->authorize('update', $order);
-
-        if ($order->status !== 'in_progress') {
-            return back()->withErrors(['message' => 'Order cannot be completed in its current status.']);
+    
+        if (!in_array($order->status, ['in_progress', 'submitted'])) {
+            return back()->withErrors(['message' => 'You can only submit or update work while the order is in progress or under review.']);
         }
-
+    
         $validated = $request->validate([
             'result_text' => 'required|string',
             'result_file' => 'nullable|file|max:10240',
         ]);
-
-        $filePath = null;
+    
+        $filePath = $order->result_file;
+    
         if ($request->hasFile('result_file')) {
+            if ($filePath) {
+                $parsedUrl = parse_url($filePath);
+                $path = $parsedUrl['path'] ?? null;
+    
+                if ($path) {
+                    $path = ltrim($path, '/');
+                    $publicId = preg_replace('/\.[^.]+$/', '', $path);
+    
+                    try {
+                        Cloudinary::destroy($publicId);
+                    } catch (\Exception $e) {
+                    }
+                }
+            }
+    
             $uploadedFile = $request->file('result_file');
             $cloudinaryResult = Cloudinary::uploadFile($uploadedFile->getRealPath(), [
                 'folder' => 'order-results/' . $order->id,
             ]);
-
+    
             $filePath = $cloudinaryResult->getSecurePath();
         }
-
+    
         $order->update([
             'result_text' => $validated['result_text'],
             'result_file' => $filePath,
             'status' => 'submitted',
         ]);
-
+    
         return back()->with('success', 'Work submitted successfully. The client will review it.');
     }
 

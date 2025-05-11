@@ -63,7 +63,7 @@ class JobApplicationController extends Controller
 
         Mail::to($freelancer->email)->send(new NewOrderNotificationMail($order));
 
-        return redirect()->route('orders.show', $order->id)
-            ->with('success', 'Order created and payment processed successfully!');
+        return redirect()->route('orders.index')
+            ->with('success', 'Order created and payment processed successfully! You have to wait until the freelancer will accept your application');
     }
 }

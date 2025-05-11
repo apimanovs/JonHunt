@@ -75,7 +75,9 @@
           <h3 class="text-3xl font-bold text-gray-700 mb-8">📚 Projects</h3>
           <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             <div v-for="project in projects" :key="project.id" class="bg-gray-50 rounded-lg p-6 shadow hover:shadow-lg transition border border-gray-200">
-              <h4 class="text-xl font-bold text-red-600 mb-2 break-words">{{ project.title }}</h4>
+              <a :href="`/projects/${project.id}`" class="text-xl font-bold text-red-600 hover:text-red-700 block mb-2 break-words">
+                {{ project.title }}
+              </a>
               <p class="text-gray-600 mb-2 break-words">{{ project.description || 'No description provided.' }}</p>
               <div class="text-sm text-gray-500 space-y-1">
                 <p><strong>Budget:</strong> ${{ project.budget || 'Not specified' }}</p>
@@ -84,12 +86,15 @@
             </div>
           </div>
         </div>
+        
 
         <div v-if="jobAds?.length" class="px-8 pb-12">
           <h3 class="text-3xl font-bold text-gray-700 mb-8">💼 Freelancer Ads</h3>
           <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             <div v-for="ad in jobAds" :key="ad.id" class="bg-gray-50 rounded-lg p-6 shadow hover:shadow-lg transition border border-gray-200">
-              <h4 class="text-xl font-bold text-red-600 mb-2 break-words">{{ ad.title || 'No title provided.' }}</h4>
+              <a :href="`/gigs/${ad.id}`" class="text-xl font-bold text-red-600 hover:text-red-700 mb-2 block break-words">
+                {{ ad.title || 'No title provided.' }}
+              </a>
               <p class="text-gray-600 mb-2 break-words">{{ ad.description || 'No description provided.' }}</p>
               <div class="text-sm text-gray-500 space-y-1">
                 <p><strong>Price:</strong> ${{ ad.price || 'Not specified' }}</p>

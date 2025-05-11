@@ -1,5 +1,6 @@
 <template>
   <AuthenticatedLayout>
+    <Head title="Balance" />
     <template #header>
       <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Deposit Funds</h2>
     </template>
@@ -48,7 +49,7 @@
 </template>
 
 <script setup>
-import { useForm } from '@inertiajs/vue3';
+import { useForm, Head } from '@inertiajs/vue3';
 import { defineProps } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 

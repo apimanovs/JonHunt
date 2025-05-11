@@ -40,7 +40,7 @@ Route::get('/user/{username}', [ProfileController::class, 'show'])->name('profil
 
 Route::get('/projects/create', function () {
     return Inertia::render('CreateProject');
-})->name('/projects/create');
+})->name('/projects/create')->middleware('auth');
 
 use App\Http\Controllers\ProjectApplicationController;
 

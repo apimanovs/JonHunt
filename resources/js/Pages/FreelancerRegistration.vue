@@ -164,7 +164,7 @@
             <div class="w-1/2">
               <InputLabel for="experience_to" value="Experience To (year)" />
               <p class="mt-2 text-sm text-gray-600">
-                If you finished at a certain time, or just set it to the current year if you’re still active.
+                Set it to the current year if you’re still active.
               </p>
               <TextInput
                 id="experience_to"

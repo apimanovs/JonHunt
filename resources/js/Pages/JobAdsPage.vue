@@ -59,6 +59,23 @@
         <p class="text-sm text-gray-600">Based on {{ reviews.length }} review<span v-if="reviews.length > 1">s</span></p>
       </section>
 
+      <section class="bg-red-50 border-l-4 border-red-400 p-6 rounded-lg">
+        <h2 class="text-xl font-semibold text-red-600 mb-2">🚀 How to Request This Service</h2>
+        <ul class="list-disc pl-5 text-sm text-gray-800 space-y-1">
+          <li>Send a clear and polite request explaining your needs.</li>
+          <li>Specify expectations, deadlines, and any details.</li>
+          <li>Feel free to ask the freelancer any questions before ordering.</li>
+          <li>Click "Request Service" to contact and agree on terms.</li>
+        </ul>
+      </section>
+
+      <!-- Button -->
+      <div class="text-center">
+        <button @click="navigateToApplicationForm" class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white text-lg rounded-full shadow-md">
+          🚀 Request Service
+        </button>
+      </div>
+      
       <!-- Reviews -->
       <section>
         <h3 class="text-xl font-semibold text-gray-900">Reviews</h3>
@@ -93,9 +110,7 @@
                 <span v-if="auth.user && review.user.id === auth.user.id">
                   <div class="dropdown relative inline-block text-left">
                     <button tabindex="0" class="flex items-center p-1 rounded-full hover:bg-gray-200 transition">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="h-3 w-6 stroke-current text-gray-600">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01" />
-                      </svg>
+                      . . .
                     </button>
                     <ul tabindex="0" class="dropdown-content absolute mt-2 w-40 menu bg-base-100 rounded-md shadow-lg p-1 z-10">
                       <li>
@@ -140,22 +155,6 @@
       </section>
 
       <!-- Instructions -->
-      <section class="bg-red-50 border-l-4 border-red-400 p-6 rounded-lg">
-        <h2 class="text-xl font-semibold text-red-600 mb-2">🚀 How to Request This Service</h2>
-        <ul class="list-disc pl-5 text-sm text-gray-800 space-y-1">
-          <li>Send a clear and polite request explaining your needs.</li>
-          <li>Specify expectations, deadlines, and any details.</li>
-          <li>Feel free to ask the freelancer any questions before ordering.</li>
-          <li>Click "Request Service" to contact and agree on terms.</li>
-        </ul>
-      </section>
-
-      <!-- Button -->
-      <div class="text-center">
-        <button @click="navigateToApplicationForm" class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white text-lg rounded-full shadow-md">
-          🚀 Request Service
-        </button>
-      </div>
 
       <!-- Modal -->
       <div v-if="selectedImage" class="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">

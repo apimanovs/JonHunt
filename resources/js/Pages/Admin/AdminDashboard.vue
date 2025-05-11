@@ -98,7 +98,7 @@
           <p class="text-sm text-white/90">Read and reply to messages submitted by users.</p>
         </Link>
 
-        <Link :href="route('admin.freelancers.moderation')" class="block p-4 bg-gray-700 text-white rounded-lg shadow hover:bg-gray-800 transition">
+        <Link :href="route('admin.freelancers.moderation')" class="block p-4 bg-purple-700 text-white rounded-lg shadow hover:bg-purple-800 transition">
           <div class="flex items-center mb-2">
             <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" stroke-width="2"
               viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

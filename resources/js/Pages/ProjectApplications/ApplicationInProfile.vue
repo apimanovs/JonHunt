@@ -1,7 +1,7 @@
 <template>
   <AuthenticatedLayout>
     <Head title="My Applications" />
-    <div class="max-w-6xl mx-auto p-8 bg-white dark:bg-gray-900 shadow-md rounded-xl">
+    <div class="max-w-6xl mx-auto p-8 bg-white dark:bg-gray-900 shadow-md rounded-xl mt-10">
       <h2 class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-100">📋 My Applications</h2>
 
       <div class="flex gap-4 mb-8 border-b border-gray-300 dark:border-gray-700">
@@ -68,7 +68,7 @@
                   <p class="font-semibold mb-2">📄 Cover Letter</p>
                   <p class="bg-gray-100 dark:bg-gray-800 p-4 rounded whitespace-pre-line">{{ app.cover_letter }}</p>
                   <p class="mt-4">
-                    <strong>Status:</strong>
+                    <strong>Status: </strong>
                     <span
                       :class="{
                         'text-yellow-500': app.status === 'pending',
