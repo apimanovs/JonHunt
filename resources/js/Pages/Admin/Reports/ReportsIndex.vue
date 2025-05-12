@@ -23,6 +23,7 @@ console.log(props);
               <th class="px-4 py-2">User</th>
               <th class="px-4 py-2">Reason</th>
               <th class="px-4 py-2">Project / JobAd</th>
+              <th class="px-4 py-2">Project / JobAd Title</th>
               <th class="px-4 py-2">Date</th>
             </tr>
           </thead>
@@ -32,10 +33,21 @@ console.log(props);
               <td class="px-4 py-2">{{ report.reason }}</td>
               <td class="px-4 py-2">
                 <div v-if="report.project">
-                  <a :href="`/projects/${report.project.id}`" class="text-blue-600 underline">Project #{{ report.project.id }}</a>
+                  <a :href="`/projects/${report.project.id}`" class="text-red-600 ">Project #{{ report.project.id }}</a>
                 </div>
                 <div v-else-if="report.job_advertisement">
-                  <a :href="`/gigs/${report.job_advertisement.id}`" class="text-green-600 underline">Job Ad #{{ report.job_advertisement.id }}</a>
+                  <a :href="`/gigs/${report.job_advertisement.id}`" class="text-red-600 ">Job Ad #{{ report.job_advertisement.id }}</a>
+                </div>
+                <div v-else>
+                  N/A
+                </div>
+              </td>
+              <td class="px-4 py-2">
+                <div v-if="report.project">
+                  <a :href="`/projects/${report.project.id}`" class="text-red-600 ">{{ report.project.title }}</a>
+                </div>
+                <div v-else-if="report.job_advertisement">
+                  <a :href="`/gigs/${report.job_advertisement.id}`" class="text-red-600 ">{{ report.job_advertisement.Title }}</a>
                 </div>
                 <div v-else>
                   N/A

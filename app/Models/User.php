@@ -53,7 +53,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function avatar()
     {
-        return $this->hasOne(Avatar::class, 'user_id');
+        return $this->hasOne(Avatar::class, 'user_id', 'id');
     }
 
     public function getRouteKeyName()

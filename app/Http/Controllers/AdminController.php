@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Project;
 use App\Models\JobAdvertisement;
+use App\Models\Avatar;
 use App\Mail\JobAdApprovedMail;
 use App\Mail\FreelancerApprovedMail;
 use App\Mail\ProjectApprovedMail;
@@ -32,8 +33,8 @@ class AdminController extends Controller
 
     public function usersIndex(): \Inertia\Response
     {
-        $users = User::orderBy('created_at', 'desc')->paginate(20);
-
+        $users = User::with('avatar')->orderBy('created_at', 'desc')->paginate(20);
+    
         return Inertia::render('Admin/UsersIndex', [
             'users' => $users
         ]);
@@ -47,11 +48,11 @@ class AdminController extends Controller
 
         return redirect()
             ->route('admin.users.index')
-            ->with('success', 'Пользователь успешно удалён!');
+            ->with('success', 'User is deleted!');
     }
 
     public function moderateProjects() {
-        $pendingProjects = Project::where('status', 'pending')->get();
+        $pendingProjects = Project::with('creator.avatar')->where('status', 'pending')->paginate(10);
         return Inertia::render('Admin/ProjectsRequests', [
             'pendingProjects' => $pendingProjects,
             'csrf' => csrf_token(),
@@ -59,7 +60,7 @@ class AdminController extends Controller
     }
     
     public function moderateJobAds() {
-        $pendingJobAds = JobAdvertisement::where('status', 'pending')->get();
+        $pendingJobAds = JobAdvertisement::with('creator.avatar')->where('status', 'pending')->paginate(10);
         return Inertia::render('Admin/JobAdsRequests', [
             'pendingJobAds' => $pendingJobAds,
             'csrf' => csrf_token(),
@@ -75,7 +76,7 @@ class AdminController extends Controller
      
         Mail::to($user->email)->send(new ProjectApprovedMail($project));
         
-        return redirect()->back()->with('success', 'Проект успешно одобрен!');
+        return redirect()->back()->with('success', 'Project approved!');
     }
     
     public function rejectProject(Project $project)
@@ -83,7 +84,7 @@ class AdminController extends Controller
         $project->Status = 'rejected';
         $project->delete();
     
-        return redirect()->back()->with('success', 'Проект отклонён!');
+        return redirect()->back()->with('success', 'Project rejected!');
     }
     
     public function approveJobAd(JobAdvertisement $jobAd)
@@ -95,7 +96,7 @@ class AdminController extends Controller
 
         Mail::to($user->email)->send(new JobAdApprovedMail($jobAd));
 
-        return redirect()->back()->with('success', 'Объявление о работе успешно одобрено!');
+        return redirect()->back()->with('success', 'Job Ad approved!');
     }
     
     public function rejectJobAd(JobAdvertisement $jobAd)
@@ -103,12 +104,12 @@ class AdminController extends Controller
         $jobAd->Status = 'rejected';
         $jobAd->delete();
     
-        return redirect()->back()->with('success', 'Объявление о работе отклонено!');
+        return redirect()->back()->with('success', 'Job Ad rejected!');
     }
     
     public function projectsIndex(): \Inertia\Response
     {
-        $projects = Project::orderBy('id', 'asc')->paginate(20);
+        $projects = Project::with('creator.avatar')->orderBy('id', 'asc')->paginate(20);
 
         return Inertia::render('Admin/ProjectsIndex', [
             'projects' => $projects
@@ -119,12 +120,12 @@ class AdminController extends Controller
     {
         $project->delete();
 
-        return back()->with('success', 'Проект удалён!');
+        return back()->with('success', 'Project deleted!');
     }
 
     public function jobAdsIndex(): \Inertia\Response
     {
-        $jobAds = JobAdvertisement::orderBy('id', 'asc')->paginate(20);
+        $jobAds = JobAdvertisement::with('creator.avatar')->orderBy('id', 'asc')->paginate(20);
 
         return Inertia::render('Admin/JobAdsIndex', [
             'jobAds' => $jobAds
@@ -135,7 +136,7 @@ class AdminController extends Controller
     {
         $jobAd->delete();
 
-        return back()->with('success', 'Объявление о работе удалено!');
+        return back()->with('success', 'Job Ad deleted!');
     }
 
     public function profile(): \Inertia\Response
@@ -158,7 +159,7 @@ class AdminController extends Controller
 
     public function moderateFreelancers()
     {
-        $pendingFreelancers = \App\Models\Freelancer::where('is_approved', false)->get();
+        $pendingFreelancers = \App\Models\Freelancer::with('user')->where('is_approved', false)->orderBy('id', 'desc')->get();
 
         return Inertia::render('Admin/Freelancers/FreelancersIndex', [
             'pendingFreelancers' => $pendingFreelancers
