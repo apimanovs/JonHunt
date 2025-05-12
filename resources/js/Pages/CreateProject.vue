@@ -64,7 +64,6 @@ const previousStep = () => {
     </template>
     
     <div class="max-w-4xl mx-auto p-6 bg-white shadow sm:rounded-lg mt-6">
-      <!-- Steps (Step Indicator) -->
       <div class="mb-6 flex justify-center">
         <ul class="steps">
           <li class="step" :class="{ 'step-accent': step >= 1 }">Basic Info</li>
@@ -80,7 +79,7 @@ const previousStep = () => {
           <p class="text-gray-600 my-5">Provide general information about your project.</p>
 
           <InputLabel for="title" value="Title" />
-          <p class="text-sm text-gray-600">Choose a clear and concise title that reflects the project scope. (At least 30 characters)</p>
+          <p class="text-sm text-gray-600">Choose a clear and concise title that reflects the project scope. (At least 60 characters)</p>
           <CharactedLimitedInput id="title" label="Title" v-model="form.title" :max="200" />
 
           <InputLabel for="niche" value="Niche" />

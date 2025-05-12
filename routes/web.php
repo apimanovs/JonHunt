@@ -79,10 +79,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/reviews/{review}/edit', [App\Http\Controllers\ReviewsController::class, 'editReview'])->name('reviews.edit');
     Route::delete('/reviews/{review}', [App\Http\Controllers\ReviewsController::class, 'deleteReview'])->name('reviews.delete');
 
-    Route::get('/projects-in-profile', [UserController::class, 'projectsInProfile'])->name('projects.inProfile');
-    Route::get('/projects/edit/{project}', [UserController::class, 'editProject'])->name('projects.edit');
-    Route::put('/projects/update/{project}', [UserController::class, 'updateProject'])->name('projects.update');
-    Route::delete('/projects/delete/{project}', [UserController::class, 'delete'])->name('projects.delete');
+    Route::get('/projects-in-profile', [ProjectsController::class, 'projectsInProfile'])->name('projects.inProfile');
+    Route::get('/projects/edit/{project}', [ProjectsController::class, 'editProject'])->name('projects.edit');
+    Route::put('/projects/update/{project}', [ProjectsController::class, 'updateProject'])->name('projects.update');
+    Route::delete('/projects/delete/{project}', [ProjectsController::class, 'delete'])->name('projects.delete');
 
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

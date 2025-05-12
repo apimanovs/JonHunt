@@ -34,6 +34,70 @@ class ProjectsController extends Controller
         ]);
     }
 
+    public function projectsInProfile(): Response
+    {
+        $user = Auth::user();
+        $projects = Project::where('creator_id', $user->id)->get(); 
+    
+        return Inertia::render('ProjectsInProfile', [
+            'projects' => $projects,
+        ]);
+    }
+
+    public function editProject(Request $request, Project $project): Response
+    {
+        return Inertia::render('EditProject', [
+            'project' => $project,
+            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+            'status' => session('status'),
+        ]);
+    }
+    
+    public function delete(Request $request, Project $project)
+    {    
+        $project->delete();
+    
+        return redirect()->route('dashboard')->with('success', 'Project deleted successfully!');
+    }
+
+    public function updateProject(Request $request, Project $project)
+    {
+        $user = Auth::user();
+    
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|max:200|min:60',
+            'description' => 'required|string|max:1500|min:100',
+            'niche' => 'required|string|in:Technology,Health,Education,Finance,Entertainment,Other',
+            'completion_date'  => 'nullable|date|after_or_equal:today|before_or_equal:' . Carbon::now()->addYear()->toDateString(),
+            'budget_type'      => 'required|string|in:fixed,hourly',
+            'budget' => 'required|numeric|min:0',
+            'requirements' => 'required|string|max:1500',
+            'expected_outcome' => 'required|string|max:1500',
+            'tasks' => 'required|string|max:1500',
+        ]);
+    
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+        
+        $validatedData = $validator->validated();
+
+        $project->title = $validatedData['title'];
+        $project->description = $validatedData['description'];
+        $project->niche = $validatedData['niche'];
+        $project->completion_date = $validatedData['completion_date'] ?? null;
+        $project->budget = $validatedData['budget'];
+        $project->budget_type = $validatedData['budget_type'] ?? 'fixed';
+        $project->requirements = $validatedData['requirements'] ?? null;
+        $project->expected_outcome = $validatedData['expected_outcome'] ?? null;
+        $project->tasks = $validatedData['tasks'] ?? null;
+        $project->creator = Auth::user()->name;
+    
+        $project->save();
+    
+        return redirect()->route('dashboard')->with('success', 'Project updated successfully!');
+    }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
