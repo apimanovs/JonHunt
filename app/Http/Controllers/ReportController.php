@@ -26,6 +26,21 @@ class ReportController extends Controller
                 return back()->withErrors(['reason' => 'Your report contains inappropriate language.']);
             }
         }
+
+        $existingReport = Report::where('user_id', auth()->id())
+            ->where(function ($query) use ($request) {
+                if ($request->project_id) {
+                    $query->where('project_id', $request->project_id);
+                }
+                if ($request->job_advertisement_id) {
+                    $query->where('job_advertisement_id', $request->job_advertisement_id);
+                }
+            })->first();
+
+        if ($existingReport != null)
+        {
+            return back()->withErrors(['reason' => 'You have already submitted report for this unit.']);
+        }
     
         Report::create([
             'user_id' => auth()->id(),

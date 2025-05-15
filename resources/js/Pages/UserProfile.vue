@@ -24,7 +24,6 @@
 
         <div class="mt-20 px-8 pb-8 text-center">
           <h2 class="text-4xl font-extrabold text-gray-800 break-words">{{ user.name }}</h2>
-          <p class="text-gray-600 mt-2 break-words">{{ user.email }}</p>
           <p class="text-gray-400 text-sm mt-1 capitalize">Role: {{ user.role }}</p>
           <p v-if="user.description" class="mt-4 text-gray-600 italic break-words">{{ user.description }}</p>
 

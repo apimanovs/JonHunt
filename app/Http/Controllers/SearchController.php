@@ -43,24 +43,30 @@ class SearchController extends Controller
             ->take(5)
             ->get();
 
-        $projects = Project::where('title', 'like', "%$query%")
-            ->orWhere('niche', 'like', "%$query%")
-            ->orWhereHas('creator', function ($creatorQuery) use ($query) {
-                $creatorQuery->where('name', 'like', "%$query%")
-                    ->orWhere('username', 'like', "%$query%");
-            })
-            ->with(['creator.avatar']) 
-            ->take(5)
-            ->get();
+            $projects = Project::where('Status', 'approved')
+                ->where(function ($queryBuilder) use ($query) {
+                    $queryBuilder->where('title', 'like', "%$query%")
+                        ->orWhere('niche', 'like', "%$query%")
+                        ->orWhereHas('creator', function ($creatorQuery) use ($query) {
+                            $creatorQuery->where('name', 'like', "%$query%")
+                                ->orWhere('username', 'like', "%$query%");
+                        });
+                })
+                ->with(['creator.avatar']) 
+                ->take(5)
+                ->get();
 
-        $jobAds = JobAdvertisement::where('title', 'like', "%$query%")
-            ->orWhereHas('creator', function ($creatorQuery) use ($query) {
-                $creatorQuery->where('name', 'like', "%$query%")
-                    ->orWhere('username', 'like', "%$query%");
-            })
-            ->with(['creator.avatar']) 
-            ->take(5)
-            ->get();
+            $jobAds = JobAdvertisement::where('Status', 'approved')
+                ->where(function ($queryBuilder) use ($query) {
+                    $queryBuilder->where('title', 'like', "%$query%")
+                        ->orWhereHas('creator', function ($creatorQuery) use ($query) {
+                            $creatorQuery->where('name', 'like', "%$query%")
+                                ->orWhere('username', 'like', "%$query%");
+                        });
+                })
+                ->with(['creator.avatar']) 
+                ->take(5)
+                ->get();
 
         return Inertia::render('SearchPage', [
             'query' => $query,
