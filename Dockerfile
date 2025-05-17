@@ -15,6 +15,13 @@ WORKDIR /var/www
 
 COPY . .
 
+COPY .env .env
+
+RUN echo "PUSHER_APP_KEY: $PUSHER_APP_KEY" && \
+    echo "PUSHER_APP_SECRET: $PUSHER_APP_SECRET" && \
+    echo "PUSHER_APP_ID: $PUSHER_APP_ID" && \
+    echo "PUSHER_APP_CLUSTER: $PUSHER_APP_CLUSTER"
+
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 RUN composer install --no-dev && \
