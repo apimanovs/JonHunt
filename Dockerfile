@@ -15,7 +15,7 @@ WORKDIR /var/www
 
 COPY . .
 
-COPY .env .env.example
+COPY .env.example .env
 
 RUN echo "PUSHER_APP_KEY: $PUSHER_APP_KEY" && \
     echo "PUSHER_APP_SECRET: $PUSHER_APP_SECRET" && \
