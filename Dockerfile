@@ -15,6 +15,8 @@ WORKDIR /var/www
 
 COPY . .
 
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
 RUN composer install --no-dev
 
 RUN npm install --prefix frontend
