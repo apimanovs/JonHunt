@@ -27,9 +27,9 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN composer install --no-dev && \
     composer require beyondcode/laravel-websockets
 
-RUN npm install --prefix frontend
+RUN npm install
 
-RUN npm run build --prefix frontend
+RUN npm run build
 
 RUN php artisan config:cache
 
