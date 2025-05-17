@@ -2,7 +2,7 @@ FROM php:8.2-fpm
 
 RUN apt-get update && apt-get install -y \
     libpng-dev libjpeg-dev libfreetype6-dev \
-    libzip-dev git unzip && \
+    libzip-dev git unzip supervisor && \
     docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install gd zip pdo pdo_mysql
 
@@ -17,7 +17,8 @@ COPY . .
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-RUN composer install --no-dev
+RUN composer install --no-dev && \
+    composer require beyondcode/laravel-websockets
 
 RUN npm install --prefix frontend
 
@@ -27,8 +28,8 @@ RUN php artisan config:cache
 
 RUN php artisan migrate --force --seed
 
-WORKDIR /var/www/backend
-
 EXPOSE 8000 6001
 
-CMD ["sh", "-c", "php artisan serve --host 0.0.0.0 --port 8000 & php artisan websockets:serve"]
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
