@@ -54,6 +54,6 @@ class AdminMessageController extends Controller
 
         Mail::to($adminMessage->user->email)->send(new AdminResponseMail($adminMessage));
 
-        return back()->with('success', 'Ответ отправлен пользователю.');
+        return back()->with('success', 'Answer sent to user.');
     }
 }
