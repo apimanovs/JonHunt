@@ -17,7 +17,8 @@ COPY . .
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-RUN composer install --no-dev
+RUN COMPOSER_DISABLE_NETWORK=1 COMPOSER_ALLOW_SUPERUSER=1 \
+    composer install --no-dev --no-scripts
 
 RUN npm install && npm run build
 
