@@ -20,6 +20,20 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN COMPOSER_ALLOW_SUPERUSER=1 \
     composer install --no-dev --no-scripts
 
+ENV COMPOSER_ALLOW_SUPERUSER=1
+ENV VITE_PUSHER_APP_KEY=GoofNBCH
+ENV VITE_PUSHER_APP_CLUSTER=mt1
+ENV VITE_PUSHER_HOST=jonhunt.onrender.com
+ENV VITE_PUSHER_PORT=6001
+ENV VITE_PUSHER_SCHEME=https
+
+
+RUN echo "VITE_PUSHER_APP_KEY=$VITE_PUSHER_APP_KEY" >> .env && \
+    echo "VITE_PUSHER_APP_CLUSTER=$VITE_PUSHER_APP_CLUSTER" >> .env && \
+    echo "VITE_PUSHER_HOST=$VITE_PUSHER_HOST" >> .env && \
+    echo "VITE_PUSHER_PORT=$VITE_PUSHER_PORT" >> .env && \
+    echo "VITE_PUSHER_SCHEME=$VITE_PUSHER_SCHEME" >> .env
+
 RUN npm install && npm run build
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
