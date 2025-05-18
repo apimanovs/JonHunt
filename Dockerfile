@@ -33,8 +33,6 @@ RUN npm run build
 
 RUN php artisan config:cache
 
-RUN php artisan migrate --force --seed
-
 EXPOSE 8000 6001
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
