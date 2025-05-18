@@ -15,8 +15,6 @@ WORKDIR /var/www
 
 COPY . .
 
-COPY .env.example .env
-
 RUN echo "PUSHER_APP_KEY: $PUSHER_APP_KEY" && \
     echo "PUSHER_APP_SECRET: $PUSHER_APP_SECRET" && \
     echo "PUSHER_APP_ID: $PUSHER_APP_ID" && \
@@ -36,7 +34,6 @@ RUN php artisan key:generate
 RUN php artisan config:cache
 
 EXPOSE 8000
-
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
