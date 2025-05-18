@@ -33,7 +33,7 @@ RUN npm run build
 
 RUN php artisan config:cache
 
-EXPOSE 8000 6001
+EXPOSE 8000
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
