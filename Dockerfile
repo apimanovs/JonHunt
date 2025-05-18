@@ -24,8 +24,6 @@ RUN echo "PUSHER_APP_KEY: $PUSHER_APP_KEY" && \
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-ENV PORT=8000
-
 RUN composer install --no-dev && \
     composer require beyondcode/laravel-websockets
 
