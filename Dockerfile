@@ -22,8 +22,7 @@ RUN echo "PUSHER_APP_KEY: $PUSHER_APP_KEY" && \
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-RUN composer install --no-dev && \
-    composer require beyondcode/laravel-websockets
+RUN composer install --no-dev
 
 RUN npm install
 
