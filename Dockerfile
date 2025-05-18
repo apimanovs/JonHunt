@@ -31,11 +31,12 @@ RUN npm install
 
 RUN npm run build
 
+RUN php artisan key:generate
+
 RUN php artisan config:cache
 
 EXPOSE 8000
 
-RUN php artisan key:generate
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
