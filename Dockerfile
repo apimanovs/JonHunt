@@ -15,25 +15,16 @@ WORKDIR /var/www
 
 COPY . .
 
-RUN echo "PUSHER_APP_KEY: $PUSHER_APP_KEY" && \
-    echo "PUSHER_APP_SECRET: $PUSHER_APP_SECRET" && \
-    echo "PUSHER_APP_ID: $PUSHER_APP_ID" && \
-    echo "PUSHER_APP_CLUSTER: $PUSHER_APP_CLUSTER"
-
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 RUN composer install --no-dev
 
-RUN npm install
+RUN npm install && npm run build
 
-RUN npm run build
-
-RUN php artisan key:generate
-
-RUN php artisan config:cache
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
 
 EXPOSE 8000
 
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+CMD ["/start.sh"]
