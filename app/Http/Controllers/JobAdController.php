@@ -63,7 +63,7 @@ class JobAdController extends Controller
         }
     
         return redirect()->route('jobAds.index')
-                         ->with('success', 'Объявление о работе создано и отправлено на модерацию.');
+                         ->with('success', 'Job Advertisement is created and sent for moderation.');
     }
     
 
@@ -181,7 +181,5 @@ class JobAdController extends Controller
             'reviews' => $jobAds->reviews,
             'averageRating' => $averageRating,
         ]);
-
     }
-
 }
