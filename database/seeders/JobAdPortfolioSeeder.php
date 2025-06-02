@@ -26,6 +26,10 @@ class JobAdPortfolioSeeder extends Seeder
                 'example_url' => 'https://res.cloudinary.com/dy55d3tu4/image/upload/v1746722735/job-portfolio/170/cgj1e9w3nzxov7ayfruv.avif',
                 'example_public_id' => 'job-portfolio/170/cgj1e9w3nzxov7ayfruv',
             ],
+            [
+                'example_url' => 'https://res.cloudinary.com/dy55d3tu4/image/upload/v1748868080/job-portfolio/173/jcaeugu2b0xflil04gy7.jpg',
+                'example_public_id' => 'job-portfolio/173/jcaeugu2b0xflil04gy7',
+            ],
         ];
 
         $jobAds = JobAdvertisement::all();
