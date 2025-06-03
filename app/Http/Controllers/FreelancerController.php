@@ -61,7 +61,7 @@ class FreelancerController extends Controller
         }
     
     
-        return redirect()->route('dashboard')->with('success', 'Your freelance profile went for moderation.');
+        return redirect()->route('dashboard')->with('success', 'Your freelance profile went for moderation');
     }
     
 
@@ -107,7 +107,7 @@ class FreelancerController extends Controller
         $freelancer->experience_to  = $data['experience_to'] ?? null;
         $freelancer->save();
         
-        return back()->with('success', 'Profile updated successfully.');
+        return back()->with('success', 'Profile updated successfully');
     }
 
 

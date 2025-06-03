@@ -76,7 +76,7 @@ class AdminController extends Controller
      
         Mail::to($user->email)->send(new ProjectApprovedMail($project));
         
-        return redirect()->back()->with('success', 'Project approved!');
+        return redirect()->back()->with('success', 'Project approved');
     }
     
     public function rejectProject(Project $project)
@@ -84,7 +84,7 @@ class AdminController extends Controller
         $project->Status = 'rejected';
         $project->delete();
     
-        return redirect()->back()->with('success', 'Project rejected!');
+        return redirect()->back()->with('success', 'Project rejected');
     }
     
     public function approveJobAd(JobAdvertisement $jobAd)
@@ -96,7 +96,7 @@ class AdminController extends Controller
 
         Mail::to($user->email)->send(new JobAdApprovedMail($jobAd));
 
-        return redirect()->back()->with('success', 'Job Ad approved!');
+        return redirect()->back()->with('success', 'Job Ad approved');
     }
     
     public function rejectJobAd(JobAdvertisement $jobAd)
@@ -104,7 +104,7 @@ class AdminController extends Controller
         $jobAd->Status = 'rejected';
         $jobAd->delete();
     
-        return redirect()->back()->with('success', 'Job Ad rejected!');
+        return redirect()->back()->with('success', 'Job Ad rejected');
     }
     
     public function projectsIndex(): \Inertia\Response
@@ -120,7 +120,7 @@ class AdminController extends Controller
     {
         $project->delete();
 
-        return back()->with('success', 'Project deleted!');
+        return back()->with('success', 'Project deleted');
     }
 
     public function jobAdsIndex(): \Inertia\Response
@@ -177,14 +177,14 @@ class AdminController extends Controller
 
         Mail::to($freelancer->user->email)->send(new FreelancerApprovedMail($freelancer));
 
-        return redirect()->back()->with('success', 'Freelancer approved successfully!');
+        return redirect()->back()->with('success', 'Freelancer approved successfully');
     }
 
     public function rejectFreelancer(Freelancer $freelancer)
     {
         $freelancer->delete();
 
-        return redirect()->back()->with('success', 'Freelancer rejected and profile removed!');
+        return redirect()->back()->with('success', 'Freelancer rejected and profile removed');
     }
 
 }

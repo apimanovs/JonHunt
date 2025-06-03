@@ -37,7 +37,7 @@ class JobApplicationController extends Controller
         }
 
         if ($userBalance->amount < $total) {
-            return back()->withErrors(['message' => 'No enough money on the balance!']);
+            return back()->withErrors(['message' => 'No enough money on the balance']);
         }
 
         $userBalance->amount -= $total;

@@ -57,7 +57,7 @@ class ProjectsController extends Controller
     {    
         $project->delete();
     
-        return redirect()->route('dashboard')->with('success', 'Project deleted successfully!');
+        return redirect()->route('dashboard')->with('success', 'Project deleted successfully');
     }
 
     public function updateProject(Request $request, Project $project)

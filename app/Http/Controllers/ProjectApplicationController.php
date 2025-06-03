@@ -46,7 +46,7 @@ class ProjectApplicationController extends Controller
         Mail::to($projectOwner->email)->send(new ProjectApplicationReceivedMail($application));
 
         return redirect()->route('projects.show', $project->id)
-                        ->with('success', 'Your application has been submitted!');
+                        ->with('success', 'Your application has been submitted');
     }
 
     public function approve(ProjectApplication $application)
@@ -85,7 +85,7 @@ class ProjectApplicationController extends Controller
     
         return response()->json([
             'redirect_url' => route('orders.show', $order->id),
-            'message' => 'Order created and payment processed successfully!',
+            'message' => 'Order created and payment processed successfully',
         ]);
         
     }

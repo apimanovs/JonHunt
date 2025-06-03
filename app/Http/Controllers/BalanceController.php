@@ -34,6 +34,6 @@ class BalanceController extends Controller
         $userBalance->amount += $request->input('amount');
         $userBalance->save();
 
-        return redirect()->route('dashboard')->with('success', 'Balance increased succesfully!');
+        return redirect()->route('dashboard')->with('success', 'Balance increased succesfully');
     }
 }

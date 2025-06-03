@@ -63,7 +63,7 @@ class JobAdController extends Controller
         }
     
         return redirect()->route('jobAds.index')
-                         ->with('success', 'Job Advertisement is created and sent for moderation.');
+                         ->with('success', 'Job Advertisement is created and sent for moderation');
     }
     
 
@@ -71,7 +71,7 @@ class JobAdController extends Controller
     {
         $jobAd->delete();
 
-        return redirect()->route('jobAds.index')->with('success', 'Job Ad deleted successfully.');
+        return redirect()->route('jobAds.index')->with('success', 'Job Ad deleted successfully');
     }
 
     public function updateImage(Request $request, JobAdvertisement $jobAd)
@@ -134,7 +134,7 @@ class JobAdController extends Controller
 
         $jobAd->save();
 
-        return redirect()->route('jobAds.index')->with('success', 'Job Ad updated successfully.');
+        return redirect()->route('jobAds.index')->with('success', 'Job Ad updated successfully');
     }
 
 

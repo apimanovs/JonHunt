@@ -49,6 +49,6 @@ class ReportController extends Controller
             'job_advertisement_id' => $request->job_advertisement_id,
         ]);
     
-        return back()->with('success', 'Report submitted successfully!');
+        return back()->with('success', 'Report submitted successfully');
     }    
 }
