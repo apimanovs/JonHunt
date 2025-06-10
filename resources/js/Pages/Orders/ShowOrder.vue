@@ -12,6 +12,13 @@
             Order #{{ order.id }}
           </h2>
 
+          <div class="mt-4">
+            <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-2">📌 Requirements</h3>
+            <p class="whitespace-pre-line text-gray-800 dark:text-gray-300 leading-relaxed">
+              {{ order.job_application.requirements }}
+            </p>
+          </div>
+          <br>
           <!-- Project Link -->
           <div>
             <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-200">📁 Project</h3>
