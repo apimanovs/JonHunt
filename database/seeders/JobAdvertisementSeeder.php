@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Database\Seeder;
 use App\Models\JobAdvertisement;
 use App\Models\User;
-use Illuminate\Database\Seeder;
+use Faker\Factory as Faker;
 
 class JobAdvertisementSeeder extends Seeder
 {
