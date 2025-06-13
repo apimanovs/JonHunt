@@ -13,6 +13,7 @@ class JobAdvertisementSeeder extends Seeder
     {
         $faker = Faker::create('en_US');
         $users = User::inRandomOrder()->take(10)->get();
+        $statuses = ['pending', 'approved'];
 
         foreach ($users as $user) {
             $numAds = rand(1, 3);
@@ -23,6 +24,7 @@ class JobAdvertisementSeeder extends Seeder
                     'creator' => $user->name,
                     'Examples' => $faker->sentence(6),
                     'Price' => $faker->randomFloat(2, 100, 3000),
+                    'Status' => $faker->randomElement($statuses),
                 ]);
             }
         }
