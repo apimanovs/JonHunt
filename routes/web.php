@@ -220,10 +220,6 @@ Route::middleware(['auth', 'admin'])
         Route::get('/projects', [AdminController::class, 'projectsIndex'])->name('projects.index');
         Route::delete('/delete/projects/{project}', [AdminController::class, 'projectsDestroy'])->name('projects.destroy');
 
-        // Job Ads
-        Route::get('/job-ads', [AdminController::class, 'jobAdsIndex'])->name('jobAds.index');
-        Route::delete('/delete/job-ads/{jobAd}', [AdminController::class, 'jobAdsDestroy'])->name('jobAds.destroy');
-
         Route::post('/projects/{project}/approve', [AdminController::class, 'approveProject'])->name('projects.approve');
         Route::post('/projects/{project}/reject', [AdminController::class, 'rejectProject'])->name('projects.reject');
 
