@@ -6,7 +6,6 @@
         <div class="hero bg-base-200 min-h-screen">
             <div class="hero-content flex-col lg:flex-row-reverse w-full gap-10">
 
-                <!-- Текст -->
                 <div class="text-center lg:text-left w-96">
                     <h1 class="text-5xl font-bold">
                         <span class="text-red-700">Register now!</span>
@@ -18,7 +17,6 @@
                     </p>
                 </div>
 
-                <!-- Форма регистрации -->
                 <div class="card bg-base-100 w-full max-w-lg shrink-0 shadow-2xl">
                     <div class="card-body">
                         <form @submit.prevent="submit">
