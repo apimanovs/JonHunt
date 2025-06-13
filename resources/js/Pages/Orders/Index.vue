@@ -28,6 +28,12 @@
                   <p class="text-sm text-gray-600 dark:text-gray-300">
                     👤 Freelancer: {{ order.freelancer.name }}
                   </p>
+                  <div v-if="order.job_application && order.job_application.requirements" class="mt-4 max-w-4xl">
+                    <h3 class="text-l font-semibold text-gray-700 dark:text-gray-200 mb-2">Requirements</h3>
+                    <p class="whitespace-pre-line text-gray-800 dark:text-gray-300 leading-relaxed break-words">
+                      {{ order.job_application.requirements }}
+                    </p>
+                  </div>
                   <div class="text-sm text-gray-600 dark:text-gray-300 flex items-center">
                     📌 Status:
                     <span
@@ -80,12 +86,12 @@
                     👤 Client: {{ order.client.name }}
                   </p>
 
-                    <div class="mt-4 max-w-4xl">
-                        <h3 class="text-l font-semibold text-gray-700 dark:text-gray-200 mb-2 ">Requirements</h3>
+                      <div v-if="order.job_application && order.job_application.requirements" class="mt-4 max-w-4xl">
+                        <h3 class="text-l font-semibold text-gray-700 dark:text-gray-200 mb-2">Requirements</h3>
                         <p class="whitespace-pre-line text-gray-800 dark:text-gray-300 leading-relaxed break-words">
                           {{ order.job_application.requirements }}
                         </p>
-                    </div>
+                      </div>
                     <br>
                   <div class="text-sm text-gray-600 dark:text-gray-300 flex items-center">
                     📌 Status:
