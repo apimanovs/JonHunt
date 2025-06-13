@@ -10,7 +10,7 @@ const projects = computed(() => page.props.projects || []);
 const jobAds = computed(() => page.props.jobAds || []);
 
 console.log(page.props);
-</script>
+</script> 
 
 <template>
     <AuthenticatedLayout>
