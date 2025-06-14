@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Faker\Factory as Faker;
@@ -15,9 +14,9 @@ class AdminUserSeeder extends Seeder
         $faker = Faker::create('en_US');
 
         User::create([
-            'name' => $faker->name,
-            'email' => $faker->unique()->safeEmail,
-            'username' => $faker->unique()->userName,
+            'name' => 'Daniel Foster',
+            'email' => 'daniel.foster.personal@gmail.com',
+            'username' => 'danielf',
             'password' => Hash::make('admin12345'),
             'role' => 'admin',
             'email_verified_at' => now(),
