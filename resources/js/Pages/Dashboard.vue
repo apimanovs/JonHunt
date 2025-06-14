@@ -383,7 +383,7 @@ const submitReport = async () => {
                           </a>
                         </h2>
                         <div class="creator-info flex items-center mt-2">
-                          <a v-if="ad.creator && ad.creator.avatar" :href="`/users/${ad.creator.username}`" class="flex items-center">
+                          <a v-if="ad.creator && ad.creator.avatar" :href="`/user/${ad.creator.username}`" class="flex items-center">
                             <img :src="ad.creator.avatar.photo_url" alt="Avatar" class="w-10 h-10 rounded-full mr-3" />
                           </a>
                           <a v-else :href="`/user/${ad.creator.username}`" class="flex items-center">
