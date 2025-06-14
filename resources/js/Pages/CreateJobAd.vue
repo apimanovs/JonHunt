@@ -18,11 +18,10 @@
                             <CharactedLimitedInput
                                 id="title"
                                 v-model="form.title"
-                                :max="35"
+                                :max="50"
                                 label="Title"
                                 :textarea="false"
                             />
-                            <span class="label-text-alt">Must have 35 characters</span>
                             <InputError class="mt-2" :message="form.errors.title" />
                         </div>
                         
@@ -39,9 +38,6 @@
                                 :textarea="true"
                             />
                             <InputError class="mt-2" :message="form.errors.description" />
-                            <label class="form-control w-full max-w-xs mt-2">
-                                <span class="label-text-alt">At least 100 characters</span>
-                            </label>
                         </div>
 
                         <div>
@@ -70,6 +66,9 @@
                                 @change="handleFileUpload"
                                 class="mt-1 block w-full"
                             />
+                            <label class="form-control w-full max-w-xs mt-2">
+                                <span class="label-text-alt">Only a file of type: jpg, jpeg, png, pdf.</span>
+                            </label>
                             <InputError class="mt-2" :message="form.errors['examples']" />
                         </div>
 
@@ -112,7 +111,7 @@ const form = useForm({
 
 const handleFileUpload = (event) => {
     const files = Array.from(event.target.files);
-    form.examples = files; // Важно: multiple => массив
+    form.examples = files;
 };
 
 const submitForm = () => {

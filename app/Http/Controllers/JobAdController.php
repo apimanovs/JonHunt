@@ -24,7 +24,7 @@ class JobAdController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title'        => 'required|string|max:35|min:35',
+            'title'        => 'required|string|max:50|min:35',
             'description'  => 'required|string|max:1500|min:100',
             'price'        => 'required|numeric|min:0',
             'examples'     => 'required|array|min:1',
